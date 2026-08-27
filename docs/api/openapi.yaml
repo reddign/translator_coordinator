@@ -1,0 +1,726 @@
+openapi: 3.0.3
+
+info:
+  title: World Connections API
+  version: 1.0.0
+  description: |
+    REST API for the World Connections application. The initial reference-data resources are read-only.
+
+    This initial API supports country and world-region reference data.
+
+    Countries can be listed, retrieved by ID, filtered by region, and searched by name.
+    Regions can be listed, retrieved by ID, and searched by name.
+
+    The underlying `wf_countries` and `wf_world_regions` tables are read-only reference tables,
+    so these resources currently expose GET operations only.
+
+servers:
+  - url: ../../api
+    description: Current World Connections installation
+
+tags:
+  - name: Countries
+    description: Read-only country reference data
+  - name: Regions
+    description: Read-only world-region reference data
+  - name: Languages
+    description: Read-only language reference data
+
+
+paths:
+  /countries:
+    get:
+      tags:
+        - Countries
+      summary: Get countries
+      description: |
+        Returns a list of countries. Results can optionally be filtered by region ID,
+        searched by country name, or filtered and searched at the same time.
+      operationId: getCountries
+      parameters:
+        - name: regionid
+          in: query
+          required: false
+          description: Return only countries that belong to this REGION_ID.
+          schema:
+            type: integer
+            minimum: 1
+          example: 3
+        - name: search
+          in: query
+          required: false
+          description: |
+            Case-insensitive partial search text matched against COUNTRY_NAME and
+            COUNTRY_TRANSLATED_NAME by the API implementation.
+          schema:
+            type: string
+            minLength: 1
+          example: united
+      responses:
+        '200':
+          description: Countries returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountryListResponse'
+              examples:
+                countries:
+                  summary: Example country list
+                  value:
+                    success: true
+                    count: 2
+                    data:
+                      - COUNTRY_ID: 1
+                        REGION_ID: 2
+                        COUNTRY_NAME: Afghanistan
+                        COUNTRY_TRANSLATED_NAME: null
+                        LOCATION: Southern Asia
+                        CAPITOL: Kabul
+                        POPULATION: '40121552'
+                        FIPS_ID: AF
+                        INTERNET_EXTENSION: .af
+                        CURRENCY_CODE: AFN
+                      - COUNTRY_ID: 2
+                        REGION_ID: 2
+                        COUNTRY_NAME: Albania
+                        COUNTRY_TRANSLATED_NAME: null
+                        LOCATION: Southeastern Europe
+                        CAPITOL: Tirana
+                        POPULATION: '3101621'
+                        FIPS_ID: AL
+                        INTERNET_EXTENSION: .al
+                        CURRENCY_CODE: ALL
+        '400':
+          description: A query parameter is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: regionid must be numeric.
+        '405':
+          description: The HTTP method is not allowed for this read-only resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method not allowed.
+
+  /countries/{countryId}:
+    get:
+      tags:
+        - Countries
+      summary: Get one country
+      description: Returns the detailed record for one country identified by COUNTRY_ID.
+      operationId: getCountryById
+      parameters:
+        - name: countryId
+          in: path
+          required: true
+          description: COUNTRY_ID of the country to retrieve.
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Country returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountryResponse'
+        '400':
+          description: The country ID is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Country ID must be numeric.
+        '404':
+          description: No country exists with the supplied COUNTRY_ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Country not found.
+        '405':
+          description: The HTTP method is not allowed for this read-only resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+  /regions:
+    get:
+      tags:
+        - Regions
+      summary: Get regions
+      description: |
+        Returns the world regions. Results can optionally be filtered by a partial
+        search against REGION_NAME.
+      operationId: getRegions
+      parameters:
+        - name: search
+          in: query
+          required: false
+          description: Case-insensitive partial search text matched against REGION_NAME.
+          schema:
+            type: string
+            minLength: 1
+          example: asia
+      responses:
+        '200':
+          description: Regions returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegionListResponse'
+              example:
+                success: true
+                count: 2
+                data:
+                  - REGION_ID: 2
+                    REGION_NAME: Asia
+                  - REGION_ID: 5
+                    REGION_NAME: Southeast Asia
+        '405':
+          description: The HTTP method is not allowed for this read-only resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method not allowed.
+
+  /regions/{regionId}:
+    get:
+      tags:
+        - Regions
+      summary: Get one region
+      description: Returns one world region identified by REGION_ID.
+      operationId: getRegionById
+      parameters:
+        - name: regionId
+          in: path
+          required: true
+          description: REGION_ID of the region to retrieve.
+          schema:
+            type: integer
+            minimum: 1
+          example: 2
+      responses:
+        '200':
+          description: Region returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegionResponse'
+              example:
+                success: true
+                data:
+                  REGION_ID: 2
+                  REGION_NAME: Asia
+        '400':
+          description: The region ID is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Region ID must be numeric.
+        '404':
+          description: No region exists with the supplied REGION_ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Region not found.
+        '405':
+          description: The HTTP method is not allowed for this read-only resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /languages:
+    get:
+      tags:
+        - Languages
+      summary: Get languages
+      description: |
+        Returns a list of languages. Results can optionally be searched by language name.
+      operationId: getLanguages
+      parameters:
+        - name: search
+          in: query
+          required: false
+          description: Case-insensitive partial search text matched against LANGUAGE_NAME.
+          schema:
+            type: string
+            minLength: 1
+          example: english
+        - name: countryid
+          in: query
+          required: false
+          description: Return only languages that are spoken in this COUNTRY_ID.
+          schema:
+            type: integer
+            minimum: 1
+          example: 3
+        
+      responses:
+        '200':
+          description: Languages returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LanguageListResponse'
+              examples:
+                languages:
+                  summary: Example language list
+                  value:
+                    success: true
+                    count: 2
+                    data:
+                      - LANGUAGE_ID: 1
+                        LANGUAGE_NAME: English
+                      - LANGUAGE_ID: 2
+                        LANGUAGE_NAME: Spanish
+        '405':
+          description: The HTTP method is not allowed for this read-only resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method not allowed.
+
+  /languages/{languageId}:
+    get:
+      tags:
+        - Languages
+      summary: Get one language
+      description: Returns one language identified by LANGUAGE_ID.
+      operationId: getLanguageById
+      parameters:
+        - name: languageId
+          in: path
+          required: true
+          description: LANGUAGE_ID of the language to retrieve.
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+        
+
+      responses:
+        '200':
+          description: Language returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LanguageResponse'
+        '400':
+          description: The language ID is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            example:
+              success: false
+              message: Language ID must be numeric.
+        '404':
+          description: No language exists with the supplied LANGUAGE_ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            example:
+              success: false
+              message: Language not found.
+        '405':
+          description: The HTTP method is not allowed for this read-only resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /currencies:
+    get:
+      tags:
+        - Currencies
+      summary: Get currencies
+      description: |
+        Returns a list of currencies. Results can optionally be searched by CURRENCY_NAME.
+      operationId: getLanguages
+      parameters:
+        - name: search
+          in: query
+          required: false
+          description: Case-insensitive partial search text matched against CURRENCY_NAME.
+          schema:
+            type: string
+            minLength: 1
+          example: english
+        - name: countryid
+          in: query
+          required: false
+          description: Return only currencies that are used in a particular COUNTRY_ID.
+          schema:
+            type: integer
+            minimum: 1
+          example: 3
+        
+      responses:
+        '200':
+          description: Currencies returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrenceyListResponse'
+              examples:
+                languages:
+                  summary: Example currency list
+                  value:
+                    success: true
+                    count: 2
+                    data:
+                      - LANGUAGE_ID: 1
+                        LANGUAGE_NAME: English
+                      - LANGUAGE_ID: 2
+                        LANGUAGE_NAME: Spanish
+        '405':
+          description: The HTTP method is not allowed for this read-only resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method not allowed.
+  /currencey/{currencyId}:
+    get:
+      tags:
+        - Currency
+      summary: Get one currency
+      description: Returns one currency identified by CURRENCY_CODE.
+      operationId: getCurrencyByCode
+      parameters:
+        - name: currencyId
+          in: path
+          required: true
+          description: CURRENCEY_CODE of the currency to retrieve.
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+        
+
+      responses:
+        '200':
+          description: Currency returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyResponse'
+        '400':
+          description: The currency code is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            example:
+              success: false
+              message: Currencey Code must be alphanumeric.
+        '404':
+          description: No currency exists with the supplied CURRENCY_CODE.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            example:
+              success: false
+              message: Currency not found.
+        '405':
+          description: The HTTP method is not allowed for this read-only resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    Region:
+      type: object
+      required:
+        - REGION_ID
+        - REGION_NAME
+      properties:
+        REGION_ID:
+          type: integer
+          example: 2
+        REGION_NAME:
+          type: string
+          maxLength: 35
+          example: Asia
+
+    RegionListResponse:
+      type: object
+      required:
+        - success
+        - count
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        count:
+          type: integer
+          minimum: 0
+          example: 8
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Region'
+
+    RegionResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/Region'
+
+    CountrySummary:
+      type: object
+      required:
+        - COUNTRY_ID
+        - REGION_ID
+        - COUNTRY_NAME
+        - CURRENCY_CODE
+      properties:
+        COUNTRY_ID:
+          type: integer
+          example: 1
+        REGION_ID:
+          type: integer
+          example: 2
+        COUNTRY_NAME:
+          type: string
+          maxLength: 70
+          example: Afghanistan
+        COUNTRY_TRANSLATED_NAME:
+          type: string
+          nullable: true
+          maxLength: 40
+          example: null
+        LOCATION:
+          type: string
+          nullable: true
+          maxLength: 90
+          example: Southern Asia
+        CAPITOL:
+          type: string
+          nullable: true
+          maxLength: 50
+          description: Capital city. The property name preserves the existing database column name.
+          example: Kabul
+        POPULATION:
+          type: string
+          nullable: true
+          description: DECIMAL database value. PDO may serialize MySQL DECIMAL values as JSON strings.
+          example: '40121552'
+        FIPS_ID:
+          type: string
+          nullable: true
+          maxLength: 2
+          example: AF
+        INTERNET_EXTENSION:
+          type: string
+          nullable: true
+          maxLength: 3
+          example: .af
+        CURRENCY_CODE:
+          type: string
+          maxLength: 7
+          example: AFN
+
+    CountryDetail:
+      allOf:
+        - $ref: '#/components/schemas/CountrySummary'
+        - type: object
+          properties:
+            AREA:
+              type: string
+              nullable: true
+              description: DECIMAL database value.
+              example: '652230'
+            COASTLINE:
+              type: string
+              nullable: true
+              description: DECIMAL database value.
+              example: '0'
+            LOWEST_ELEVATION:
+              type: string
+              nullable: true
+              description: DECIMAL database value.
+              example: '258'
+            LOWEST_ELEV_NAME:
+              type: string
+              nullable: true
+              maxLength: 70
+              example: Amu Darya
+            HIGHEST_ELEVATION:
+              type: string
+              nullable: true
+              description: DECIMAL database value.
+              example: '7492'
+            HIGHEST_ELEV_NAME:
+              type: string
+              nullable: true
+              maxLength: 50
+              example: Noshak
+            DATE_OF_INDEPENDENCE:
+              type: string
+              nullable: true
+              maxLength: 30
+              example: 19 August 1919
+            NATIONAL_HOLIDAY_NAME:
+              type: string
+              nullable: true
+              maxLength: 200
+              example: Independence Day
+            NATIONAL_HOLIDAY_DATE:
+              type: string
+              nullable: true
+              maxLength: 30
+              example: 19 August
+            POPULATION_GROWTH_RATE:
+              type: string
+              nullable: true
+              description: DECIMAL database value.
+              example: '2.34'
+            LIFE_EXPECT_AT_BIRTH:
+              type: string
+              nullable: true
+              description: DECIMAL database value.
+              example: '53.65'
+            MEDIAN_AGE:
+              type: string
+              nullable: true
+              description: DECIMAL database value.
+              example: '19.5'
+            AIRPORTS:
+              type: integer
+              nullable: true
+              example: 46
+            CLIMATE:
+              type: string
+              nullable: true
+              maxLength: 1000
+              example: Arid to semiarid; cold winters and hot summers.
+
+    CountryListResponse:
+      type: object
+      required:
+        - success
+        - count
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        count:
+          type: integer
+          minimum: 0
+          example: 249
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountrySummary'
+
+    CountryResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/CountryDetail'
+    
+    Language:
+      type: object
+      required:
+        - LANGUAGE_ID
+        - LANGUAGE_NAME
+      properties:
+        LANGUAGE_ID:
+          type: integer
+          example: 1
+        LANGUAGE_NAME:
+          type: string
+          maxLength: 50
+          example: English
+
+    LanguageListResponse:
+      type: object
+      required:
+        - success
+        - count
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        count:
+          type: integer
+          minimum: 0
+          example: 100
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Language'
+
+    LanguageResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/Language'
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Country not found.
