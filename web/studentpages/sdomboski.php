@@ -1,0 +1,32 @@
+<?php
+$pageName = "Scott Domboski's Webpage";
+require_once __DIR__ . "/../includes/functions.php";
+$url = url();
+$url = str_replace("/studentpages"," ", $url);
+require_once __DIR__ . "/../includes/header.php";
+require_once __DIR__ . "/../includes/navbar.php";
+
+?>
+   
+    <div class="buttons">
+        <a href="<?PHP echo $url;?>/about.php"><button class="button button2">Go Back!</button></a> 
+    </div>
+    <BR><BR>    
+    <main>
+        <section id="Scott Domboski's Bio">
+            <div class="w3-card w3-container">
+                <div class="w3-panel w3-blue">
+                    <h2>Jane Doe</h2>
+                </div>
+            
+                <div id="w3-article"> Scott is an Information Systems major who is learing how to develop software in CS341!
+                                        He will be graduating in the spring of 2028
+                    <BR><BR>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<?php
+     require_once __DIR__ . "/../includes/footer.php";
+?>
