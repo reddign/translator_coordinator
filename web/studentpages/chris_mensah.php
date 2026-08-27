@@ -1,5 +1,5 @@
 <?php
-$pageName = "Jane Doe's Webpage";
+$pageName = "Chris Mensah's Webpage";
 require_once __DIR__ . "/../includes/functions.php";
 $url = url();
 $url = str_replace("/studentpages"," ", $url);
