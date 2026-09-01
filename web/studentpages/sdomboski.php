@@ -16,7 +16,7 @@ require_once __DIR__ . "/../includes/navbar.php";
         <section id="Scott Domboski's Bio">
             <div class="w3-card w3-container">
                 <div class="w3-panel w3-blue">
-                    <h2>Jane Doe</h2>
+                    <h2>Scott Domboski</h2>
                 </div>
             
                 <div id="w3-article"> Scott is an Information Systems major who is learing how to develop software in CS341!
