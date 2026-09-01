@@ -16,7 +16,7 @@ require_once __DIR__ . "/../includes/navbar.php";
         <section id="Jane Doe's Bio">
             <div class="w3-card w3-container">
                 <div class="w3-panel w3-blue">
-                    <h2>Jane Doe</h2>
+                    <h2>Sam Vossen</h2>
                 </div>
             
                 <div id="w3-article">Sam Vossen is a junior Information Systems major with a concentration in cybersecurity, a minor in Forensic Studies, and a minor in Criminal Justice. He is expected to graduate in 2028.
