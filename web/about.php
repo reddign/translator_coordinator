@@ -13,6 +13,7 @@ include "includes/navbar.php";
             <img id="Team2026Pic" src="images/SEteam2026.png" alt="2026 Team to Come picture." width=1000 usemap="#classmap">
             <map id="classmap">
                 <area shape="circle" coords="250,97,20" href="studentpages/student_template.php">
+                <area shape="circle" coords="620,150,22" href="studentpages/aaron_frist.php">
                 <area shape="circle" coords="203,150,22" href="studentpages/sam_vossen.php">
                 <area shape="circle" coords="668,150,28" href="studentpages/declan_keller.php">
             </map>    
