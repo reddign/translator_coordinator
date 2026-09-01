@@ -12,7 +12,7 @@ include "includes/navbar.php";
         <div class="w3-section" id="team-pic">
             <img id="Team2026Pic" src="images/SEteam2026.png" alt="2026 Team to Come picture." width=1000 usemap="#classmap">
             <map id="classmap">
-                <area shape="circle" coords="255,153,20" href="studentpages/student_template.php">
+                <area shape="circle" coords="250,97,20" href="studentpages/student_template.php">
             </map>    
         </div>
 
