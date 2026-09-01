@@ -14,6 +14,7 @@ include "includes/navbar.php";
             <map id="classmap">
                 <area shape="circle" coords="250,97,20" href="studentpages/student_template.php">
                 <area shape="circle" coords="203,150,22" href="studentpages/sam_vossen.php">
+                <area shape="circle" coords="905, 130, 26" href="studentpages/chase_dornblaser.php">
             </map>    
         </div>
 
