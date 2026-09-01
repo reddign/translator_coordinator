@@ -11,7 +11,7 @@ info:
     Countries can be listed, retrieved by ID, filtered by region, and searched by name.
     Regions can be listed, retrieved by ID, and searched by name.
 
-    The underlying `wf_countries` and `wf_world_regions` tables are read-only reference tables,
+    The underlying `wf_countries`, `wf_world_regions`, `wf_languages`,`wf_currencies` and `wf_spoken_languages` tables are read-only reference tables,
     so these resources currently expose GET operations only.
 
 servers:
@@ -25,6 +25,8 @@ tags:
     description: Read-only world-region reference data
   - name: Languages
     description: Read-only language reference data
+  - name: Currencies
+    description: Read-only currency reference data
 
 
 paths:
@@ -459,6 +461,259 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /users/register:
+    post:
+      tags: [Authentication]
+      summary: Register a user
+      description: |
+        Creates a user account, hashes the supplied password, creates an API
+        session, and returns a bearer token. New accounts always receive the
+        `user` role; administrator status cannot be selected during registration.
+      operationId: registerUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            example:
+              email: student@example.edu
+              password: CorrectHorseBatteryStaple
+              first_name: Jamie
+              last_name: Rivera
+              original_country_id: 1
+      responses:
+        '201':
+          description: Registration successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: The email address is already registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+
+  /users/login:
+    post:
+      tags: [Authentication]
+      summary: Log in
+      description: Verifies the user's password and returns a bearer token.
+      operationId: loginUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+
+  /users/logout:
+    post:
+      tags: [Authentication]
+      summary: Log out
+      description: Revokes the bearer token used for the request.
+      operationId: logoutUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+
+  /users/profile:
+    get:
+      tags: [Profile]
+      summary: Get my profile
+      description: Returns profile information for the currently authenticated user.
+      operationId: getMyProfile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profile returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      tags: [Profile]
+      summary: Update my profile
+      description: |
+        Updates supported fields for the currently authenticated user. Users may
+        change their email, name, original country, or password, but cannot change
+        their own role.
+      operationId: updateMyProfile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdateRequest'
+      responses:
+        '200':
+          description: Profile updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: The requested email address is already registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+
+  /users:
+    get:
+      tags: [User Administration]
+      summary: Get users
+      description: Administrator-only list of users, optionally filtered by a search string.
+      operationId: adminGetUsers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          required: false
+          description: Partial search of email, first name, or last name.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Users returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+
+  /users/{userId}:
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        description: userid of the user to manage.
+        schema:
+          type: integer
+          minimum: 1
+    get:
+      tags: [User Administration]
+      summary: Get one user
+      operationId: adminGetUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [User Administration]
+      summary: Update a user
+      description: Administrator-only update. Admins may also change the user's role.
+      operationId: adminUpdateUser
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUserUpdateRequest'
+      responses:
+        '200':
+          description: User updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: The requested email address is already registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags: [User Administration]
+      summary: Delete a user
+      description: |
+        Administrator-only operation. The current implementation does not permit
+        an administrator to delete the account represented by the token being used.
+      operationId: adminDeleteUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
 components:
   schemas:
