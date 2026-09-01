@@ -5,7 +5,7 @@ include "includes/navbar.php";
 ?>
 <h2>Translator Coordinator - Software Engineering Class Project 2026</h2>
        <div class="w3-section" id="team-names">
-            <span class="name"><b>Engineers:</b> Mo Abouelnagah, Anand Bum-Erdene, Frank Conte, Katia Daly, Scott Domboski, Chase Dornblaser, Aaron Frist, Declan Keller, Olha Kuptsova, Chris Mensah, Kaiden Miller, Connor Price, Kathy Saldana-Renteria, Brandon Short, Dominic Traina, Sam Vossen, <a href='studentpages/isaac_widders.php'>Isaac Widders</a>,
+            <span class="name"><b>Engineers:</b> Mo Abouelnagah, Anand Bum-Erdene, Frank Conte, Katia Daly, Scott Domboski, Chase Dornblaser, <a href='studentpages/aaron_frist.php'>Aaron Frist</a>, Declan Keller, Olha Kuptsova, Chris Mensah, Kaiden Miller, Connor Price, Kathy Saldana-Renteria, Brandon Short, Dominic Traina, Sam Vossen, <a href='studentpages/isaac_widders.php'>Isaac Widders</a>,
                 Teddy Bazyar (TA), and <a href='studentpages/Prof_reddig.php'>Prof Reddig</a>
             </span>
         </div>
