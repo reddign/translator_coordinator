@@ -13,14 +13,13 @@ require_once __DIR__ . "/../includes/navbar.php";
     </div>
     <BR><BR>    
     <main>
-        <section id="Jane Doe's Bio">
+        <section id="Chris's Bio">
             <div class="w3-card w3-container">
                 <div class="w3-panel w3-blue">
                     <h2>Jane Doe</h2>
                 </div>
             
-                <div id="w3-article"> Jane Doe is not a student in this class. If she was she might be majoring in Computer Science, with a concentration in Web and Application 
-                    Design, plus a minor in Graphic Design, and intends to graduate in 2026.
+                <div id="w3-article">  Chris is  majoring in Computer Engineering, and intends to graduate in 2027.
                     <BR><BR>
                 </div>
             </div>
