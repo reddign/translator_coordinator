@@ -1,7 +1,6 @@
 <?php
 $regionid=$_GET["id"];
 require_once __DIR__ . "/../includes/config.php";
-require_once __DIR__ . "/../includes/WFDatabase.php";
 
 include "includes/functions.php";
 include "includes/header.php";
