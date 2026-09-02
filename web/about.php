@@ -18,6 +18,7 @@ include "includes/navbar.php";
                 <area shape="circle" coords="905, 130, 26" href="studentpages/chase_dornblaser.php">
                 <area shape="circle" coords="668,150,28" href="studentpages/declan_keller.php">
                 <area shape="circle" coords="125,175,19" href="studentpages/olha_kuptsova.php">
+                <area shape="circle" coords="280,140,19" href="studentpages/connor_price.php">
             </map>    
         </div>
 
