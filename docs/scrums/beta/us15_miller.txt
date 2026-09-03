@@ -1,0 +1,9 @@
+US-15 — Search Proficiency
+User Story:
+As an event organizer, I want translator search results to show language proficiency so that I can identify users who meet my needs.
+
+Acceptance Criteria:
+
+User can search for a language.
+User can see all translators who speak that language.
+Users can select translators organized by language proficiency.

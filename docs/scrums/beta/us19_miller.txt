@@ -1,0 +1,9 @@
+US-19 — Translator Search
+User Story:
+As an event organizer, I want to search for translators associated with a particular country or region so that I can find someone with relevant cultural knowledge.
+
+Acceptance Criteria:
+
+User can select country/region in dropdown.
+User can search for translators of a specific language associated with a country/region.
+Users can see translators organized by language proficiency.
