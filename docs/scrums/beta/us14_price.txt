@@ -1,0 +1,9 @@
+US-14
+As an event organizer, I want to search for translators by language so that I can find someone who can assist at an event.
+
+The organizer can select a language.
+The system returns users who speak that language.
+Only users who have the checked the Available for Translation checkbox appear.
+Results display the user's name and proficiency level in a "card-like appearance".
+Each result provides access to the user's public profile.
+If no translators are found, the system displays an appropriate message.
