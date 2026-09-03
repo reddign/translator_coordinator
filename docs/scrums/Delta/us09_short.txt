@@ -1,0 +1,7 @@
+US-09	
+As a user, I want to specify my proficiency level for each language so that others understand my level of fluency.
+
+Acceptence Criteria: 
+-user can specifiy they are a beginner, intermediate, expert, fluent
+-other users can see the proficiency level of each language
+-database updates with proficiency changes
