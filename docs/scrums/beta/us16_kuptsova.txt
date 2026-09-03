@@ -1,0 +1,10 @@
+US-16 - Translator Finder
+
+User Story:
+As a user searching for a translator, I want to view a potential translator's profile so that I can determine whether they are appropriate for my needs.
+
+Acceptance Criteria:
+ - As user searches, a miniversions of translator profiles shows up
+ - Profile pop ups display Name, Languages + Proficiency, Country / Region
+ - Depending on filters, appropriate profiles will be shown
+ - By clicking on profile, users can get to the translator page
