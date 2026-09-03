@@ -8,7 +8,7 @@ include "includes/navbar.php";
             <span class="name"><b>Engineers:</b> Mo Abouelnagah, <a href="studentpages/anandb.php">Anand Bum-Erdene</a>, <a href="studentpages/frank_conte.php">Frank Conte</a>, <a href="studentpages/katia_daly.php">Katia Daly</a>, <a href="studentpages/sdomboski.php">Scott Domboski<a>, <a href="studentpages/chase_dornblaser.php">Chase Dornblaser</a>, 
             <a href='studentpages/aaron_frist.php'>Aaron Frist</a>, <a href="studentpages/declan_keller.php">Declan Keller</a>, <a href="studentpages/olha_kuptsova.php">Olha Kuptsova</a>, <a href='studentpages/chris_mensah.php'>Chris Mensah</a>, <a href='studentpages/kaiden.php'>Kaiden Miller</a>, <a href='studentpages/connor_price.php'>Connor Price</a>, <a href='studentpages/noah_peiffer.php'>Noah Peiffer</a>, Kathy Saldana-Renteria, Brandon Short, 
             Dominic Traina, <a href='studentpages/sam_vossen.php'>Sam Vossen</a>, <a href='studentpages/isaac_widders.php'>Isaac Widders</a>,
-                Teddy Bazyar (TA), and <a href='studentpages/Prof_reddig.php'>Prof Reddig</a>
+                <a href='studentpages/teddy.php'>Teddy Bazyar (TA)</a>, and <a href='studentpages/Prof_reddig.php'>Prof Reddig</a>
             </span>
         </div>
         <div class="w3-section" id="team-pic">
