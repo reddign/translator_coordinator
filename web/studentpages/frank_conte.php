@@ -19,7 +19,7 @@ require_once __DIR__ . "/../includes/navbar.php";
                     <h2>Frank Conte</h2>
                 </div>
             
-                <div id="w3-article"> Frank Conte is a Computer Science Major with a Mathematics Minor and a Cybersecurity Concentration. He intends on graduating in 2028. He enjoys running and playing viola and coding.
+                <div id="w3-article"> Frank Conte is a Computer Science Major with a Mathematics Minor and a Cybersecurity Concentration. He intends on graduating in 2028. He enjoys running and playing viola and coding!
                     <BR><BR>
                 </div>
             </div>
