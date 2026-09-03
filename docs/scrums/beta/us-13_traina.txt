@@ -1,0 +1,7 @@
+US-13	As a user, I want to indicate whether I am willing to provide translation assistance so that people searching for translators know whether they may contact me.
+
+Acceptance Criteria:
+Allow user to become a translator.
+Allow user to choose languages to be able to translate.
+Allow user to select proficiency for each language.
+Alter data in tables as changes are made.

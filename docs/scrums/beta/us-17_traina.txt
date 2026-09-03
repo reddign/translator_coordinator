@@ -1,0 +1,6 @@
+US-17	As a translator, I want to control whether I appear in translator search results so that I can decide when I am available to help.	
+
+Acceptance Criteria:
+Add option to open translator edit page.
+Change data to add or remove from search.
+(Potential) Remove a translator from search when a translator is already booked.
