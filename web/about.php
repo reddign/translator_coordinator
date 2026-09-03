@@ -5,7 +5,7 @@ include "includes/navbar.php";
 ?>
 <h2>Translator Coordinator - Software Engineering Class Project 2026</h2>
        <div class="w3-section" id="team-names">
-            <span class="name"><b>Engineers:</b> Mo Abouelnagah, <a href="studentpages/anandb.php">Anand Bum-Erdene</a>, Frank Conte, <a href="studentpages/katia_daly.php">Katia Daly</a>, <a href="studentpages/sdomboski.php">Scott Domboski<a>, <a href="studentpages/chase_dornblaser.php">Chase Dornblaser</a>, 
+            <span class="name"><b>Engineers:</b> <a href="studentpages/mo_abouelnagah.php">Mo Abouelnagah</a>, <a href="studentpages/anandb.php">Anand Bum-Erdene</a>, Frank Conte, <a href="studentpages/katia_daly.php">Katia Daly</a>, <a href="studentpages/sdomboski.php">Scott Domboski<a>, <a href="studentpages/chase_dornblaser.php">Chase Dornblaser</a>, 
             <a href='studentpages/aaron_frist.php'>Aaron Frist</a>, <a href="studentpages/declan_keller.php">Declan Keller</a>, <a href="studentpages/olha_kuptsova.php">Olha Kuptsova</a>, <a href='studentpages/chris_mensah.php'>Chris Mensah</a>, <a href='studentpages/kaiden.php'>Kaiden Miller</a>, <a href='studentpages/connor_price.php'>Connor Price</a>, <a href='studentpages/noah_peiffer.php'>Noah Peiffer</a>, Kathy Saldana-Renteria, Brandon Short, 
             Dominic Traina, <a href='studentpages/sam_vossen.php'>Sam Vossen</a>, <a href='studentpages/isaac_widders.php'>Isaac Widders</a>,
                 <a href='studentpages/teddy.php'>Teddy Bazyar (TA)</a>, and <a href='studentpages/Prof_reddig.php'>Prof Reddig</a>
@@ -27,8 +27,10 @@ include "includes/navbar.php";
                 <area shape="circle" coords="520,160,24" href="studentpages/noah_peiffer.php">
                 <area shape="circle" coords="566,140,24" href="studentpages/dominic_traina.php">
                 <area shape="circle" coords="785,140,24" href="studentpages/frank_conte.php">
+                <area shape="circle" coords="718,145,24" href="studentpages/mo_abouelnagah.php">
                 <area shape="circle" coords="320,160,21" href="studentpages/chris_mensah.php">
                 <area shape="circle" coords="245,185,21" href="studentpages/anandb.php">
+
 
             </map>    
         </div>
