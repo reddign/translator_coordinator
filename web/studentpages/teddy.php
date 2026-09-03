@@ -20,6 +20,7 @@ require_once __DIR__ . "/../includes/navbar.php";
                 </div>
             
                 <div id="w3-article"> Teddy Bazyar is a senior computer science major with a concentration in cybersecurity and a minor in international studies.<BR><BR>
+               haha i made changes and made conflicts
                 </div>
             </div>
         </section>
