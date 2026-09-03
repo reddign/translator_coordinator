@@ -1,0 +1,6 @@
+US-10	As a user, I want to edit or remove languages from my profile so that my language information remains accurate.
+
+Acceptance Criteria:
+-A user can edit their proficiency level from a drop down at any time.
+-Updates to languages are displayed on a user's profile once saved.
+-A user can remove languages from their profile that they no longer speak or are no longer interested in learning.
