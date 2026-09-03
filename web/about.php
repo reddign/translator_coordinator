@@ -23,7 +23,7 @@ include "includes/navbar.php";
                 <area shape="circle" coords="280,140,19" href="studentpages/connor_price.php">
                 <area shape="circle" coords="422,164,21" href="studentpages/sdomboski.php">
                 <area shape="circle" coords="65,190,22" href="studentpages/katia_daly.php">
-                <area shape="circle" coords="400,140,26" href="studentpages/noah_peiffer.php">
+                <area shape="circle" coords="650,120,26" href="studentpages/noah_peiffer.php">
             </map>    
         </div>
 
