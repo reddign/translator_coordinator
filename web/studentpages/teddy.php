@@ -13,7 +13,7 @@ require_once __DIR__ . "/../includes/navbar.php";
     </div>
     <BR><BR>    
     <main>
-        <section id="prof reddig's Bio">
+        <section id="teddy's Bio">
             <div class="w3-card w3-container">
                 <div class="w3-panel w3-blue">
                     <h2>Teddy Bazyar - TA</h2>
