@@ -1,0 +1,7 @@
+US-11	As a user, I want to identify languages that I am interested in learning so that I can connect with others who speak those languages.
+
+Acceptance Criteria:
+-The user can select languages that they are interested in from a drop down.
+-Languages a user is interested in are display on their profile. 
+-Languages a user is interested in are displayed in a separate section from the languages they speak.
+-The user can connect with people who speak the languages they are interested in learning through this section.
