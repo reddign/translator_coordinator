@@ -1,0 +1,9 @@
+User Story:
+As a user, I want to search for people who speak a particular language so that I can connect with speakers of that language.
+
+Acceptance Criteria:
+A screen allows a user to discover other users.
+A user can specify a language or languages to filter users by. 
+Only users appear who match the specified filter.
+A user does not appear in their own search results.
+A user can see other users' spoken languages. 
