@@ -1,0 +1,8 @@
+US-18
+As an event organizer, I want to filter translator results by language and proficiency level so that I can narrow my search.
+
+Search bar will be available to event organizer.
+User will open a filter box and select languages and proficiency levels to filter for their needs.
+Server will return the translators that meet requirements.
+Each result provides access to the user's public profile.
+If no translators are found, the system displays an appropriate message.
