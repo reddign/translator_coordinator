@@ -1,0 +1,9 @@
+User Story:
+As a user, I want to browse available groups so that I can find communities that interest me.
+
+Acceptance Criteria:
+    - The logged in user can set community preferences
+    - With the set prefrences the user can browse groups
+    - The user can change the group preferences
+    - Browsing groups excludes the groups the User is currently in 
+    - If no groups are found it will prompt you to make a group
