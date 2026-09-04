@@ -1,0 +1,8 @@
+As a user, I want to view another user's public profile so that I can learn about their countries, regions, languages, and interests.
+
+- A user can select and view another user's profile from the website.
+- The profile shows the user's name and available profile information.
+- The profile displays the user's country of origin.
+- The profile displays the user's associated countries and regions.
+- The profile displays the user's languages and interests when available.
+- A user viewing another profile cannot edit the user's profile information.

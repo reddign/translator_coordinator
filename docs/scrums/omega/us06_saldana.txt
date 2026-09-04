@@ -1,0 +1,8 @@
+As a user, I want to associate myself with regions of the world so that other users can discover people with regional experience or interests.
+
+- A user can add and remove one or more regions of the world.
+- The available regions come from the system's region list.
+- The user's select regions are visible on their public profile.
+- The associated regions are visible on the user's public profile.
+- A user can update and change their list of associated regions.
+- The system stops you from adding the same region more than once.
