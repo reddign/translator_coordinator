@@ -8,3 +8,5 @@ The user can write a description of their group.
 Group name and description is logged
 User who creates the group has the title "group creator"
 Group name and description can be viewed by other users
+The name can be whatever the group creator wants
+The group description is limited to a character count ~300
