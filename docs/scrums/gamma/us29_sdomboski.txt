@@ -6,6 +6,6 @@ Acceptance Criteria:
 Only the group creator will be able edit the group's details
 Group creator should be able to edit the name, description, or association tags
 These changes will be visable as soon as the group creator saves them
-Group creator can make as many edits as frequently as they would like
+Group creator can make as many edits, as frequently as they would like
 The group creator cannot add duplicate tags to the group details while editing (ex. two Canada country tags)
 Edits will be visible to group memebers and to other users 
