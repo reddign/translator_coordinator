@@ -1,0 +1,10 @@
+User Story:
+As a group creator, I want to give my group a name and description so that users understand its purpose.
+
+Acceptance Criteria:
+
+The user can name their group.
+The user can write a description of their group.
+Group name and description is logged
+User who creates the group has the title "group creator"
+Group name and description can be viewed by other users
