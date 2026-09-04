@@ -1,0 +1,9 @@
+As a registered user, I want to log in and log out securely so that my profile information is protected.
+
+- A registered user can log in using their username/email and password.
+- The system validates the user's credentials before granting access.
+- The system displays an error message for invalid login credentials.
+- A logged-in user can securely log out of their account.
+- The system ends the user's session when they log out.
+- A logged-out user cannot access protected account features without logging in again.
+- User profile information is only accessible to authenticated users.
