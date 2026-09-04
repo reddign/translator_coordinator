@@ -1,0 +1,11 @@
+As a user, I want to create and edit my profile so that other users can learn about me.
+
+- A user can access their profile page.
+- A user can enter and save information about themselves on their profile.
+- A user can edit their existing profile information.
+- The system allows the user to update their profile information at any time.
+- The system requires all required profile fields to be completed before saving.
+- The system validates information entered into applicable profile fields.
+- The system saves valid profile information to the user's account.
+- Other users can view the user's profile and its available information.
+- A user receives a confirmation message when their profile is successfully created or updated.

@@ -1,0 +1,11 @@
+As a user, I want to identify my country of origin so that others can find people connected to that country.
+
+- A user can access the profile editing page.
+- A user can select their country of origin from a list of available countries.
+- The system requires the country of origin field to be completed before the profile can be saved.
+- The system allows the user to change their selected country of origin.
+- The system validates that the selected country is a valid country.
+- The system saves the user's selected country of origin to their profile.
+- A user's country of origin is displayed on their profile.
+- Other users can find or filter users based on their country of origin.
+- A user receives a confirmation message when their country of origin is successfully saved.
