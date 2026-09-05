@@ -1,0 +1,12 @@
+User Story:
+As a group member, I want to leave a group so that I can control which communities I belong to.
+
+Acceptance Criteria:
+
+A logged-in user can select leave Group.
+User is removed from the group members list.
+User cannot leave a group they aren't apart of.
+The group is removed from the user's list of groups.
+The system removes the user's membership record.
+Confirmation message appears to double check that user wants to leave.
+If group owner tries to leave it is either rejected or can ask to transfer ownership.

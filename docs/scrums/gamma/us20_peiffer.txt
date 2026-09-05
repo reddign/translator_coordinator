@@ -1,0 +1,11 @@
+User Story:
+As a user, I want to create a group so that people with similar geographic or language interests can connect.
+
+
+Acceptance Criteria:
+
+A logged-in user can select "Create Group."
+The user who creates the group is the owner.
+The user must specify a geographic location and/or language for the group (at least one required).
+If required fields are missing, the system displays an appropriate error message.
+The creating user is automatically added as a member.
