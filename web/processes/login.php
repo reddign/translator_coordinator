@@ -25,7 +25,7 @@ if(is_array($result) && count($result) > 0 ){
     header("location:../login.php?page=login");
 }
 
-print_r($_SESSION);
+
 
 
 ?>

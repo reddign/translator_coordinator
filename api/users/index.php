@@ -35,41 +35,41 @@ if ($routePart === 'register') {
 
     $data = getJsonBody();
     $email = trim((string)($data['email'] ?? ''));
-    $password = (string)($data['password'] ?? '');
+    $userpassword = (string)($data['password'] ?? '');
 
     if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         sendJson(400, ['success' => false, 'message' => 'A valid email address is required.']);
     }
 
-    if (strlen($password) < 8) {
+    if (strlen($userpassword) < 8) {
         sendJson(400, ['success' => false, 'message' => 'Password must be at least 8 characters long.']);
     }
 
     $check_sql = 'SELECT userid FROM users WHERE email = :email';
     $check_params = [':email' => $email];
+      
     $user_already_exist_results = WFDatabase::getDataFromSQL($check_sql,$check_params);
 
     if (count($user_already_exist_results)>0) {
         sendJson(409, ['success' => false, 'message' => 'That email address is already registered.']);
     }
     #TODO: Should validate the country id
-    # $data['original_country_id'] 
+    $countryId = $data['original_country_id']; 
 
     $insert_user_sql = "INSERT INTO users
     (email, first_name, last_name, date_registered, original_country_id, password, role)
     VALUES
     (:email, :first_name, :last_name, :date_registered, :original_country_id, :password, 'user')";
-
+    
     $insert_params = [
         ':email' => $email,
         ':first_name' => isset($data['first_name']) && trim((string)$data['first_name']) !== '' ? trim((string)$data['first_name']) : null,
         ':last_name' => isset($data['last_name']) && trim((string)$data['last_name']) !== '' ? trim((string)$data['last_name']) : null,
         ':date_registered' => date('Y-m-d H:i:s'),
         ':original_country_id' => $countryId,
-        ':password' => password_hash($password, PASSWORD_DEFAULT),
+        ':password' => password_hash($userpassword, PASSWORD_DEFAULT),
     ];
-
-
+    
     $userId = WFDatabase::executeSQL($insert_user_sql,$insert_params);
     #TODO: Manage session tokens in the DB eventually
 
@@ -95,13 +95,13 @@ if ($routePart === 'login') {
 
     $data = getJsonBody();
     $email = trim((string)($data['email'] ?? ''));
-    $password = (string)($data['password'] ?? '');
+    $userpassword = (string)($data['password'] ?? '');
 
     $user_login_sql = 'SELECT userid, password FROM users WHERE email = :email LIMIT 1';
     $login_params = [':email' => $email];
     $records = WFDatabase::getDatafromSQL($user_login_sql,$login_params);
     $record = $records[0];
-    if (!$record || !password_verify($password, $record['password'])) {
+    if (!$record || !password_verify($userpassword, $record['password'])) {
         sendJson(401, [
             'success' => false,
             'message' => 'Invalid email or password.'
