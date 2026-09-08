@@ -10,7 +10,7 @@ Make sure the page was accessed using POST.
 ------------------------------------------------------------
 */
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    header("Location: ../register.php");
+    header("Location: ../login.php?page=register");
     exit;
 }
 
