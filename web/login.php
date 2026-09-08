@@ -26,6 +26,8 @@ if($page=="login"){
     echo "<b>Member Since:</b>  {$profile_data["date_registered"]}<BR>";
     echo "</div>";
 
+    echo "<a href='processes/logout.php'>Log out</a>";
+
     //Side Column Data
     echo "<div style='float:right;margin-right:50px;'>";
     //Languages
