@@ -1,0 +1,16 @@
+.search-container {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+    min-height: 82vh;
+}
+
+.sidebar {
+    padding: 10px;
+    background-color: lightblue;
+}
+
+.dropdown {
+    width: 100%;
+    margin: 10px 0px;
+}
