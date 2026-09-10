@@ -148,3 +148,34 @@ echo json_encode([
     "count" => count($languages),
     "data" => $languages
 ]);
+
+
+
+/*
+------------------------------------------------------------
+GET /api/users/{id}/languages
+
+Stub behavior: retrieves and post data to the user_spoken_languages table
+------------------------------------------------------------
+*/
+
+if ($method === "GET") {
+    http_response_code(200);
+    echo json_encode([
+        "success" => true,
+        "count" => 0,
+        "data" => []
+    ]);
+    exit;
+}
+
+
+if ($method === "POST") {
+    http_response_code(201);
+    echo json_encode([
+        "success" => true,
+        "message" => "Stub: language would be added here."
+    ]);
+    exit;
+}
+
