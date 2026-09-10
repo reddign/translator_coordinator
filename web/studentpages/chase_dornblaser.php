@@ -19,7 +19,7 @@ require_once __DIR__ . "/../includes/navbar.php";
                     <h2>Chase Dornblaser</h2>
                 </div>
             
-                <div id="w3-article"> Chase Dornblaser is a current senior computer engineering major intending to
+                <div id="w3-article"> Chase Nicholas Dornblaser is a current senior computer engineering major intending to
                     graduate in May 2027. I am hoping to find a job in systems engineering or software engineering after graduation.
                     <BR><BR>
                 </div>
