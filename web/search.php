@@ -6,7 +6,7 @@ if (isset($_GET['query'])) {
     $search_string = trim($_GET['query']);
     if (!empty($search_string)) {
         // SQL Statement using search bar input
-        $sql = "SELECT * FROM wf_countries WHERE country_name LIKE '$search_string%'";
+        $sql = "SELECT * FROM wf_countries WHERE country_name LIKE '%$search_string%'";
 
         // Using WFDatabase functions to prevent redundancy
         $results = WFDatabase::getDataFromSQL($sql);
