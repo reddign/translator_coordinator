@@ -26,3 +26,6 @@ $users = $users[0];
 
 
 ?>
+// Comment 3.0 because two previous times I was off the branch
+// Again.. this file might get deleted. And I do not care anymore because I just want to get back to the right branch.
+// I am still concerned that my comments are white and not gray for some reason.
