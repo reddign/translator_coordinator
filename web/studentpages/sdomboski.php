@@ -23,7 +23,7 @@ require_once __DIR__ . "/../includes/navbar.php";
                                         He will be graduating in the spring of 2028.
                                         Scott is a silly boi who plays lax.
                     <BR><BR>
-                    Scott is the 2nd worse (sureeee ig) ITS employee yuh ( he's alright i guess) chillin
+                    Scott is the 2nd worse ITS employee(does he like cheese he's alright i guess) chillin
                 </div>
             </div>
         </section>
