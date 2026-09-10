@@ -4,7 +4,6 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once __DIR__ . "/../../includes/config.php";
 require_once __DIR__ . "/../../includes/WFDatabase.php";
 $method = $_SERVER["REQUEST_METHOD"];
-
 /*
 ------------------------------------------------------------
 Only GET is supported because countries is a reference table.

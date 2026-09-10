@@ -1,0 +1,8 @@
+User Story:
+As a user, I want to see the groups that I belong to so that I can easily return to them.
+
+Acceptance Criteria:
+    - The logged in user can open a page to see their groups.
+    - The groups will be listed and linked to the users
+    - The user is able to go to the group though the linked groups in the page.
+    - If there is no groups that the user is in, then the user will be prompted to search for groups. 

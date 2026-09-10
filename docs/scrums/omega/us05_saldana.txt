@@ -1,0 +1,8 @@
+As a user, I want to associate myself with additional countries so that I can indicate countries where I have lived, traveled, studied, or have other connections.
+
+- A user can add and remove one or more additional countries to their profile.
+- A user can select additional countries from the system's country list.
+- The user's selected countries are saved to their profile.
+- The associated countries are visible on the user's public profile.
+- A user can update and change their list of associated countries.
+- The system stops you from adding the same country more than once.

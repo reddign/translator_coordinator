@@ -1,0 +1,10 @@
+As a new user, I want to create an account so that I can participate in the World Connections community.
+
+- A new user can access the account registration page.
+- A new user can enter a username, email, and password to create an account.
+- The system requires all required fields to be completed by the user before submission.
+- The system validates that the email address is in a valid format.
+- The system prevents duplicate usernames or email addresses.
+- The system creates a new account when valid information is submitted.
+- A user receives a confirmation message when the account is successfully created.
+- A new user can log in using their newly created account.
