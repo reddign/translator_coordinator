@@ -19,12 +19,9 @@ require_once __DIR__ . "/../includes/navbar.php";
                     <h2>Isaac Widders</h2>
                 </div>
             
-<<<<<<< HEAD
-                <div id="w3-article"> Isaac Widders is a student in this class. He is majoring in Computer Science, with a concentration in Software Development, and intends to graduate in 2029. make an issue
-                    I really hope this makes a conflict
-=======
-                <div id="w3-article"> Isaac Widders is a student in this class. He is majoring in Computer Science, with a concentration in Software Development, and intends to graduate in 2029.
->>>>>>> 35a4c723cc8706efd32dcbff6dd6de148ce86d69
+                <div id="w3-article"> Isaac Widders is a student in this class. He is majoring in Computer Science, with a concentration in Software Development, and intends to graduate in 2029. make an issu
+                    I really hope this makes a conflict please just make a conflict
+                
                     <BR><BR>
                 </div>
             </div>
