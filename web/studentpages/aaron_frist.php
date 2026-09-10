@@ -19,7 +19,7 @@ require_once __DIR__ . "/../includes/navbar.php";
                     <h2>Aaron Frist</h2>
                 </div>
             
-                <div id="w3-article"> Aaron Frist is a student in the CS341 class. He is majoring in Computer Science with a concentration in AI & Data Science, with a minor in Mathematics. This is a conflict.
+                <div id="w3-article"> Aaron Frist is a student in the CS341 class. He is majoring in Computer Science with a concentration in AI & Data Science, with a minor in Mathematics. This is my conflicting change to the stuff!
                     <BR><BR>
                 </div>
             </div>
