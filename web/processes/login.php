@@ -56,16 +56,21 @@ Call POST /api/users/login
 ------------------------------------------------------------
 */
 
-$url = $mainURL . "/api/users/login";
+$url = rtrim($mainURL, "/") . "/api/users/login";
 
 $options = [
     "http" => [
-    "method" => "POST",
+        "method" => "POST",
         "header" =>
             "Content-Type: application/json\r\n" .
             "Accept: application/json\r\n",
-            "content" => $jsonData,
-            "ignore_errors" => true
+        "content" => $jsonData,
+        "ignore_errors" => true
+    ],
+    "ssl" => [
+        "verify_peer" => false,
+        "verify_peer_name" => false,
+        "allow_self_signed" => true
     ]
 ];
 
