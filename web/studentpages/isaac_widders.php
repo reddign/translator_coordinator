@@ -20,10 +20,7 @@ require_once __DIR__ . "/../includes/navbar.php";
                 </div>
             
                 <div id="w3-article"> Isaac Widders is a student in this class. He is majoring in Computer Science, with a concentration in Software Development, and intends to graduate in 2029. make an issu
-                    
-        
-                    I really hope this makes a conflict please just make a conflict this is my third change.
-                
+e on his GitHub page if you want to contact him.                        
                     <BR><BR>
                 </div>
             </div>
