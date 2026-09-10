@@ -155,7 +155,7 @@ GET /api/languages/users_by_language/?ids[]
 ids: array of ids of languages
 ------------------------------------------------------------
 */
-
+/* Mac JSON error (completed code needed)
 $usersByLanguagesIndex = array_search("users_by_language", $parts);
 
 if (
@@ -203,7 +203,7 @@ if ($languageIds !== null) {
         "data" => "STUB CODE FOR USERS BY LANGUAGE"
     ]);
 }
-
+*/
 
 /*
 ------------------------------------------------------------
@@ -212,7 +212,7 @@ GET /api/users/{id}/languages
 Stub behavior: retrieves and post data to the user_spoken_languages table
 ------------------------------------------------------------
 */
-/*
+/* Mac JSON error (completed code needed)
 if ($method === "GET") {
     http_response_code(200);
     echo json_encode([
