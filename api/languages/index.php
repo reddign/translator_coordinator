@@ -212,7 +212,7 @@ GET /api/users/{id}/languages
 Stub behavior: retrieves and post data to the user_spoken_languages table
 ------------------------------------------------------------
 */
-
+/*
 if ($method === "GET") {
     http_response_code(200);
     echo json_encode([
@@ -232,4 +232,4 @@ if ($method === "POST") {
     ]);
     exit;
 }
-
+*/
