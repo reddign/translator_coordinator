@@ -21,9 +21,9 @@ require_once __DIR__ . "/../includes/navbar.php";
             
                 <div id="w3-article"> Scott is an Information Systems major who is learing how to develop software in CS341!
                                         He will be graduating in the spring of 2028.
-                                        Scott is a silly boi who plays lax.
+                                        Scott/John is a silly little boi who plays lax.
                     <BR><BR>
-                    Scott is the 2nd worse ITS employee(does he like cheese he's alright i guess) chillin
+                    Scott is the 2nd worse (sureeee ig) ITS employee yuhhh ( he's alright i guess) chillin
                 </div>
             </div>
         </section>
