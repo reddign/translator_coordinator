@@ -149,6 +149,60 @@ echo json_encode([
     "data" => $languages
 ]);
 
+/*
+------------------------------------------------------------
+GET /api/languages/users_by_language/?ids[]
+ids: array of ids of languages
+------------------------------------------------------------
+*/
+
+$usersByLanguagesIndex = array_search("users_by_language", $parts);
+
+if (
+    $usersByLanguagesIndex !== false &&
+    isset($parts[$usersByLanguagesIndex + 1]) &&
+    $parts[$usersByLanguagesIndex + 1] !== ""
+) {
+    $languageIds = $parts[$usersByLanguagesIndex + 1];
+}
+
+if ($languageIds !== null) {
+    // if (!ctype_digit($languageIds)) {
+    //     http_response_code(400);
+
+    //     echo json_encode([
+    //         "success" => false,
+    //         "message" => "Language ID must be numeric."
+    //     ]);
+
+    //     exit;
+    // }
+
+    // $sql = "";
+
+    // $params = [
+    //     ":id" => $id
+    // ];
+
+    // $language = WFDatabase::getDataFromSQL($sql,$params);
+    // if (!$language) {
+    //     http_response_code(404);
+
+    //     echo json_encode([
+    //         "success" => false,
+    //         "message" => "Language not found."
+    //     ]);
+
+    //     exit;
+    // }
+    
+    http_response_code(200);
+    
+    echo json_encode([
+        "success" => true,
+        "data" => "STUB CODE FOR USERS BY LANGUAGE"
+    ]);
+}
 
 
 /*
