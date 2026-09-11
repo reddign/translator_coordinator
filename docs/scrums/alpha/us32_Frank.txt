@@ -1,1 +1,5 @@
-going to add a search bar to search for users
+As a user, I want to search for users by language so that I can connect with people who speak a particular language.
+
+User can search a language in the search bar
+Results can vary based off of the language searched
+User profiles with the the same language will be displayed in results 
