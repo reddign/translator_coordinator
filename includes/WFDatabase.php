@@ -4,11 +4,14 @@ class WFDatabase{
     private static $conn = null;
 
     private static function connect() {
-        global $servername, $database, $username, $password;
+        global $servername, $database, $username, $password,$port;
+        if($port === null){
+            $port = 3306;
+        }
            
         if (self::$conn === null) {
             try {
-                self::$conn = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
+                self::$conn = new PDO("mysql:host=$servername;port=$port;dbname=$database", $username, $password);
                 self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
                 echo "Connection failed: " . $e->getMessage();
