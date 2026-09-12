@@ -148,3 +148,88 @@ echo json_encode([
     "count" => count($languages),
     "data" => $languages
 ]);
+
+/*
+------------------------------------------------------------
+GET /api/languages/users_by_language/?ids[]
+ids: array of ids of languages
+------------------------------------------------------------
+*/
+/* Mac JSON error (completed code needed)
+$usersByLanguagesIndex = array_search("users_by_language", $parts);
+
+if (
+    $usersByLanguagesIndex !== false &&
+    isset($parts[$usersByLanguagesIndex + 1]) &&
+    $parts[$usersByLanguagesIndex + 1] !== ""
+) {
+    $languageIds = $parts[$usersByLanguagesIndex + 1];
+}
+
+if ($languageIds !== null) {
+    // if (!ctype_digit($languageIds)) {
+    //     http_response_code(400);
+
+    //     echo json_encode([
+    //         "success" => false,
+    //         "message" => "Language ID must be numeric."
+    //     ]);
+
+    //     exit;
+    // }
+
+    // $sql = "";
+
+    // $params = [
+    //     ":id" => $id
+    // ];
+
+    // $language = WFDatabase::getDataFromSQL($sql,$params);
+    // if (!$language) {
+    //     http_response_code(404);
+
+    //     echo json_encode([
+    //         "success" => false,
+    //         "message" => "Language not found."
+    //     ]);
+
+    //     exit;
+    // }
+    
+    http_response_code(200);
+    
+    echo json_encode([
+        "success" => true,
+        "data" => "STUB CODE FOR USERS BY LANGUAGE"
+    ]);
+}
+*/
+
+/*
+------------------------------------------------------------
+GET /api/users/{id}/languages
+
+Stub behavior: retrieves and post data to the user_spoken_languages table
+------------------------------------------------------------
+*/
+/* Mac JSON error (completed code needed)
+if ($method === "GET") {
+    http_response_code(200);
+    echo json_encode([
+        "success" => true,
+        "count" => 0,
+        "data" => []
+    ]);
+    exit;
+}
+
+
+if ($method === "POST") {
+    http_response_code(201);
+    echo json_encode([
+        "success" => true,
+        "message" => "Stub: language would be added here."
+    ]);
+    exit;
+}
+*/

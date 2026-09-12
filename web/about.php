@@ -31,7 +31,7 @@ include "includes/navbar.php";
                 <area shape="circle" coords="320,160,21" href="studentpages/chris_mensah.php">
                 <area shape="circle" coords="245,185,21" href="studentpages/anandb.php">
                 <area shape="circle" coords="163,190,19" href="studentpages/kathy_sr.php">
-
+                <area shape="circle" coords="620,150,22" href="studentpages/aaron_frist.php">
             </map>    
         </div>
 
