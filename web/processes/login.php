@@ -132,7 +132,7 @@ if (
     $_SESSION["user"] = $result["user"];
     $_SESSION["LoginStatus"] = "YES";
     $_SESSION["error"] = "";
-    header("location:../login.php?page=profile");
+    header("location:../profile.php");
     exit;
 }
 
