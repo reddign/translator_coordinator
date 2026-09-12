@@ -1,5 +1,7 @@
 <?PHP
 
+#TODO: Explore assigning sessions with user ids to track useage accurately and ensure security
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE);
 session_start();
@@ -29,7 +31,7 @@ Basic validation.
 ------------------------------------------------------------
 */
 if (
-    $username === "" ||
+    $username === ""        ||
     $userpassword === "" 
 ) {
     $_SESSION["error"] = "All fields are required.";
@@ -119,6 +121,8 @@ if ($result === null) {
 Successful login
 ------------------------------------------------------------
 */
+
+#TODO: record session login time and store the ID
 if (
     isset($result["success"]) &&
     $result["success"] === true
@@ -132,9 +136,21 @@ if (
     $_SESSION["user"] = $result["user"];
     $_SESSION["LoginStatus"] = "YES";
     $_SESSION["error"] = "";
-    header("location:../login.php?page=profile");
+    header("location:../profile.php");
     exit;
 }
+
+/*
+------------------------------------------------------------
+Session Security
+------------------------------------------------------------
+*/
+
+# TODO: Regenerate ses*ion ID after successful login.
+# TODO: Store authenticated user's ID in session.
+# TODO: Record login timestamp.
+# TODO: Record session ID for auditing purposes.
+# TODO: TrackS user activity to identify inactiv* sessions.
 
 
 $_SESSION["error"] = $result["message"] ?? "Login failed.";
