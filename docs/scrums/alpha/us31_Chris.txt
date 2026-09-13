@@ -1,0 +1,7 @@
+US-31 As a user, I want to filter by language, country, region, and fluency so that I can easily find the right person.
+
+Acceptance Criteria:
+-A user can view dropdown selection filters for language, country, region, and group on the search page.
+-A user can submit search filters using the search button.
+-The page renders search results displaying names and details based on the selected filters.
+-Navigating directly to the search page without filters loads safely without  errors.
