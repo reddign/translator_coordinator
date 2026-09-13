@@ -29,4 +29,15 @@ function getJSONFromURL($url){
     return $response;
 }
 
+// Stub function that returns placeholder data for demo.
+function searchTranslators($language = null, $country = null, $region = null, $group = null) {
+    return [
+        [
+            'name'     => 'Placeholder Name',
+            'language' => 'Placeholder Language',
+            'country'  => 'Placeholder Country'
+        ]
+    ];
+}
+
 ?>
