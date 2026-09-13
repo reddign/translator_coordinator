@@ -60,4 +60,45 @@ class WFDatabase{
         self::$conn->rollback();
     }
 }
+
+/*
+ADDITIONAL FUNCTIONS:
+
+SCRUM STORY: view another user's public profile
+
+- field names match what profile.php already pulls from $_SESSION["user"]:
+first_name, last_name, original_country_name, email, role, date_registered...
+so this can plug into the same users query that is already done
+*/
+
+public function getPublicProfile($userId) {
+    // TODO: query something like:
+    // SELECT first_name, last_name, original_country_name
+    // FROM users WHERE id = :userId
+    echo "This is where values will be pulled from the database (getPublicProfile).";
+    return [
+        "first_name"            => null,
+        "last_name"             => null,
+        "original_country_name" => null,
+    ];
+}
+
+public function getAssociatedCountries($userId) {
+    // TODO: real query against a user_countries table
+    echo "This is where associated countries will be pulled from the database.";
+    return [];
+}
+
+public function getUserLanguages($userId) {
+    // TODO: real query
+    echo "This is where the user's spoken languages will be pulled from the database.";
+    return [];
+}
+
+public function getUserInterests($userId) {
+    // TODO: real query
+    echo "This is where the user's interests will be pulled from the database.";
+    return [];
+}
+
 ?>
