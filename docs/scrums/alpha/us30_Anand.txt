@@ -1,0 +1,10 @@
+US-30	As a user, I want to search for users by country so that I can find people connected to a particular country.
+
+Acceptance Criteria:
+A user can select a country from the system’s country list.
+A user can submit the search using the search button.
+The system displays only users connected to the selected country.
+Each result displays the user’s name and associated country.
+Each result provides access to the user’s public profile.
+If no matching users are found, the system displays “No users found for the selected country.”
+Selecting a different country and searching again updates the results to match the new selection.
