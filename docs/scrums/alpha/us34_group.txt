@@ -1,0 +1,5 @@
+As a user, I want search results to provide links to user profiles so that I can learn more about people I discover.
+
+Search results appear after a user searches using the search bar
+Results contain useable/ clickable links 
+Links lead to user profiles 
