@@ -57,8 +57,10 @@
     <aside class="sidebar" aria-label="filter-sidebar">
         <h3>Filters</h3>
 
-        <select class="dropdown" name="language" id="language-select">
-            <option value="">--Select a language--</option>
+        <!-- Filter by language -->
+        <label for="language-select">Filter by language:</label>
+        <select id="language-select">
+            <option value="" selected>--Select a language--</option>
             <?php
                 $language_sql = "SELECT * FROM wf_languages;";
                 $language_results = WFDatabase::getDataFromSQL($language_sql);
@@ -70,8 +72,10 @@
             ?>
         </select>
 
-        <select class="dropdown" name="location" id="location-select">
-            <option value="">--Select a location--</option>
+        <!-- Filter by region and country -->
+        <label for="location-select">Filter by region or country:</label>
+        <select id="location-select">
+            <option value="" selected>--Select a location--</option>
             <?php
                 $location_sql = "
                     SELECT REGION_ID AS ID, REGION_NAME AS NAME
