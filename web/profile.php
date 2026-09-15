@@ -61,7 +61,9 @@ if ($page == "login") {
     echo "<b>Role:</b>  {$profile_data["role"]}<BR>";
     echo "<b>Member Since:</b>  {$profile_data["date_registered"]}<BR>";
     echo "<BR><BR> A table/additional lines display user's profile information. (Information to be added listed below) (If not covered in right sidebar).";
-    echo "<BR><BR> There will be a button to take user's to a form to update their profile.";
+    echo "<a href='update_profile.php'>";
+    echo "<button type='button'>Edit Profile</button>";
+    echo "</a>";
     echo "<BR><BR> Which will include, user photo, bio, country of origin, counties of interest, languages spoken, level of language spoken";
     echo "<BR><BR> A button here to take user to `people.php` (or something) to view other user's profiles. (With filters)";
     echo "</div>";
