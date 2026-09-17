@@ -6,25 +6,20 @@ This page will allow the user to edit their translation status and submit to upd
 
 <?php
 //add includes
-include 'includes/config.php';
-include 'includes/functions.php';
-include 'includes/header.php';
-include 'includes/navbar.php';
-include 'includes/footer.php';
+include "includes/functions.php";
+include "includes/header.php";
+include "includes/navbar.php";
+include "includes/footer.php";
 
 //Access the API to get data
-$usersDataURL = $mainURL."/api/users/{$id}";
-$usersResponse  = getJSONFromURL($usersDataURL);
-
-//Autofill current info from user (none if first time)
-$userData = [];
+$userDataUrl = $mainURL."/api/users/";
+$userResponse = getJSONFromURL($userDataUrl);
 
 //Framework
 /**
  * USERNAME/ TITLE
- * 
+<h1>Translator Editor</h1>
  * Add Languages
- * 
  * List
  * of
  * languages
