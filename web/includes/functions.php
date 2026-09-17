@@ -34,7 +34,7 @@ function searchTranslators($language = null, $country = null, $region = null, $g
     return [
         [
             'name'     => 'Placeholder Name',
-            'language' => 'Placeholder Language',
+            'language' => $languages,
             'country'  => 'Placeholder Country'
         ]
     ];
