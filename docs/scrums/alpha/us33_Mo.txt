@@ -1,0 +1,6 @@
+As a user, I want to combine search criteria such as country and language so that I can find users matching specific interests
+
+Acceptance Criteria:
+- A user can be able to search for a user with multiple search criteria such as country and language.
+- The search results displays a list of user based on the country and language search filter.
+- If there are no search results based on the user's search, it displays "no user found."
