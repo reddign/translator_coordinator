@@ -1,5 +1,8 @@
 <?PHP
 
+include "includes/header.php";
+include "includes/navbar.php";
+
 function url(){
     $baseFilePath="/translator_coordinator/web";
     if(isset($_SERVER['HTTPS'])){
@@ -29,13 +32,31 @@ function getJSONFromURL($url){
     return $response;
 }
 
+$id = $_GET['id'] ?? null;
+$mainURL = $mainURL ?? 'http://localhost/translator_coordinator';
+
+$countryDataURL  = "{$mainURL}/api/countries/{$id}";
+$currencyDataURL = "{$mainURL}/api/currencies?countryid={$id}";
+$languageDataURL = "{$mainURL}/api/languages?countryid={$id}";
+
+$countryResponse  = getJSONFromURL($countryDataURL);
+$currencyResponse = getJSONFromURL($currencyDataURL);
+$languageResponse = getJSONFromURL($languageDataURL);
+
+$countries  = $countryResponse['data'] ?? [];
+$currencies = $currencyResponse['data'] ?? [];
+$languages  = $languageResponse['data'] ?? [];
+
+$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
+$countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
+
 // Stub function that returns placeholder data for demo.
-function searchTranslators($language = null, $country = null, $region = null, $group = null) {
+function searchTranslators($languageName = null, $countryName = null, $regionName = null, $group = null) {
     return [
         [
             'name'     => 'Placeholder Name',
-            'language' => 'Placeholder Language',
-            'country'  => 'Placeholder Country'
+            'language' => $languageName,
+            'country'  => $regionName
         ]
     ];
 }
