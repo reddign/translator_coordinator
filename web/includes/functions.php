@@ -48,11 +48,15 @@ $languages  = $languageResponse['data'] ?? [];
 
 $countryName = $countries[0]['COUNTRY_NAME'] ?? '';
 $countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
+$languageId   = $languages[0]['LANGUAGE_ID'] ?? $id;
 
-function searchTranslators($languageName = null, $countryName = null, $regionName = null, $group = null) {
+
+function searchTranslators($languageId = null, $languageName = null, $countryName = null, $regionName = null, $group = null) {
     return [
         [
+            'id'        => $languageId,
             'name'     => 'Placeholder Name',
+
             'language' => '$languages',
             'country'  => 'Placeholder Country'
         ]
