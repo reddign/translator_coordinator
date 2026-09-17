@@ -1,7 +1,14 @@
 <?php
+require_once __DIR__ . "/../includes/config.php";
+require_once __DIR__ . "/../includes/WFDatabase.php";
 include "includes/functions.php";
 include "includes/header.php";
 include "includes/navbar.php";
+
+
+$languageDataURL = $mainURL."/api/languages/";
+$languageResponse = getJSONFromURL($languageDataURL);
+$languages = $languageResponse["data"];
 ?>
 
 <h2>Translator Coordinator - Search Feature</h2>
@@ -10,8 +17,13 @@ include "includes/navbar.php";
     <form action="search.php" method="GET" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
         <select name="language" class="w3-select" style="flex: 1; min-width: 50px;">
             <option value="" disabled selected>Language</option>
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
+            <?php
+                if($languages) {
+                    foreach ($languages as $language){
+                        echo "<option value={$language['LANGUAGE_ID']}>{$language['LANGUAGE_NAME']}</option>";
+                    }
+                }
+            ?>
         </select>
 
         <select name="country" class="w3-select" style="flex: 1; min-width: 50px;">
