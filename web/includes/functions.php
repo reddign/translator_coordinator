@@ -1,5 +1,5 @@
 <?PHP
-
+require_once __DIR__ . '/../../includes/config.php';
 include "includes/header.php";
 include "includes/navbar.php";
 
@@ -33,19 +33,14 @@ function getJSONFromURL($url){
 }
 
 $id = $_GET['id'] ?? null;
-$mainURL = $mainURL ?? 'http://localhost/translator_coordinator';
 
 $countryDataURL  = "{$mainURL}/api/countries/{$id}";
 $currencyDataURL = "{$mainURL}/api/currencies?countryid={$id}";
 $languageDataURL = "{$mainURL}/api/languages?countryid={$id}";
 
-if ($id) {
-    $countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
-    $currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
-    $languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
-} else {
-    $countryResponse = $currencyResponse = $languageResponse = ['data' => []];
-}
+$countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
+$currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
+$languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
 
 $countries  = $countryResponse['data'] ?? [];
 $currencies = $currencyResponse['data'] ?? [];
@@ -53,7 +48,6 @@ $languages  = $languageResponse['data'] ?? [];
 
 $countryName = $countries[0]['COUNTRY_NAME'] ?? '';
 $countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
-
 
 function searchTranslators($languageName = null, $countryName = null, $regionName = null, $group = null) {
     return [
