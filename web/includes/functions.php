@@ -29,13 +29,22 @@ function getJSONFromURL($url){
     return $response;
 }
 
+
+$regionDataURL = $mainURL."/api/regions/{$regionid}";
+$countryDataURL = $mainURL."/api/countries?regionid={$regionid}";
+$languageDataURL = $mainURL."/api/languages/{$search}";
+
+$countries = $countryResponse["data"];
+$regionName = $regionResponse["data"][0]["REGION_NAME"];
+$languages = $languageResponse["data"];
+
 // Stub function that returns placeholder data for demo.
 function searchTranslators($language = null, $country = null, $region = null, $group = null) {
     return [
         [
-            'name'     => 'Placeholder Name',
+            'name'     => $languages,
             'language' => $languages,
-            'country'  => 'Placeholder Country'
+            'country'  => $languages
         ]
     ];
 }
