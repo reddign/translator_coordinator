@@ -2,6 +2,7 @@
 
 include "includes/header.php";
 include "includes/navbar.php";
+include "includes/regions.php";
 
 function url(){
     $baseFilePath="/translator_coordinator/web";
