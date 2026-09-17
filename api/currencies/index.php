@@ -130,7 +130,7 @@ if ($search !== null && trim($search) !== "") {
     $params[":search"] = "%" . $search . "%";
 }
 if ($countryId !== null && trim($countryId) !== "") {
-    $search = trim($search);
+    $search = trim($search ?? '');
 
     $sql .= " AND CURRENCY_CODE IN (SELECT CURRENCY_CODE FROM 
                                     wf_countries WHERE country_id= :country_id)";

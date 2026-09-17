@@ -8,6 +8,7 @@ include "includes/navbar.php";
 $error = $_SESSION["error"]??"";
 $page = $_GET["page"]??"login";
 
+
 echo "<div class='gerror'>{$error}</div>";
 
 if($page=="login"){
@@ -16,6 +17,13 @@ if($page=="login"){
     require_once "forms/registrationForm.php";
 }else{
     $profile_data = $_SESSION["user"];
+    $userId = $_SESSION['user']['userid'] ?? null;
+
+    //Using api call to get user spoken languages
+    $USER_LANGUAGES = $mainURL."/api/users/{$userId}/languages";
+    $USER_LANGUAGES_RESPONSE = getJSONFromURL($USER_LANGUAGES);
+    $spoken_languages = $USER_LANGUAGES_RESPONSE["data"];
+    $language = $spoken_languages[0]['LANGUAGE_NAME'] ?? null;
     //Main column data
     echo "<div style='float:left'>";
     echo "<h1>User Profile</h1>";
@@ -32,17 +40,55 @@ if($page=="login"){
     echo "<div style='float:right;margin-right:50px;'>";
     //Languages
     echo "<h2>Spoken Languages</h2>";
+        if (empty($spoken_languages)) {
+        echo "No languages listed.";
+    } else {
+        foreach ($spoken_languages as $lang) {
+            echo $lang['LANGUAGE_NAME'];
+            echo "<br>";
+        }
+    }
     echo "<BR><BR><BR>";
 
     //Countries
     echo "<h2>Countries of Interest</h2>";
     echo "<BR><BR><BR>";
-
+    
     //Countries
     echo "<h2>Groups</h2>";
     echo "<BR><BR><BR>";
     echo "</div>";
 }
 
-include "includes/footer.php";
+// //USER PROFILE PAGE
+//     //Written with the assumption that all of this will be converted into php code
+
+//     //TODO: Access the API to get user language information
+        //$userId = $_SESSION[userid]
+//      $USER_LANGUAGES = $mainURL."/api/users/{$userId}/languages";
+//     //TODO: Add user userId and userLanguages to the database
+
+//     function getUserLanguages(userId){
+//         //Takes in a user's id and returns their languages
+//         return userLanguages;
+//     }
+
+//     function selectLanguage(userLanguages){
+//         //Takes all the user languages and selects just one
+//         return selectedLanguage;
+//     }
+
+//     //TODO: update language on profile function
+//     function updateLanguage(selectedLanguage){
+//         //takes in the selected language and updates it
+//         return updatedLanguage;
+//     }
+
+//     //TODO: delete language from profile
+//     function deleteLanguage(selectedLanguage){
+//         //takes in the selected language and removes it from the users languages
+//     }
+    
+
+//include "includes/footer.php";
 ?>
