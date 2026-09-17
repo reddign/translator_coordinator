@@ -1,12 +1,12 @@
 <?PHP
 
-# TODO us-01: Go through each section and understand and compare to research options
-
 
 # TODO: search for session start options that can log user id for each session
 ini_set('display_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE);
 session_start();
+
+require_once __DIR__ . "/../../includes/WFDatabase.php";
 require_once __DIR__ . "/../../includes/config.php";
 /*
 ------------------------------------------------------------
@@ -57,17 +57,6 @@ if (!ctype_digit($countryId)) {
     header("Location: ../login.php?page=register");
     exit;
 }
-
-/*
-------------------------------------------------------------
-TODO: Duplicate account validation.
-
-Method:
-Have the API endpoint check for duplicate users and 
-return an error message.
-
-------------------------------------------------------------
-*/
 
 /*
 ------------------------------------------------------------

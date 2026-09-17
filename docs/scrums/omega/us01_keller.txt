@@ -6,7 +6,7 @@ Status: Development
 - A new user can enter a username, email, and password to create an account.                - Complete
 - The system requires all required fields to be completed by the user before submission.    - Complete
 - The system validates that the email address is in a valid format.                         - Complete
-- The system prevents duplicate usernames or email addresses.                               - In Progress
+- The system prevents duplicate usernames or email addresses.                               - Complete
 - The system creates a new account when valid information is submitted.                     - Complete
 - A user receives a confirmation message when the account is successfully created.          - Complete
 - A new user can log in using their newly created account.                                  - Complete
