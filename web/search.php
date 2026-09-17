@@ -2,6 +2,12 @@
     require_once __DIR__ . "/../includes/config.php";
     require_once __DIR__ . "/../includes/WFDatabase.php";
 
+    #Starting to use REST API instead of accessing SQL database
+    $userDataURL = $mainURL."/api/users/{$id}";
+    $userResponse  = getJSONFromURL($userDataURL);
+
+    $users = $userResponse["data"];
+
     if (isset($_GET['query'])) {
         $search_string = trim($_GET['query']);
         if (!empty($search_string)) {
@@ -28,6 +34,14 @@
     include "includes/functions.php";
     include "includes/header.php";
     include "includes/navbar.php";
+
+    $locationDataURL = $mainURL."/api/locations/";
+    $locationResponse  = getJSONFromURL($locationDataURL);
+    $languageDataURL = $mainURL."/api/languages/";
+    $languageResponse  = getJSONFromURL($languageDataURL);
+
+    $locations = $locationResponse["data"];
+    $languages = $languageResponse["data"];
 ?>
 
 <link rel="stylesheet" href="search.css">
@@ -62,11 +76,9 @@
         <select id="language-select">
             <option value="" selected>--Select a language--</option>
             <?php
-                $language_sql = "SELECT * FROM wf_languages;";
-                $language_results = WFDatabase::getDataFromSQL($language_sql);
-                if ($language_results) {
-                    foreach ($language_results as $language_row) {
-                        echo "<option value={$language_row['LANGUAGE_ID']}>{$language_row['LANGUAGE_NAME']}</option>";
+                if ($languages) {
+                    foreach ($languages as $language) {
+                        echo "<option value={$language['LANGUAGE_ID']}>{$language['LANGUAGE_NAME']}</option>";
                     }
                 }
             ?>
@@ -77,18 +89,9 @@
         <select id="location-select">
             <option value="" selected>--Select a location--</option>
             <?php
-                $location_sql = "
-                    SELECT REGION_ID AS ID, REGION_NAME AS NAME
-                    FROM wf_world_regions
-                    UNION ALL
-                    SELECT COUNTRY_ID AS ID, COUNTRY_NAME AS NAME
-                    FROM wf_countries
-                    ORDER BY NAME;
-                ";
-                $location_results = WFDatabase::getDataFromSQL($location_sql);
-                if ($location_results) {
-                    foreach ($location_results as $location_row) {
-                        echo "<option value={$location_row['ID']}>{$location_row['NAME']}</option>";
+                if ($locations) {
+                    foreach ($locations as $location) {
+                        echo "<option value={$location['ID']}>{$location['NAME']}</option>";
                     }
                 }
             ?>
