@@ -1,15 +1,27 @@
 <?php
-include "../includes/config.php";
-include "../includes/WFDatabase.php";
+require_once __DIR__ . "/../includes/config.php";
+require_once __DIR__ . "/../includes/WFDatabase.php";
 include "includes/functions.php";
 include "includes/header.php";
 include "includes/navbar.php";
+
+
+$languageDataURL = $mainURL."/api/languages/";
+$languageResponse = getJSONFromURL($languageDataURL);
+$languages = $languageResponse["data"];
 ?>
 
 <h2>Translator Coordinator - Search Feature</h2>
 <!--Dropdown menus for different filters.-->
 <div class="w3-container w3-margin-bottom w3-section">
     <form action="search.php" method="GET" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+    <input
+        type="text"
+        name="user"
+        class="w3-input"
+        placeholder="Search users..."
+        style="flex: 1; min-width: 150px;"
+    >
         <select name="language" class="w3-select" style="flex: 1; min-width: 50px;">
             <option value="">Language</option>
             <?php
@@ -81,49 +93,28 @@ include "includes/navbar.php";
 </div>
 
 <?php
-// GET Filters
-$language = $_GET['language'] ?? null;
-$country  = $_GET['country']  ?? null;
-$region   = $_GET['region']   ?? null;
-$group    = $_GET['group']    ?? null;
-$id       = $_GET['id']       ?? null;
-
-$countries  = [];
-$currencies = [];
-$languages  = [];
-
-// Fetch API data only if ID exists
-if ($id) {
-    $countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
-    $currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
-    $languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
-
-    $countries  = $countryResponse['data']  ?? [];
-    $currencies = $currencyResponse['data'] ?? [];
-    $languages  = $languageResponse['data'] ?? [];
-}
-
-$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
-$countryId   = $countries[0]['COUNTRY_ID']   ?? $id;
-
-// Parameters aligned: ($userName, $languageName, $countryName, $regionName, $group)
-$results = searchTranslators(null, $language, $countryName, $region, $group);
+// Call the database function
+$results = searchTranslators($_GET);
 ?>
 
 <h2>Search Results</h2>
 
 <div class="w3-container">
-    <p>Showing search results for Language: <strong><?= htmlspecialchars($language ?? 'All') ?></strong></p>
-    
-    <ul>
-        <?php foreach ($results as $translator): ?>
-            <li>
-                <?= htmlspecialchars($translator['name'] ?? '') ?> - 
-                <?= htmlspecialchars($translator['language'] ?? '') ?> 
-                (<?= htmlspecialchars($translator['country'] ?? '') ?>)
-            </li>
-        <?php endforeach; ?>
-    </ul>
+    <?php if (empty($results)): ?>
+        <p>No translators found matching your criteria.</p>
+    <?php else: ?>
+        <ul>
+            <?php foreach ($results as $translator): ?>
+                <li>
+                    <strong><?= htmlspecialchars($translator['full_name']) ?></strong> — 
+                    Language: <?= htmlspecialchars($translator['language_name']) ?> | 
+                    Country: <?= htmlspecialchars($translator['country_name']) ?> | 
+                    Region: <?= htmlspecialchars($translator['region_name']) ?> | 
+                    Group: <?= htmlspecialchars($translator['group_name']) ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
 </div>
 
 

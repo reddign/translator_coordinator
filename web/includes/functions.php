@@ -56,50 +56,49 @@ $languageId   = $languages[0]['LANGUAGE_ID'] ?? null;
 function searchTranslators($user = null, $language = null, $country = null, $region = null, $group = null): array
 {
     $sql = "
-        SELECT 
+        SELECT DISTINCT
             u.userid,
-            CONCAT(u.first_name, ' ', u.last_name) AS name,
-            COALESCE(c.COUNTRY_NAME, 'N/A') AS country,
-            COALESCE(r.REGION_NAME, 'N/A')  AS region_name,
-            COALESCE(GROUP_CONCAT(DISTINCT l.LANGUAGE_NAME SEPARATOR ', '), 'None') AS language,
-            COALESCE(GROUP_CONCAT(DISTINCT g.group_name SEPARATOR ', '), 'None')    AS group_name
+            CONCAT(u.first_name, ' ', u.last_name) AS full_name,
+            COALESCE(l.LANGUAGE_NAME, 'N/A')       AS language_name,
+            COALESCE(c.COUNTRY_NAME, 'N/A')        AS country_name,
+            COALESCE(r.REGION_NAME, 'N/A')         AS region_name,
+            COALESCE(g.group_name, 'N/A')          AS group_name
         FROM users u
-        LEFT JOIN wf_countries c            ON c.COUNTRY_ID = u.original_country_id
-        LEFT JOIN wf_world_regions r        ON r.REGION_ID = c.REGION_ID
+        LEFT JOIN wf_countries c           ON c.COUNTRY_ID = u.original_country_id
+        LEFT JOIN wf_world_regions r       ON r.REGION_ID = c.REGION_ID
         LEFT JOIN user_spoken_languages usl ON usl.userid = u.userid
-        LEFT JOIN wf_languages l            ON l.LANGUAGE_ID = usl.language_id
-        LEFT JOIN group_members gm          ON gm.userid = u.userid
-        LEFT JOIN `groups` g                ON g.groupid = gm.groupid
+        LEFT JOIN wf_languages l           ON l.LANGUAGE_ID = usl.language_id
+        LEFT JOIN group_members gm         ON gm.userid = u.userid
+        LEFT JOIN `groups` g               ON g.group_id = gm.group_id
         WHERE 1=1
     ";
 
     $params = [];
 
-    if (!empty($user)) {
-        $sql .= " AND (u.first_name LIKE :user OR u.last_name LIKE :user OR CONCAT(u.first_name, ' ', u.last_name) LIKE :user)";
-        $params[':user'] = '%' . trim($user) . '%';
+    if (!empty($filters['user'])) {$sql .= " AND (u.first_name LIKE :user OR u.last_name LIKE :user OR CONCAT(u.first_name, ' ', u.last_name) LIKE :user)";
+        $params[':user'] = '\%' . trim($filters['user']) . '%';
     }
-    if (!empty($language)) {
-        $sql .= " AND l.LANGUAGE_ID = :language";
-        $params[':language'] = $language;
+    if (!empty($filters['language'])) {$sql .= " AND l.LANGUAGE_ID = :language";
+        $params[':language'] =$filters['language'];
     }
-    if (!empty($country)) {
-        $sql .= " AND c.COUNTRY_ID = :country";
-        $params[':country'] = $country;
+    if (!empty($filters['country'])) {$sql .= " AND c.COUNTRY_ID = :country";
+        $params[':country'] =$filters['country'];
     }
-    if (!empty($region)) {
-        $sql .= " AND r.REGION_ID = :region";
-        $params[':region'] = $region;
+    if (!empty($filters['region'])) {$sql .= " AND r.REGION_ID = :region";
+        $params[':region'] =$filters['region'];
     }
-    if (!empty($group)) {
-        $sql .= " AND g.groupid = :group";
-        $params[':group'] = $group;
+    if (!empty($filters['group'])) {$sql .= " AND g.group_id = :group";
+        $params[':group'] =$filters['group'];
     }
 
-    $sql .= " GROUP BY u.userid, u.first_name, u.last_name, c.COUNTRY_NAME, r.REGION_NAME ORDER BY name ASC";
+    $sql .= " ORDER BY full_name ASC";
 
-    return WFDatabase::getDataFromSQL($sql, $params);
+    $results = WFDatabase::getDataFromSQL($sql,$params);
+    return is_array($results) ?$results : [];
 }
+
+
+?>
 
 
 ?>
