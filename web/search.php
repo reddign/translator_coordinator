@@ -74,12 +74,12 @@ $group    = $_GET['group'] ?? null;
 
 $languageId   = $languages[0]['LANGUAGE_ID'] ?? $id;
 $languageName   = $languages[0]['LANGUAGE_NAME'] ?? '';
-$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
 $countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
+$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
 $regionName = $regionResponse["data"][0]["REGION_NAME"];
 
 // Call stub function. Currently a placeholder for demos.
-$results = searchTranslators($languageId, $language, $country, $region, $group);
+$results = searchTranslators($languageId, $languageName, $countryId, $countryName, $regionName, $group);
 ?>
 
 <h2>Search Results</h2>
@@ -89,7 +89,7 @@ $results = searchTranslators($languageId, $language, $country, $region, $group);
     
     <ul>
         <?php foreach ($results as $translator): ?>
-            <li><?= $translator['userName'] ?> ,<?= $translator['languageId'] ?>, <?= $translator['languageName'] ?> , <?= $translator['countryName'] ?></li>
+            <li><?= $translator['userName'] ?> , <?= $translator['languageId'] ?> , <?= $translator['languageName'] ?> , <?= $translator['countryId'] ?> , <?= $translator['countryName'] ?> , <?= $translator['regionName'] ?></li>
         <?php endforeach; ?>
     </ul>
 </div>
