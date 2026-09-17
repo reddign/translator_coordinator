@@ -56,8 +56,8 @@ function searchTranslators($languageId = null, $languageName = null, $countryNam
         [
             'name'     => 'Placeholder Name',
             'id'        => $languageId,
-            'language' => $languages,
-            'country'  => $countryId
+            'language' => $languageName,
+            'country'  => $countryName
         ]
     ];
 }
