@@ -1,9 +1,5 @@
 <?PHP
 
-include "includes/header.php";
-include "includes/navbar.php";
-include "includes/regions.php";
-
 function url(){
     $baseFilePath="/translator_coordinator/web";
     if(isset($_SERVER['HTTPS'])){
@@ -33,35 +29,13 @@ function getJSONFromURL($url){
     return $response;
 }
 
-$regionid=$_GET["id"];
-
-$regionid=$_GET["id"];
-$language = $_GET['language'];
-$country  = $_GET['country'];
-$region   = $_GET['region'];
-$group    = $_GET['group']; 
-
-$regionDataURL = $mainURL."/api/regions/{$regionid}";
-$countryDataURL = $mainURL."/api/countries?regionid={$regionid}";
-$languageDataURL = $mainURL."/api/languages/{language}";
-
-$regionResponse = getJSONFromURL($regionDataURL);
-$countryResponse  = getJSONFromURL($countryDataURL);
-$languageResponse  = getJSONFromURL($languageDataURL);
-
-$countries = $countryResponse["data"];
-$regionName = $regionResponse["data"][0]["REGION_NAME"];
-$languages = $languageResponse["data"];
-$languageName = $regionResponse["data"][0]["LANGUAGE_NAME"];
-
-
 // Stub function that returns placeholder data for demo.
 function searchTranslators($language = null, $country = null, $region = null, $group = null) {
     return [
         [
-            'name'     => $languages,
-            'language' => $languageName,
-            'country'  => $regionName
+            'name'     => 'Placeholder Name',
+            'language' => 'Placeholder Language',
+            'country'  => 'Placeholder Country'
         ]
     ];
 }
