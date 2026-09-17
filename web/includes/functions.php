@@ -35,10 +35,14 @@ function getJSONFromURL($url){
 $id = $_GET['id'] ?? null;
 
 $countryDataURL  = "{$mainURL}/api/countries/{$id}";
+$regionDataURL = $mainURL."/api/regions/{$regionid}";
 $currencyDataURL = "{$mainURL}/api/currencies?countryid={$id}";
 $languageDataURL = "{$mainURL}/api/languages?countryid={$id}";
 
+
+
 $countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
+$regionResponse = getJSONFromURL($regionDataURL);
 $currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
 $languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
 
@@ -46,18 +50,22 @@ $countries  = $countryResponse['data'] ?? [];
 $currencies = $currencyResponse['data'] ?? [];
 $languages  = $languageResponse['data'] ?? [];
 
+$languageId   = $languages[0]['LANGUAGE_ID'] ?? $id;
+$languageName   = $languages[0]['LANGUAGE_NAME'] ?? '';
 $countryName = $countries[0]['COUNTRY_NAME'] ?? '';
 $countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
-$languageId   = $languages[0]['LANGUAGE_ID'] ?? $id;
+$regionName = $regionResponse["data"][0]["REGION_NAME"];
 
-
-function searchTranslators($languageId = null, $languageName = null, $countryName = null, $regionName = null, $group = null) {
+function searchTranslators($languageId = null, $languageName = null, $countryId = null, $countryName = null, $regionName = null, $group = null) {
     return [
         [
-            'name'     => 'Placeholder Name',
-            'id'        => $languageId,
-            'language' => $languageName,
-            'country'  => $countryName
+            'userName'     => 'Placeholder Name',
+            'languageId'   => $languageId,
+            'languageName' => $languageName,
+            'countryId'    => $countryId,
+            'countryName'  => $countryName,
+            'regionName'   => $regionName,
+            'group'        => $group
         ]
     ];
 }

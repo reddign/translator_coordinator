@@ -72,8 +72,12 @@ $country  = $_GET['country'] ?? null;
 $region   = $_GET['region'] ?? null;
 $group    = $_GET['group'] ?? null; 
 
+$languageId   = $languages[0]['LANGUAGE_ID'] ?? $id;
+$languageName   = $languages[0]['LANGUAGE_NAME'] ?? '';
+$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
+$countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
+$regionName = $regionResponse["data"][0]["REGION_NAME"];
 
-$languageId = $languages[0]['LANGUAGE_ID'];
 // Call stub function. Currently a placeholder for demos.
 $results = searchTranslators($languageId, $language, $country, $region, $group);
 ?>
@@ -85,7 +89,7 @@ $results = searchTranslators($languageId, $language, $country, $region, $group);
     
     <ul>
         <?php foreach ($results as $translator): ?>
-            <li><?= $translator['name'] ?> , <?= $translator['id'] ?> - <?= $translator['language'] ?> , (<?= $translator['country'] ?>)</li>
+            <li><?= $translator['userName'] ?> , <?= $translator['languageName'] ?> , <?= $translator['countryName'] ?></li>
         <?php endforeach; ?>
     </ul>
 </div>
