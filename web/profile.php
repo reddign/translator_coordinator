@@ -47,43 +47,349 @@ Display different content based on the page.
 ------------------------------------------------------------
 */
 if ($page == "login") {
+
     require_once "forms/loginForm.php";
+
 } elseif ($page == "register") {
+
     require_once "forms/registrationForm.php";
+
 } else {
+
     $profile_data = $_SESSION["user"];
-    // Main column data
+
+    /*
+    ------------------------------------------------------------
+    Get current user's ID
+    ------------------------------------------------------------
+    */
+    $userid = $profile_data["userid"];
+
+
+    /*
+    ------------------------------------------------------------
+    Get Bio
+    ------------------------------------------------------------
+    */
+    $bio_sql = "
+        SELECT bio
+        FROM users
+        WHERE userid = :userid
+    ";
+
+    $bio_result = WFDatabase::getDataFromSQL(
+        $bio_sql,
+        [
+            ":userid" => $userid
+        ]
+    );
+
+    $bio = $bio_result[0]["bio"] ?? "";
+
+
+    /*
+    ------------------------------------------------------------
+    Get Country of Origin
+    ------------------------------------------------------------
+    */
+    $country_origin_sql = "
+        SELECT COUNTRY_NAME
+        FROM wf_countries
+        WHERE COUNTRY_ID = :country_id
+    ";
+
+    $country_origin_result = WFDatabase::getDataFromSQL(
+        $country_origin_sql,
+        [
+            ":country_id" => $profile_data["original_country_id"]
+        ]
+    );
+
+    $country_of_origin = $country_origin_result[0]["COUNTRY_NAME"] ?? "";
+
+
+    /*
+    ------------------------------------------------------------
+    Get Countries of Interest
+    ------------------------------------------------------------
+    */
+    $country_interest_sql = "
+        SELECT
+            c.COUNTRY_NAME
+        FROM user_country_interests uci
+        JOIN wf_countries c
+            ON uci.country_id = c.COUNTRY_ID
+        WHERE uci.userid = :userid
+        ORDER BY c.COUNTRY_NAME
+    ";
+
+    $countries = WFDatabase::getDataFromSQL(
+        $country_interest_sql,
+        [
+            ":userid" => $userid
+        ]
+    );
+
+
+    /*
+    ------------------------------------------------------------
+    Main column data
+    ------------------------------------------------------------
+    */
+
     echo "<div style='float:left'>";
+
     echo "<h1>User Profile</h1>";
-    echo "<b>Name:</b>  {$profile_data["first_name"]} {$profile_data["last_name"]}<BR>";
-    echo "<b>Country of Origin:</b>  {$profile_data["original_country_name"]}<BR>";
-    echo "<b>Email:</b>  <a href='mailto:{$profile_data["email"]}'>{$profile_data["email"]}</a><BR>";
-    echo "<b>Role:</b>  {$profile_data["role"]}<BR>";
-    echo "<b>Member Since:</b>  {$profile_data["date_registered"]}<BR>";
-    echo "<BR><BR> A table/additional lines display user's profile information. (Information to be added listed below) (If not covered in right sidebar).";
+
+    echo "<b>Name:</b> "
+        . htmlspecialchars($profile_data["first_name"])
+        . " "
+        . htmlspecialchars($profile_data["last_name"])
+        . "<BR>";
+
+    echo "<b>Country of Origin:</b> "
+        . htmlspecialchars($country_of_origin)
+        . "<BR>";
+
+    echo "<b>Bio:</b> "
+        . htmlspecialchars($bio)
+        . "<BR>";
+
+    echo "<b>Email:</b> "
+        . "<a href='mailto:"
+        . htmlspecialchars($profile_data["email"])
+        . "'>"
+        . htmlspecialchars($profile_data["email"])
+        . "</a><BR>";
+
+    echo "<b>Role:</b> "
+        . htmlspecialchars($profile_data["role"])
+        . "<BR>";
+
+    echo "<b>Member Since:</b> "
+        . htmlspecialchars($profile_data["date_registered"])
+        . "<BR><BR><BR>";
+
+    /*
+    ------------------------------------------------------------
+    Edit Profile
+    ------------------------------------------------------------
+    */
+
     echo "<a href='update_profile.php'>";
     echo "<button type='button'>Edit Profile</button>";
     echo "</a>";
-    echo "<BR><BR> Which will include, user photo, bio, country of origin, counties of interest, languages spoken, level of language spoken";
-    echo "<BR><BR> A button here to take user to `people.php` (or something) to view other user's profiles. (With filters)";
+
+
+    echo "<BR><BR>";
+
+    /*
+    ------------------------------------------------------------
+    People
+    ------------------------------------------------------------
+    */
+
+    echo "<a href='people.php'>";
+    echo "<button type='button'>View Other Users</button>";
+    echo "</a>";
+
     echo "</div>";
+
+
+    /*
+    ------------------------------------------------------------
+    Log Out
+    ------------------------------------------------------------
+    */
+
     echo "<a href='processes/logout.php'>Log out</a>";
 
-    // Side Column Data
+
+    /*
+    ============================================================
+    SIDE COLUMN
+    ============================================================
+    */
+
     echo "<div style='float:right;margin-right:50px;'>";
-    // Languages
+
+
+    /*
+    ------------------------------------------------------------
+    Spoken Languages
+    ------------------------------------------------------------
+    */
+
     echo "<h2>Spoken Languages</h2>";
-    echo "There will be a table or something to display the user's spoken languages.";
+
+    $sql = "
+        SELECT
+            l.LANGUAGE_NAME,
+            usl.proficency_level
+        FROM user_spoken_languages usl
+        JOIN wf_languages l
+            ON usl.language_id = l.LANGUAGE_ID
+        WHERE usl.userid = :userid
+        ORDER BY l.LANGUAGE_NAME
+    ";
+
+    $languages = WFDatabase::getDataFromSQL(
+        $sql,
+        [
+            ":userid" => $userid
+        ]
+    );
+
+    if (!empty($languages)) {
+
+        echo "<table border='1' cellpadding='5'>";
+
+        echo "<tr>";
+        echo "<th>Language</th>";
+        echo "<th>Proficiency Level</th>";
+        echo "</tr>";
+
+        foreach ($languages as $language) {
+
+            echo "<tr>";
+
+            echo "<td>"
+                . htmlspecialchars($language["LANGUAGE_NAME"])
+                . "</td>";
+
+            echo "<td>"
+                . htmlspecialchars($language["proficency_level"])
+                . "</td>";
+
+            echo "</tr>";
+        }
+
+        echo "</table>";
+
+    } else {
+
+        echo "No spoken languages added.";
+
+    }
+
+
     echo "<BR><BR><BR>";
-    // Countries
+
+
+    /*
+    ------------------------------------------------------------
+    Countries of Interest
+    ------------------------------------------------------------
+    */
+
     echo "<h2>Countries of Interest</h2>";
-    echo "There will be a table or something to display the user's countries of interest.";
+
+    if (!empty($countries)) {
+
+        echo "<table border='1' cellpadding='5'>";
+
+        echo "<tr>";
+        echo "<th>Country</th>";
+        echo "</tr>";
+
+        foreach ($countries as $country) {
+
+            echo "<tr>";
+
+            echo "<td>"
+                . htmlspecialchars($country["COUNTRY_NAME"])
+                . "</td>";
+
+            echo "</tr>";
+        }
+
+        echo "</table>";
+
+    } else {
+
+        echo "No countries of interest added.";
+
+    }
+
+
     echo "<BR><BR><BR>";
-    // Countries
+
+
+    /*
+    ------------------------------------------------------------
+    Groups
+    ------------------------------------------------------------
+    */
+
     echo "<h2>Groups</h2>";
-    echo "There will be a table or something to display the user's groups.";
+
+    $sql = "
+        SELECT
+            g.group_name,
+            gm.joinedOn,
+            gm.approved,
+            gm.roleid
+        FROM group_members gm
+        JOIN groups g
+            ON gm.groupid = g.groupid
+        WHERE gm.userid = :userid
+        ORDER BY g.group_name
+    ";
+
+    $groups = WFDatabase::getDataFromSQL(
+        $sql,
+        [
+            ":userid" => $userid
+        ]
+    );
+
+    if (!empty($groups)) {
+
+        echo "<table border='1' cellpadding='5'>";
+
+        echo "<tr>";
+        echo "<th>Group</th>";
+        echo "<th>Joined On</th>";
+        echo "<th>Approved</th>";
+        echo "<th>Role ID</th>";
+        echo "</tr>";
+
+        foreach ($groups as $group) {
+
+            echo "<tr>";
+
+            echo "<td>"
+                . htmlspecialchars($group["group_name"])
+                . "</td>";
+
+            echo "<td>"
+                . htmlspecialchars($group["joinedOn"] ?? "")
+                . "</td>";
+
+            echo "<td>"
+                . htmlspecialchars($group["approved"] ?? "")
+                . "</td>";
+
+            echo "<td>"
+                . htmlspecialchars($group["roleid"] ?? "")
+                . "</td>";
+
+            echo "</tr>";
+        }
+
+        echo "</table>";
+
+    } else {
+
+        echo "You are not currently a member of any groups.";
+
+    }
+
+
     echo "<BR><BR><BR>";
+
     echo "</div>";
 }
+
 include "includes/footer.php";
 ?>
