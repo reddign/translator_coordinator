@@ -89,7 +89,7 @@ $results = searchTranslators($languageId, $language, $country, $region, $group);
     
     <ul>
         <?php foreach ($results as $translator): ?>
-            <li><?= $translator['userName'] ?> , <?= $translator['languageName'] ?> , <?= $translator['countryName'] ?></li>
+            <li><?= $translator['userName'] ?> ,<?= $translator['languageId'] ?>, <?= $translator['languageName'] ?> , <?= $translator['countryName'] ?></li>
         <?php endforeach; ?>
     </ul>
 </div>
