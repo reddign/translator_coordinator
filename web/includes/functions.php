@@ -1,7 +1,7 @@
 <?PHP
 require_once __DIR__ . '/../../includes/config.php';
-// include "includes/header.php";
-// include "includes/navbar.php";
+include "includes/header.php";
+include "includes/navbar.php";
 // include "includes/footer.php";
 
 function url(){
@@ -49,7 +49,7 @@ $languages  = $languageResponse['data'] ?? [];
 
 $countryName = $countries[0]['COUNTRY_NAME'] ?? '';
 $countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
-$languageId   = $languages[0]['LANGUAGE_ID'] ?? $id;
+$languageId   = $languages[0]['LANGUAGE_ID'] ?? null;
 
 
 
