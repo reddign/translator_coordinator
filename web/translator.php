@@ -7,27 +7,30 @@ require_once __DIR__ . "/../includes/WFDatabase.php";
 include "includes/functions.php";
 include "includes/header.php";
 include "includes/navbar.php";
-$id = $_GET["id"];
+$translatorId = $_GET["id"];
 
 //Access the API to get data
-$usersDataURL = $mainURL."/api/users/{$id}";
-$usersResponse  = getJSONFromURL($usersDataURL);
+$usersDataURL = $mainURL."/api/translators/{$translatorId}";
 
-// Access your data
+// echo $usersDataURL;
+
+$usersResponse  = getJSONFromURL($usersDataURL);
 $users = $usersResponse["data"];
+/* checking the data that comes back from the API call
+echo "<pre>";
+var_dump($users); 
+echo "</pre>";
+*/
 
 // Hopefully at some point this will get the users' data and put it on the page.
-$users = $users[0];
-    echo "<h1>";
-    echo $users["FIRST_NAME"];
-    echo "</h1>";
+$user = $users[0];
+    echo "<h1>{$user["first_name"]} {$user["last_name"]}</h1>";
+    echo "<h3>Registered since: {$user["date_registered"]}</h3>";
 
-
-
+echo "<h3>Spoken Languages</h3>";
+foreach($users as $user){
+    echo "Name: {$user["language_name"]} | Proficiency Level: {$user["proficency_level"]}";
+    echo "<br>";
+}
 
 ?>
-// Comment 3.0 because two previous times I was off the branch
-// Again.. this file might get deleted. And I do not care anymore because I just want to get back to the right branch.
-// I am still concerned that my comments are white and not gray for some reason.
-
-// Just testing some more
