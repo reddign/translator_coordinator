@@ -3,7 +3,7 @@
 include "includes/header.php";
 include "includes/navbar.php";
 include "includes/regions.php";
-
+$mainURL = "http://localhost/translator_coordinator";
 function url(){
     $baseFilePath="/translator_coordinator/web";
     if(isset($_SERVER['HTTPS'])){
