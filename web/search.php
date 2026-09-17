@@ -2,6 +2,12 @@
     require_once __DIR__ . "/../includes/config.php";
     require_once __DIR__ . "/../includes/WFDatabase.php";
 
+    #Starting to use REST API instead of accessing SQL database
+    $userDataURL = $mainURL."/api/users/{$id}";
+    $userResponse  = getJSONFromURL($userDataURL);
+
+    $users = $userResponse["data"];
+
     if (isset($_GET['query'])) {
         $search_string = trim($_GET['query']);
         if (!empty($search_string)) {
