@@ -1,0 +1,11 @@
+User Story:
+As a user, I want to join a group so that I can participate in its community.
+
+
+Acceptance Criteria:
+
+A logged-in user can select Join Group.
+User is added to the group members list.
+A user cannot join the same group more than once.
+The group appears in the user's list of groups.
+The system records the user's membership.
