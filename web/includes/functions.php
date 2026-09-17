@@ -39,9 +39,13 @@ $countryDataURL  = "{$mainURL}/api/countries/{$id}";
 $currencyDataURL = "{$mainURL}/api/currencies?countryid={$id}";
 $languageDataURL = "{$mainURL}/api/languages?countryid={$id}";
 
-$countryResponse  = getJSONFromURL($countryDataURL);
-$currencyResponse = getJSONFromURL($currencyDataURL);
-$languageResponse = getJSONFromURL($languageDataURL);
+if ($id) {
+    $countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
+    $currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
+    $languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
+} else {
+    $countryResponse = $currencyResponse = $languageResponse = ['data' => []];
+}
 
 $countries  = $countryResponse['data'] ?? [];
 $currencies = $currencyResponse['data'] ?? [];
