@@ -19,7 +19,11 @@ require_once __DIR__ . "/../includes/navbar.php";
                     <h2>Mo Abouelnagah</h2>
                 </div>
             
+<<<<<<< HEAD
                 <div id="w3-article"> Mo Abouelnagah is a student in this class. He is majoring in Computer Science with no concentration, and intends to graduate in 2028. Doesn't like painting and skiing           <BR><BR>
+=======
+                <div id="w3-article"> Mo Abouelnagah is a student in this class. He is majoring in Computer Science with no concentration, and intends to graduate in 2028.Likes painting and skiing.        <BR><BR>
+>>>>>>> 9dc59abdd7d94645be9500d9b56b406e71e22430
                 </div>
             </div>
         </section>

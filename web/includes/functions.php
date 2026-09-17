@@ -1,4 +1,7 @@
 <?PHP
+require_once __DIR__ . '/../../includes/config.php';
+include "includes/header.php";
+include "includes/navbar.php";
 
 function url(){
     $baseFilePath="/translator_coordinator/web";
@@ -29,13 +32,34 @@ function getJSONFromURL($url){
     return $response;
 }
 
-// Stub function that returns placeholder data for demo.
-function searchTranslators($language = null, $country = null, $region = null, $group = null) {
+$id = $_GET['id'] ?? null;
+
+$countryDataURL  = "{$mainURL}/api/countries/{$id}";
+$currencyDataURL = "{$mainURL}/api/currencies?countryid={$id}";
+$languageDataURL = "{$mainURL}/api/languages?countryid={$id}";
+
+$countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
+$currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
+$languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
+
+$countries  = $countryResponse['data'] ?? [];
+$currencies = $currencyResponse['data'] ?? [];
+$languages  = $languageResponse['data'] ?? [];
+
+$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
+$countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
+
+function searchTranslators($languageName = null, $countryName = null, $regionName = null, $group = null) {
     return [
         [
             'name'     => 'Placeholder Name',
+<<<<<<< HEAD
             'language' => '$languages',
             'country'  => 'Placeholder Country'
+=======
+            'language' => $languageName,
+            'country'  => $regionName
+>>>>>>> 9dc59abdd7d94645be9500d9b56b406e71e22430
         ]
     ];
 }
