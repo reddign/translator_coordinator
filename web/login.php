@@ -7,6 +7,13 @@ include "includes/header.php";
 include "includes/navbar.php";
 $error = $_SESSION["error"]??"";
 $page = $_GET["page"]??"login";
+$userId = $_SESSION['user']['userid'] ?? null;
+
+//Using api call to get user spoken languages
+$USER_LANGUAGES = $mainURL."/api/users/{$userId}/languages";
+$USER_LANGUAGES_RESPONSE = getJSONFromURL($USER_LANGUAGES);
+$spoken_languages = $USER_LANGUAGES_RESPONSE["data"];
+$language = $spoken_languages[0]['LANGUAGE_NAME'] ?? null;
 
 echo "<div class='gerror'>{$error}</div>";
 
@@ -32,12 +39,20 @@ if($page=="login"){
     echo "<div style='float:right;margin-right:50px;'>";
     //Languages
     echo "<h2>Spoken Languages</h2>";
+        if (empty($spoken_languages)) {
+        echo "No languages listed.";
+    } else {
+        foreach ($spoken_languages as $lang) {
+            echo $lang['LANGUAGE_NAME'];
+            echo "<br>";
+        }
+    }
     echo "<BR><BR><BR>";
 
     //Countries
     echo "<h2>Countries of Interest</h2>";
     echo "<BR><BR><BR>";
-
+    
     //Countries
     echo "<h2>Groups</h2>";
     echo "<BR><BR><BR>";
@@ -48,7 +63,8 @@ if($page=="login"){
 //     //Written with the assumption that all of this will be converted into php code
 
 //     //TODO: Access the API to get user language information
-//     $USER_LANGUAGES = $mainURL."/api/users/{$userId}";
+        //$userId = $_SESSION[userid]
+//      $USER_LANGUAGES = $mainURL."/api/users/{$userId}/languages";
 //     //TODO: Add user userId and userLanguages to the database
 
 //     function getUserLanguages(userId){
@@ -73,5 +89,5 @@ if($page=="login"){
 //     }
     
 
-include "includes/footer.php";
+//include "includes/footer.php";
 ?>
