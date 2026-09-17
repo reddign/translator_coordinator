@@ -167,40 +167,40 @@ if (
 }
 
 if ($languageIds !== null) {
-    // if (!ctype_digit($languageIds)) {
-    //     http_response_code(400);
+    if (!ctype_digit($languageIds)) {
+        http_response_code(400);
 
-    //     echo json_encode([
-    //         "success" => false,
-    //         "message" => "Language ID must be numeric."
-    //     ]);
+        echo json_encode([
+            "success" => false,
+            "message" => "Language ID must be numeric."
+        ]);
 
-    //     exit;
-    // }
+        exit;
+    }
 
-    // $sql = "";
+    $sql = "select * from users u 
+    join wf_spoken_languages sl on u.userid=wf_spoken_languages.userid 
+    where language_id in ($placeholders)";
 
-    // $params = [
-    //     ":id" => $id
-    // ];
+    $placeholders = implode(',', str_repeat('?', count($array_data)));
 
-    // $language = WFDatabase::getDataFromSQL($sql,$params);
-    // if (!$language) {
-    //     http_response_code(404);
+    $usersFound = WFDatabase::getDataFromSQL($sql,$placeholders);
+    if (!$usersFound) {
+        http_response_code(404);
 
-    //     echo json_encode([
-    //         "success" => false,
-    //         "message" => "Language not found."
-    //     ]);
+        echo json_encode([
+            "success" => false,
+            "message" => "Language not found."
+        ]);
 
-    //     exit;
-    // }
+        exit;
+    }
     
     http_response_code(200);
     
     echo json_encode([
         "success" => true,
-        "data" => "STUB CODE FOR USERS BY LANGUAGE"
+        "data" => $usersFound
     ]);
 }
 
