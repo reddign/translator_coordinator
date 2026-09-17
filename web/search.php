@@ -32,6 +32,14 @@ $languages = $languageResponse["data"];
             <option value="mx">Mexico</option>
             <option value="eg">Egypt</option>
 
+            <?php
+                if($countries) {
+                    foreach ($countries as $country){
+                        echo "<option value={$country['Country_Id']}>{$country['Country Name']}</option>";
+                    }
+                }
+            ?>
+
         </select>
 
         <select name="region" class="w3-select" style="flex: 1; min-width: 50px;">
