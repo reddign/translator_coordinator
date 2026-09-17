@@ -1,8 +1,22 @@
 As a user, I want to view another user's public profile so that I can learn about their countries, regions, languages, and interests.
 
 - A user can select and view another user's profile from the website.
+    - TEST: If I am logged in and browsing the site, when I select a user (via search), then I am
+    navigated to that user's profile page.
 - The profile shows the user's name and available profile information.
+    - TEST: If I am viewing another user's public profile, then I see their name displayed.
 - The profile displays the user's country of origin.
+    - TEST: If I am viewing another user's profile, then I can see their country of origin.
 - The profile displays the user's associated countries and regions.
+    - TEST: If I am viewing another user's profile, then I see their associated countries
+    and regions listed.
 - The profile displays the user's languages and interests when available.
+    - TEST: If I am viewing another's profile, when that user has languages and interests shown,
+    then I can see them displayed. If they have none, then it'll have an empty placeholder.
 - A user viewing another profile cannot edit the user's profile information.
+    - TEST: If I am viewing another's profile, then no edit or save controls will be shown on the page.
+    You will not be able to edit someone else's profile.
+
+
+// changes were done to the WFDatabase.php file towards the end
+(additional functions added), and a view_profile.php was created in /web/

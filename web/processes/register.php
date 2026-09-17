@@ -1,5 +1,9 @@
 <?PHP
 
+# TODO us-01: Go through each section and understand and compare to research options
+
+
+# TODO: search for session start options that can log user id for each session
 ini_set('display_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE);
 session_start();
@@ -29,12 +33,12 @@ $countryId = $_POST["country_origin"] ?? "";
 ------------------------------------------------------------
 Basic validation.
 ------------------------------------------------------------
-*/
+*/  
 if (
-    $firstName === "" ||
-    $lastName === "" ||
-    $email === "" ||
-    $userpassword === "" ||
+    $firstName === ""   ||
+    $lastName === ""    ||
+    $email === ""       ||
+    $userpassword=== "" ||
     $countryId === ""
 ) {
     $_SESSION["error"] = "All registration fields are required.";
@@ -53,6 +57,17 @@ if (!ctype_digit($countryId)) {
     header("Location: ../login.php?page=register");
     exit;
 }
+
+/*
+------------------------------------------------------------
+TODO: Duplicate account validation.
+
+Method:
+Have the API endpoint check for duplicate users and 
+return an error message.
+
+------------------------------------------------------------
+*/
 
 /*
 ------------------------------------------------------------
@@ -76,16 +91,23 @@ Call POST /api/users/register
 ------------------------------------------------------------
 */
 
-$url = $mainURL . "/api/users/register";
+# TODO: Understand this code snippet
+
+$url = rtrim($mainURL, "/") . "/api/users/register";
 
 $options = [
     "http" => [
-    "method" => "POST",
+        "method" => "POST",
         "header" =>
             "Content-Type: application/json\r\n" .
             "Accept: application/json\r\n",
-            "content" => $jsonData,
-            "ignore_errors" => true
+        "content" => $jsonData,
+        "ignore_errors" => true
+    ],
+    "ssl" => [
+        "verify_peer" => false,
+        "verify_peer_name" => false,
+        "allow_self_signed" => true
     ]
 ];
 
@@ -151,9 +173,16 @@ if (
 /*
 ------------------------------------------------------------
 API returned an error.
+
+Example:
+- Duplicate email address
+- Duplicate username
+- Invalid country
+- Weak password
 ------------------------------------------------------------
 */
-
 $_SESSION["error"] = $result["message"] ?? "Registration failed.";
 header("Location: ../login.php?page=register");
 exit;
+
+?>
