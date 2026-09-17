@@ -30,12 +30,18 @@ $languages = $languageResponse["data"];
             <option value="" disabled selected>Country</option>
             <option value="us">United States</option>
             <option value="mx">Mexico</option>
+            <option value="eg">Egypt</option>
+
         </select>
 
         <select name="region" class="w3-select" style="flex: 1; min-width: 50px;">
             <option value="" disabled selected>Region</option>
             <option value="north">North</option>
             <option value="south">South</option>
+            <option value="east">East</option>
+            <option value="west">West</option>
+
+
         </select>
 
         <select name="group" class="w3-select" style="flex: 1; min-width: 50px;">
@@ -71,7 +77,7 @@ $results = searchTranslators($languageId, $language, $country, $region, $group);
     
     <ul>
         <?php foreach ($results as $translator): ?>
-            <li><?= $translator['id'] ?> <?= $translator['name'] ?> - <?= $translator['language'] ?> (<?= $translator['country'] ?>)</li>
+            <li><?= $translator['name'] ?> , <?= $translator['id'] ?> - <?= $translator['language'] ?> , (<?= $translator['country'] ?>)</li>
         <?php endforeach; ?>
     </ul>
 </div>
