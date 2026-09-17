@@ -34,10 +34,11 @@ function searchTranslators($language = null, $country = null, $region = null, $g
     return [
         [
             'name'     => 'Placeholder Name',
-            'language' => $languages,
+            'language' => '$languages',
             'country'  => 'Placeholder Country'
         ]
     ];
 }
+
 
 ?>
