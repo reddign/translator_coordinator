@@ -33,6 +33,7 @@ if($page=="login"){
     echo "<b>Role:</b>  {$profile_data["role"]}<BR>";
     echo "<b>Member Since:</b>  {$profile_data["date_registered"]}<BR>";
     echo "</div>";
+    //echo "{$profile_data["userid"]}<BR>";
 
     echo "<a href='processes/logout.php'>Log out</a>";
 
@@ -48,6 +49,29 @@ if($page=="login"){
             echo "<br>";
         }
     }
+
+    //TODO: connect button clicks to API calls
+    //TODO: set up form/dropdown to fill out when user clicks on add language.
+    echo '<button type="button">Add Language</button>';
+    // $data = [
+    //     "userid" => $profile_data['userid'],
+    //     "language_id" => $languageId,
+    //     "proficiency_level" => $proficency
+    // ];
+    // $jsonData = json_encode($data);
+    // $options = [
+    //     "http" => [
+    //         "method" => "POST",
+    //         "header" => 
+    //             "Content-Type: application/json\r\n" .
+    //             "Accept: application/json\r\n",
+    //             "content" => $jsonData,
+    //             "ignore_errors" => true
+    //     ]
+    // ];
+
+    
+    echo '<button type="button">Remove Language</button>';
     echo "<BR><BR><BR>";
 
     //Countries
