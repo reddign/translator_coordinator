@@ -24,7 +24,7 @@ function getUserById( int $userId): ?array
     $params = [':userid' => $userId];
     $users = WFDatabase::getDataFromSQL($sql,$params);
     if(is_array($users)){
-        $user = $user[0];
+        $user = $users[0];
     }
     return $user ?: null;
 }

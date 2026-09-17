@@ -8,6 +8,7 @@
                 Country of Origin: 
                 <select name='country_origin'>
                 <option>Choose Country</option>
+                <option value="1" selected>United States of America</option>
                 <?php
                 //Need a dynamic drop down list of countries
                 // Define the API URL
@@ -21,7 +22,6 @@
                     }
                 ?>
                 </select><br>
-                Username: <input type='text' name='user'><BR><BR>
                 Password: <input type='password' name='pass'><BR><BR>
                 <input type='submit' value='Register'><BR>
             </form>

@@ -1,5 +1,6 @@
 <?php
 if(!isset($url)) $url = url();
+session_start();
 ?>
 <html lang="en">
 <head>

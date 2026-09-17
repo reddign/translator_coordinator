@@ -1,0 +1,7 @@
+User Story:
+As a group member, I want to see the other members of a group so that I can identify people with similar interests.
+
+Acceptance Criteria:
+    - As a a logged in user, you can see other users in each group.
+    - When looking at other users in the same group you can see the other members intrests
+    - If no one is in the group, there will be a image notifing the user.
