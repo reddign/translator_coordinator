@@ -65,11 +65,13 @@ if ($translatorId !== null) {
             u.last_name,
             DATE_FORMAT(u.date_registered, '%Y-%m-%d') date_registered,
             l.language_name,
-            usl.proficency_level
-        FROM users u, user_spoken_languages usl, wf_languages l
+            usl.proficency_level,
+            c.flag
+        FROM users u 
+            LEFT OUTER JOIN user_spoken_languages usl ON u.userid = usl.userid
+            LEfT OUTER JOIN wf_languages l ON usl.language_id = l.language_id
+            LEFT OUTER JOIN wf_countries c ON u.original_country_id = c.country_id
         WHERE u.userid = :user_id
-          AND u.userid = usl.userid
-          AND usl.language_id = l.language_id
     ";
 
     $params=[":user_id" => $translatorId];

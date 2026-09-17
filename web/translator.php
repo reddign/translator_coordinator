@@ -24,12 +24,28 @@ echo "</pre>";
 
 // Hopefully at some point this will get the users' data and put it on the page.
 $user = $users[0];
-    echo "<h1>{$user["first_name"]} {$user["last_name"]}</h1>";
-    echo "<h3>Registered since: {$user["date_registered"]}</h3>";
+
+    $first_name = $user["first_name"];
+    $last_name = $user["last_name"];
+    $date_registered = $user["date_registered"];
+    $flag = $user["flag"];
+
+    echo "<h1>{$first_name} {$last_name}</h1>";
+    echo "<img src='images/flags/{$flag}' width='50px'> ";
+    echo "<h3>Registered since: {$date_registered}</h3>";
 
 echo "<h3>Spoken Languages</h3>";
 foreach($users as $user){
-    echo "Name: {$user["language_name"]} | Proficiency Level: {$user["proficency_level"]}";
+
+    $languge_name = $user["language_name"];
+    $proficency_level = $user["proficency_level"];
+
+    echo "Name: {$languge_name} | Proficiency Level: ";
+    if ($proficency_level === null) {
+    echo "Not provided";
+    } else {
+    echo $proficency_level;
+    }
     echo "<br>";
 }
 
