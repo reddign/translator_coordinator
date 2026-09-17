@@ -7,13 +7,7 @@ include "includes/header.php";
 include "includes/navbar.php";
 $error = $_SESSION["error"]??"";
 $page = $_GET["page"]??"login";
-$userId = $_SESSION['user']['userid'] ?? null;
 
-//Using api call to get user spoken languages
-$USER_LANGUAGES = $mainURL."/api/users/{$userId}/languages";
-$USER_LANGUAGES_RESPONSE = getJSONFromURL($USER_LANGUAGES);
-$spoken_languages = $USER_LANGUAGES_RESPONSE["data"];
-$language = $spoken_languages[0]['LANGUAGE_NAME'] ?? null;
 
 echo "<div class='gerror'>{$error}</div>";
 
@@ -23,6 +17,13 @@ if($page=="login"){
     require_once "forms/registrationForm.php";
 }else{
     $profile_data = $_SESSION["user"];
+    $userId = $_SESSION['user']['userid'] ?? null;
+
+    //Using api call to get user spoken languages
+    $USER_LANGUAGES = $mainURL."/api/users/{$userId}/languages";
+    $USER_LANGUAGES_RESPONSE = getJSONFromURL($USER_LANGUAGES);
+    $spoken_languages = $USER_LANGUAGES_RESPONSE["data"];
+    $language = $spoken_languages[0]['LANGUAGE_NAME'] ?? null;
     //Main column data
     echo "<div style='float:left'>";
     echo "<h1>User Profile</h1>";
