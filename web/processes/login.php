@@ -122,7 +122,13 @@ Successful login
 ------------------------------------------------------------
 */
 
-#TODO: record session login time and store the ID
+# TODO: Store authenticated user ID in the session.
+# TODO: Record login timestamp.
+# TODO: Regenerate session ID after login.
+# TODO: Associate API token with the current session.
+# TODO: Record session activity for auditing.
+# TODO: Save session information to the database.
+
 if (
     isset($result["success"]) &&
     $result["success"] === true
@@ -132,25 +138,24 @@ if (
     The login endpoint logs the user in by returning
     an authentication token.
     */
+
     $_SESSION["api_token"] = $result["token"];
     $_SESSION["user"] = $result["user"];
     $_SESSION["LoginStatus"] = "YES";
+
+    /*
+    Future Feature:
+    This is where the authenticated user's ID,
+    login time, and session information will be
+    stored for session tracking and security.
+    */
+
     $_SESSION["error"] = "";
+
     header("location:../profile.php");
     exit;
 }
 
-/*
-------------------------------------------------------------
-Session Security
-------------------------------------------------------------
-*/
-
-# TODO: Regenerate ses*ion ID after successful login.
-# TODO: Store authenticated user's ID in session.
-# TODO: Record login timestamp.
-# TODO: Record session ID for auditing purposes.
-# TODO: TrackS user activity to identify inactiv* sessions.
 
 
 $_SESSION["error"] = $result["message"] ?? "Login failed.";

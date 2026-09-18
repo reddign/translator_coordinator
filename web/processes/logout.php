@@ -5,28 +5,28 @@
  Secure Logout
  ------------------------------------------------------------
  */
-
- # TODO: Create logout.php endpoint.
- # TODO: Remove authentication token from session.
- # TODO: Clear all session variables.
- # TODO: Destroy the user's session.
- # TODO: Redirect user to login page after logout.
- #TODO: record logout times
-
-
  ini_set('display_errors', 1);
  error_reporting(E_ALL & ~E_NOTICE);
 
  session_start();
 
- /*
- ---------------------------------------------------------
- Logout activity tracking. (Future addition)
- ---------------------------------------------------------
- */
- # TODO: Save logout time to user_sessions table.
- # TODO: Update session record using session_id().
- # TODO: Associate logout time with authenticated user.
+
+ // Remove authentication data
+ unset($_SESSION["user"]);
+ unset($_SESSION["LoginStatus"]);
+ if( isset($_SESSION["api_token"]) ) {
+    unset($_SESSION["api_token"]);
+ }
+
+ // Clear session variables
+ $_SESSION = [];
+
+
+// Future session logout tracking will go here
+# TODO: Record logout timestamp.
+# TODO: Associate logout time with authenticated user ID.
+# TODO: Associate logout time with session ID.
+# TODO: Invalidate authentication token.
 
 
  /*
@@ -35,9 +35,10 @@
  ---------------------------------------------------------
  */
 
- $_SESSION = [];
-
  session_destroy();
+
+ session_start();
+ session_regenerate_id(true);
 
  /*
  ---------------------------------------------------------

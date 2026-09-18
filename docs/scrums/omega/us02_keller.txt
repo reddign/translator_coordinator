@@ -5,28 +5,7 @@ Status: Research
 - A registered user can log in using their username/email and password.                 - Complete
 - The system validates the user's credentials before granting access.                   - Complete
 - The system displays an error message for invalid login credentials.                   - Complete
-- A logged-in user can securely log out of their account.                               - Researching
+- A logged-in user can securely log out of their account.                               - Complete
 - The system ends the user's session when they log out.                                 - Complete
-- A logged-out user cannot access protected account features without logging in again.  - Researching
-
-/*
-------------------------------------------------------------
-Protect Authenticated Pages
-------------------------------------------------------------
-*/
-
-# TODO: Verify LoginStatus before displaying page content.
-# TODO: Redirect unauthenticated users to login page.
-# TODO: Prevent direct URL access to protected features.
-
-- User profile information is only accessible to authenticated users.                   - Researching
-
-/*
-------------------------------------------------------------
-Profile Access Control
-------------------------------------------------------------
-*/
-
-# TODO: Ensure profile information is only shown to authenticated users.
-# TODO: Prevent profile data from being displayed when nonvalid session exists.
-# TODO: Verify user session before loading account information.
+- A logged-out user cannot access protected account features without logging in again.  - Complete
+- User profile information is only accessible to authenticated users.                   - Complete

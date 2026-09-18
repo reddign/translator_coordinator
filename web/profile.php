@@ -3,6 +3,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE);
 session_start();
 
+require_once __DIR__ . "/processes/authenticate.php";
 require_once __DIR__ . "/../includes/config.php";
 require_once __DIR__ . "/../includes/WFDatabase.php";
 
