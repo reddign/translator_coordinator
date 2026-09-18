@@ -1,39 +1,39 @@
 <?php
     require_once __DIR__ . "/../includes/config.php";
     require_once __DIR__ . "/../includes/WFDatabase.php";
+    require_once __DIR__ . "/../api/users/user_functions.php";
+    include "includes/functions.php";
+    include "includes/header.php";
+    include "includes/navbar.php";
 
-    #Starting to use REST API instead of accessing SQL database
-    $userDataURL = $mainURL."/api/users/{$id}";
+    #REST API grabs
+
+    $userDataURL = $mainURL."/api/translators";
     $userResponse  = getJSONFromURL($userDataURL);
-
     $users = $userResponse["data"];
 
+    //Grab whats in search bar
     if (isset($_GET['query'])) {
         $search_string = trim($_GET['query']);
         if (!empty($search_string)) {
-            // SQL Statement using search bar input
-            $sql = "SELECT * FROM wf_countries WHERE country_name LIKE '%$search_string%'";
-
-            // Using WFDatabase functions to prevent redundancy
-            $results = WFDatabase::getDataFromSQL($sql);
-            // Give results from SQL search to javascript file
-            if ($results) {
-                /**echo "<pre>";
-                print_r($results);
-                echo "</pre>";*/
-                foreach ($results as $row) {
-                    echo "<div class='search-item'>" . htmlspecialchars($row['COUNTRY_NAME']) . "</div>";
+            // Displaying searched for users
+            $displayedUsers = [];
+            foreach ($users as $user){
+                $name = $user["first_name"] . " " . $user["last_name"];
+                if(str_contains(strtolower($name), strtolower($search_string)) && !in_array($user["userid"], $displayedUsers)){
+                    echo "<div class='search-item'>
+                        <a href='translator.php?id={$user["userid"]}'>" .
+                        htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) .
+                        "</a>
+                    </div>";
+                    // Made so duplicates don't appear when searching due to multiple entries from a user having multiple langauges listed
+                    $displayedUsers[] = $user["userid"];
                 }
-            } else {
-                echo "<div class='no-results'>No results found.</div>";
             }
         }
         exit;
     }
 
-    include "includes/functions.php";
-    include "includes/header.php";
-    include "includes/navbar.php";
 
     $locationDataURL = $mainURL."/api/locations/";
     $locationResponse  = getJSONFromURL($locationDataURL);
@@ -54,7 +54,7 @@
         <script src="search.js" defer></script>
         <div class="w3-section" id="team-names">
             <span class="name">Once completed you will be able to search for translators by language, country or region.
-                You will also be able to search for groups to join that have interest in the lanugae you are learning.
+                You will also be able to search for groups to join that have interest in the language you are learning.
             </span>
         </div>
         <h3>Stay tuned for more updates.</h3>

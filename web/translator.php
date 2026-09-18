@@ -7,7 +7,7 @@ require_once __DIR__ . "/../includes/WFDatabase.php";
 include "includes/functions.php";
 include "includes/header.php";
 include "includes/navbar.php";
-$translatorId = $_GET["id"];
+$translatorId = $_GET["id"] ?? null;
 
 //Access the API to get data
 $usersDataURL = $mainURL."/api/translators/{$translatorId}";
@@ -28,7 +28,7 @@ $user = $users[0];
     $first_name = $user["first_name"];
     $last_name = $user["last_name"];
     $date_registered = $user["date_registered"];
-    $flag = $user["flag"];
+    $flag = $user["flag"] ?? null;
 
     echo "<h1>{$first_name} {$last_name}</h1>";
     echo "<img src='images/flags/{$flag}' width='50px'> ";

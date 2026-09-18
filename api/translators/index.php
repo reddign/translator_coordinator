@@ -41,23 +41,7 @@ if (
 }
 
 // GET /api/translators/{id}
-
-if ($translatorId !== null) {
-
-    if (!ctype_digit($translatorId)) {
-
-        http_response_code(400);
-
-        echo json_encode([
-            "success" => false,
-            "message" => "Translator ID must be numeric."
-        ]);
-
-        exit;
-    }
-
-
-    $sql = "
+$sql = "
         SELECT
             u.userid,
             u.email,
@@ -71,35 +55,43 @@ if ($translatorId !== null) {
             LEFT OUTER JOIN user_spoken_languages usl ON u.userid = usl.userid
             LEfT OUTER JOIN wf_languages l ON usl.language_id = l.language_id
             LEFT OUTER JOIN wf_countries c ON u.original_country_id = c.country_id
-        WHERE u.userid = :user_id
     ";
+// If it has a translatorid, add in the sql to find based off a where statement as well as add param.
+if ($translatorId !== null) {
+    if (!ctype_digit($translatorId)) {
 
-    $params=[":user_id" => $translatorId];
-
-    $translator = WFDatabase::getDataFromSQL($sql,$params);
-
-
-    if (!$translator) {
-
-        http_response_code(404);
+        http_response_code(400);
 
         echo json_encode([
             "success" => false,
-            "message" => "Translator not found."
+            "message" => "Translator ID must be numeric."
         ]);
-
         exit;
     }
 
-
-    http_response_code(200);
-
+    $sql .= "WHERE u.userid = :user_id";
+    $params=[":user_id" => $translatorId];
+}
+else{
+    //If translatorid is null set params to null
+    $params = null;
+    
+}
+$sql .= ";";
+$results = WFDatabase::getDataFromSQL($sql,$params);
+if (!$results) {
+    http_response_code(404);
     echo json_encode([
-        "success" => true,
-        "data" => $translator
+        "success" => false,
+        "message" => "Translator not found."
     ]);
-
     exit;
 }
+http_response_code(200);
+echo json_encode([
+    "success" => true,
+    "data" => $results
+]);
+exit;
 
 ?>
