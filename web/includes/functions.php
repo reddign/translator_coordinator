@@ -53,13 +53,8 @@ function searchTranslators($languageName = null, $countryName = null, $regionNam
     return [
         [
             'name'     => 'Placeholder Name',
-<<<<<<< HEAD
             'language' => '$languages',
             'country'  => 'Placeholder Country'
-=======
-            'language' => $languageName,
-            'country'  => $regionName
->>>>>>> 9dc59abdd7d94645be9500d9b56b406e71e22430
         ]
     ];
 }
