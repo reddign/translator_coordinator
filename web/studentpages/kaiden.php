@@ -13,7 +13,7 @@ require_once __DIR__ . "/../includes/navbar.php";
     </div>
     <BR><BR>    
     <main>
-        <section id="Kaiden's Bio">
+        <section id="SCRUM Master's Bio">
             <div class="w3-card w3-container">
                 <div class="w3-panel w3-blue">
                     <h2>Kaiden</h2>
@@ -24,7 +24,7 @@ require_once __DIR__ . "/../includes/navbar.php";
                     He enjoys building applications that solve real problems and creating intuitive user experiences.
                     <BR>
                     <BR>
-                    <a href="https://kaidenmiller06.github.io/" target="_blank">Portfolio</a> | <a href="https://linkedin.com/in/kaiden-miller" target="_blank">LinkedIn</a> | <a href="https://github.com/kaidenmiller06" target="_blank">GitHub</a>
+                    <a href="https://kaidenmiller06.github.io" target="_blank">Portfolio</a> | <a href="https://linkedin.com/in/kaiden-miller" target="_blank">LinkedIn</a> | <a href="https://github.com/kaidenmiller06" target="_blank">GitHub</a>
                 </div>
             </div>
         </section>
