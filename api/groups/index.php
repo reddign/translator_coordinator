@@ -8,8 +8,14 @@ $method = $_SERVER["REQUEST_METHOD"];
 
 /*
 ------------------------------------------------------------
-Languages is a read-only reference resource.
+Groups is currently a read-only reference resource.
 Only GET requests are supported.
+
+We need to add the rest of the CRUD operations for groups in the future.
+We can currently only retrieve (GroupIDs and Group Names) from the database.
+We can currently only recieve all the groups or all the groups with a specified GroupID.
+
+- Isaac Widders 9/24/2026
 ------------------------------------------------------------
 */
 
@@ -37,12 +43,6 @@ if (
 ) {
     $groupID = $parts[$groupsIndex + 1];
 } 
-
-/*
-------------------------------------------------------------
-GET /api/languages/{id}
-------------------------------------------------------------
-*/
 
 if ($groupID !== null) {
     if (!ctype_digit($groupID)) { 
@@ -88,52 +88,3 @@ if ($groupID !== null) {
 
     exit;
 }
-
-/*
-------------------------------------------------------------
-GET /api/languages
-
-Optional query parameter:
-?search=english
-?countryid=14
-------------------------------------------------------------
-*/
-
-// $search = $_GET["search"] ?? null;
-// $countryId = $_GET["countryid"] ?? null;
-$sql = "
-    SELECT
-        GROUPID,
-        Group_Name
-    FROM groups
-    WHERE 1 = 1
-";
-
-// $params = [];
-
-// if ($search !== null && trim($search) !== "") {
-//     $search = trim($search);
-
-//     $sql .= " AND LANGUAGE_NAME LIKE :search";
-//     $params[":search"] = "%" . $search . "%";
-// }
-// if ($countryId !== null && trim($countryId) !== "") {
-//     $countryId = trim($countryId);
-
-//     $sql .= " AND LANGUAGE_ID IN (SELECT language_id 
-//                                    from wf_spoken_languages 
-//                                    WHERE country_id = :countryId)";
-//     $params[":countryId"] = $countryId;
-// }
-
-// $sql .= " ORDER BY LANGUAGE_NAME";
-
-$languages = WFDatabase::getDataFromSQL($sql,$params);
-
-http_response_code(200);
-
-echo json_encode([
-    "success" => true,
-    "count" => count($languages),
-    "data" => $languages
-]);
