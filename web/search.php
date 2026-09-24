@@ -8,9 +8,9 @@
 
     #REST API grabs
 
-    $userDataURL = $mainURL."/api/translators";
-    $userResponse  = getJSONFromURL($userDataURL);
-    $users = $userResponse["data"];
+    // $userDataURL = $mainURL."/api/translators";
+    // $userResponse  = getJSONFromURL($userDataURL);
+    // $users = $userResponse["data"];
 
     //Grab whats in search bar
     if (isset($_GET['query'])) {
@@ -35,12 +35,15 @@
     }
 
 
-    $locationDataURL = $mainURL."/api/locations/";
-    $locationResponse  = getJSONFromURL($locationDataURL);
+    $regionDataURL = $mainURL."/api/regions/";
+    $regionResponse  = getJSONFromURL($regionDataURL);
+    $countryDataURL = $mainURL."/api/countries/";
+    $countryResponse  = getJSONFromURL($countryDataURL);
     $languageDataURL = $mainURL."/api/languages/";
     $languageResponse  = getJSONFromURL($languageDataURL);
 
-    $locations = $locationResponse["data"];
+    $regions = $regionResponse["data"];
+    $countries = $countryResponse["data"];
     $languages = $languageResponse["data"];
 ?>
 
@@ -72,9 +75,8 @@
         <h3>Filters</h3>
 
         <!-- Filter by language -->
-        <label for="language-select">Filter by language:</label>
-        <select id="language-select">
-            <option value="" selected>--Select a language--</option>
+        <select id="language-select" class="w3-select" style="flex: 1; min-width: 50px;">
+            <option value="" disabled selected>Select a language</option>
             <?php
                 if ($languages) {
                     foreach ($languages as $language) {
@@ -84,14 +86,28 @@
             ?>
         </select>
 
+        <br><br>
+
         <!-- Filter by region and country -->
-        <label for="location-select">Filter by region or country:</label>
-        <select id="location-select">
-            <option value="" selected>--Select a location--</option>
+        <select id="region-select" class="w3-select" style="flex: 1; min-width: 50px;">
+            <option value="" disabled selected>Select a region</option>
             <?php
-                if ($locations) {
-                    foreach ($locations as $location) {
-                        echo "<option value={$location['ID']}>{$location['NAME']}</option>";
+                if ($regions) {
+                    foreach ($regions as $region) {
+                        echo "<option value={$region['REGION_ID']}>{$region['REGION_NAME']}</option>";
+                    }
+                }
+            ?>
+        </select>
+
+        <br><br>
+
+        <select id="country-select" class="w3-select" style="flex: 1; min-width: 50px;">
+            <option value="" disabled selected>Select a country</option>
+            <?php
+                if ($countries) {
+                    foreach ($countries as $country) {
+                        echo "<option value={$country['COUNTRY_ID']}>{$country['COUNTRY_NAME']}</option>";
                     }
                 }
             ?>
