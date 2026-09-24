@@ -10,6 +10,13 @@ include "includes/navbar.php";
 <!--Dropdown menus for different filters.-->
 <div class="w3-container w3-margin-bottom w3-section">
     <form action="search.php" method="GET" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+    <input
+        type="text"
+        name="user"
+        class="w3-input"
+        placeholder="Search users..."
+        style="flex: 1; min-width: 150px;"
+    >
         <select name="language" class="w3-select" style="flex: 1; min-width: 50px;">
             <option value="">Language</option>
             <?php
@@ -82,11 +89,13 @@ include "includes/navbar.php";
 
 <?php
 // GET Filters
+$user = $_GET['user']         ?? null;
 $language = $_GET['language'] ?? null;
 $country  = $_GET['country']  ?? null;
 $region   = $_GET['region']   ?? null;
 $group    = $_GET['group']    ?? null;
 $id       = $_GET['id']       ?? null;
+
 
 $countries  = [];
 $currencies = [];
@@ -107,7 +116,7 @@ $countryName = $countries[0]['COUNTRY_NAME'] ?? '';
 $countryId   = $countries[0]['COUNTRY_ID']   ?? $id;
 
 // Parameters aligned: ($userName, $languageName, $countryName, $regionName, $group)
-$results = searchTranslators(null, $language, $countryName, $region, $group);
+$results = searchTranslators($user, $language, $countryName, $region, $group);
 ?>
 
 <h2>Search Results</h2>
