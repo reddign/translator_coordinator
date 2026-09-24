@@ -43,10 +43,70 @@ $languagesIndex = array_search("languages", $parts);
 if (
     $languagesIndex !== false &&
     isset($parts[$languagesIndex + 1]) &&
-    $parts[$languagesIndex + 1] !== ""
+    $parts[$languagesIndex + 1] !== "" &&
+    is_numeric($parts[$languagesIndex + 1])
 ) {
     $languageId = $parts[$languagesIndex + 1];
 }
+
+
+/*
+------------------------------------------------------------
+GET /api/languages/users_by_language/?language[]
+language: array of language names
+------------------------------------------------------------
+*/
+
+$usersByLanguagesIndex = array_search("users_by_language", $parts);
+
+if (
+    $usersByLanguagesIndex !== false
+) {
+    $languageNames = $_GET["language"] ?? [];
+    
+    if (!is_array($languageNames)) {
+        http_response_code(400);
+
+        echo json_encode([
+            "success" => false,
+            "message" => "Language ID must be numeric."
+        ]);
+
+        exit;
+    }
+
+    $placeholders = implode(',', array_fill(0, count($languageNames), '?'));
+
+    $sql = "select u.userid, u.first_name, u.last_name, l.language_name, sl.proficency_level from users u 
+    join user_spoken_languages sl on (u.userid=sl.userid) 
+    join wf_languages l on (sl.language_id=l.language_id)";
+    if (count($languageNames) > 0) {
+        $sql .= " where l.language_name in ($placeholders)";
+    }
+
+    $usersFound = WFDatabase::getDataFromSQL($sql,$languageNames);
+    
+    if (!$usersFound) {
+        http_response_code(404);
+
+        echo json_encode([
+            "success" => false,
+            "message" => "Language not found."
+        ]);
+
+        exit;
+    }
+    
+    http_response_code(200);
+    
+    echo json_encode([
+        "success" => true,
+        "data" => $usersFound
+    ]);
+
+    exit;
+}
+
 
 /*
 ------------------------------------------------------------
@@ -148,58 +208,3 @@ echo json_encode([
     "count" => count($languages),
     "data" => $languages
 ]);
-
-/*
-------------------------------------------------------------
-GET /api/languages/users_by_language/?ids[]
-ids: array of ids of languages
-------------------------------------------------------------
-*/
-
-$usersByLanguagesIndex = array_search("users_by_language", $parts);
-
-if (
-    $usersByLanguagesIndex !== false &&
-    isset($parts[$usersByLanguagesIndex + 1]) &&
-    $parts[$usersByLanguagesIndex + 1] !== ""
-) {
-    $languageIds = $parts[$usersByLanguagesIndex + 1];
-}
-
-if ($languageIds !== null) {
-    if (!ctype_digit($languageIds)) {
-        http_response_code(400);
-
-        echo json_encode([
-            "success" => false,
-            "message" => "Language ID must be numeric."
-        ]);
-
-        exit;
-    }
-
-    $sql = "select * from users u 
-    join wf_spoken_languages sl on u.userid=wf_spoken_languages.userid 
-    where language_id in ($placeholders)";
-
-    $placeholders = implode(',', str_repeat('?', count($array_data)));
-
-    $usersFound = WFDatabase::getDataFromSQL($sql,$placeholders);
-    if (!$usersFound) {
-        http_response_code(404);
-
-        echo json_encode([
-            "success" => false,
-            "message" => "Language not found."
-        ]);
-
-        exit;
-    }
-    
-    http_response_code(200);
-    
-    echo json_encode([
-        "success" => true,
-        "data" => $usersFound
-    ]);
-}
