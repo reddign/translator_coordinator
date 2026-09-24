@@ -4,15 +4,14 @@
 People Page
 ------------------------------------------------------------
 
-This page displays other users in the system.
+This page displays other users in the system and lets the
+logged-in user filter them by country of origin.
 
 Future functionality could include:
-    - Search users
+    - Search users by name
     - Filter by spoken language
-    - Filter by country of origin
     - Filter by countries of interest
     - Filter by groups
-    - View individual user profiles
 ------------------------------------------------------------
 */
 
@@ -24,13 +23,10 @@ session_start();
 require_once __DIR__ . "/../includes/config.php";
 require_once __DIR__ . "/../includes/WFDatabase.php";
 
-include "includes/functions.php";
-include "includes/header.php";
-include "includes/navbar.php";
-
 
 // ------------------------------------------------------------
 // Check if the user is logged in
+// (must happen BEFORE any HTML is output, or header() fails)
 // ------------------------------------------------------------
 
 if (!isset($_SESSION["user"])) {
@@ -41,6 +37,10 @@ if (!isset($_SESSION["user"])) {
     exit;
 }
 
+include "includes/functions.php";
+include "includes/header.php";
+include "includes/navbar.php";
+
 
 // ------------------------------------------------------------
 // Get current user's ID
@@ -50,7 +50,59 @@ $userid = $_SESSION["user"]["userid"];
 
 
 // ------------------------------------------------------------
-// Get other users
+// Read and validate the country filter
+// ------------------------------------------------------------
+
+$selected_country = $_GET["country"] ?? "";
+$filter_error = "";
+
+if ($selected_country !== "") {
+
+    if (!ctype_digit((string)$selected_country) || (int)$selected_country <= 0) {
+
+        $filter_error = "Invalid country selected. Showing all users.";
+        $selected_country = "";
+
+    } else {
+
+        $selected_country = (int)$selected_country;
+
+        // Confirm the country actually exists
+        $countryCheck = WFDatabase::getDataFromSQL(
+            "SELECT COUNTRY_ID FROM wf_countries WHERE COUNTRY_ID = :country_id",
+            [":country_id" => $selected_country]
+        );
+
+        if (empty($countryCheck)) {
+            $filter_error = "That country was not found. Showing all users.";
+            $selected_country = "";
+        }
+    }
+}
+
+
+// ------------------------------------------------------------
+// Get countries for the filter dropdown
+// (only countries that at least one other user is from)
+// ------------------------------------------------------------
+
+$filterCountries = WFDatabase::getDataFromSQL(
+    "
+    SELECT DISTINCT
+        c.COUNTRY_ID,
+        c.COUNTRY_NAME
+    FROM users u
+    JOIN wf_countries c
+        ON u.original_country_id = c.COUNTRY_ID
+    WHERE u.userid != :userid
+    ORDER BY c.COUNTRY_NAME
+    ",
+    [":userid" => $userid]
+);
+
+
+// ------------------------------------------------------------
+// Get other users (optionally filtered by country of origin)
 // ------------------------------------------------------------
 
 $sql = "
@@ -58,7 +110,6 @@ $sql = "
         u.userid,
         u.first_name,
         u.last_name,
-        u.email,
         u.original_country_id,
         u.bio,
         u.date_registered,
@@ -69,16 +120,18 @@ $sql = "
         ON u.original_country_id = c.COUNTRY_ID
 
     WHERE u.userid != :userid
-
-    ORDER BY u.last_name, u.first_name
 ";
 
-$people = WFDatabase::getDataFromSQL(
-    $sql,
-    [
-        ":userid" => $userid
-    ]
-);
+$params = [":userid" => $userid];
+
+if ($selected_country !== "") {
+    $sql .= " AND u.original_country_id = :country_id";
+    $params[":country_id"] = $selected_country;
+}
+
+$sql .= " ORDER BY u.last_name, u.first_name";
+
+$people = WFDatabase::getDataFromSQL($sql, $params);
 
 ?>
 
@@ -86,6 +139,51 @@ $people = WFDatabase::getDataFromSQL(
 
 <p>
     Browse other users in the Translator Coordinator system.
+</p>
+
+
+<!-- ========================================================
+     FILTER
+========================================================= -->
+
+<?php if ($filter_error !== ""): ?>
+    <p style="color: red;">
+        <?= htmlspecialchars($filter_error) ?>
+    </p>
+<?php endif; ?>
+
+<form method="GET" action="people.php" style="margin-bottom: 20px;">
+
+    <label for="country">Country of Origin:</label>
+
+    <select id="country" name="country">
+
+        <option value="">All Countries</option>
+
+        <?php foreach ($filterCountries as $country): ?>
+
+            <option
+                value="<?= htmlspecialchars($country["COUNTRY_ID"]) ?>"
+                <?= ($country["COUNTRY_ID"] == $selected_country) ? "selected" : "" ?>
+            >
+                <?= htmlspecialchars($country["COUNTRY_NAME"]) ?>
+            </option>
+
+        <?php endforeach; ?>
+
+    </select>
+
+    <button type="submit">Filter</button>
+
+    <?php if ($selected_country !== ""): ?>
+        <a href="people.php">Clear filter</a>
+    <?php endif; ?>
+
+</form>
+
+<p>
+    <?= count($people) ?>
+    <?= count($people) === 1 ? "person" : "people" ?> found.
 </p>
 
 
@@ -121,7 +219,7 @@ $people = WFDatabase::getDataFromSQL(
                 <b>Country of Origin:</b>
 
                 <?= htmlspecialchars(
-                    $person["country_of_origin"] ?? "Not specified"
+                    $person["country_of_origin"] ?: "Not specified"
                 ) ?>
 
             </p>
@@ -133,9 +231,9 @@ $people = WFDatabase::getDataFromSQL(
 
                 <b>Bio:</b>
 
-                <?= htmlspecialchars(
-                    $person["bio"] ?? "No bio provided."
-                ) ?>
+                <?= nl2br(htmlspecialchars(
+                    $person["bio"] ?: "No bio provided."
+                )) ?>
 
             </p>
 
@@ -143,7 +241,7 @@ $people = WFDatabase::getDataFromSQL(
             <!-- View Profile -->
 
             <a
-                href="person.php?userid=<?= htmlspecialchars($person["userid"]) ?>"
+                href="person.php?userid=<?= (int)$person["userid"] ?>"
             >
                 <button type="button">
                     View Profile
@@ -157,7 +255,11 @@ $people = WFDatabase::getDataFromSQL(
 <?php else: ?>
 
     <p>
-        There are no other users to display.
+        <?php if ($selected_country !== ""): ?>
+            No users found for that country.
+        <?php else: ?>
+            There are no other users to display.
+        <?php endif; ?>
     </p>
 
 <?php endif; ?>

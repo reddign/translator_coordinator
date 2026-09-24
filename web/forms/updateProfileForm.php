@@ -250,6 +250,7 @@ $userGroupResults = WFDatabase::getDataFromSQL(
     <?php foreach ($userLanguageResults as $index => $userLanguage): ?>
 
         <div style="margin-bottom: 10px;">
+            <input type="hidden" name="spoken_languages[<?= $index ?>][id]" value="<?= (int)$userLanguage['id'] ?>">
 
             <label>
                 Language:
@@ -316,7 +317,6 @@ $userGroupResults = WFDatabase::getDataFromSQL(
         </div>
 
     <?php endforeach; ?>
-    //TODO <!-- Also add the ability to add multiple lanuages at once. -->
 
 <?php else: ?>
 
@@ -327,23 +327,33 @@ $userGroupResults = WFDatabase::getDataFromSQL(
 
 <!-- Add a new spoken language -->
 
-<h3>Add Spoken Language</h3>
+<h3>Add Spoken Languages</h3>
 
-<select name="new_spoken_language">
+<div id="new-languages"></div>
+<button type="button" onclick="addRow('new-languages', 'tpl-language')">
+    + Add a language
+</button>
 
-    <option value="">-- Select Language --</option>
+<template id="tpl-language">
+    <div class="new-row" style="margin-bottom: 10px;">
+        <select name="new_languages[__INDEX__][language_id]">
+            <option value="">-- Select Language --</option>
+            <?= $languageOptions ?>
+        </select>
 
-    <?php foreach ($languageResults as $language): ?>
+        <label>Proficiency:</label>
+        <select name="new_languages[__INDEX__][proficency_level]">
+            <option value="">-- Select Level --</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
 
-        <option
-            value="<?= htmlspecialchars($language['LANGUAGE_ID']) ?>"
-        >
-            <?= htmlspecialchars($language['LANGUAGE_NAME']) ?>
-        </option>
-
-    <?php endforeach; ?>
-
-</select>
+        <button type="button" onclick="this.parentElement.remove()">Remove</button>
+    </div>
+</template>
 
 
 <label for="new_language_proficiency">
@@ -365,56 +375,6 @@ $userGroupResults = WFDatabase::getDataFromSQL(
 </select>
 
 <br><br>
-
-
-<!-- ========================================================
-     COUNTRIES OF INTEREST
-========================================================= -->
-
-<h2>Countries of Interest</h2>
-
-<?php if (!empty($userCountryResults)): ?>
-
-    <?php foreach ($userCountryResults as $userCountry): ?>
-
-        <div style="margin-bottom: 5px;">
-
-            <?= htmlspecialchars($userCountry['COUNTRY_NAME']) ?>
-
-        </div>
-
-    <?php endforeach; ?>
-
-<?php else: ?>
-
-    <p>No countries of interest have been added yet.</p>
-
-<?php endif; ?>
-
-
-<!-- Add country -->
-
-<h3>Add Country of Interest</h3>
-
-<select name="new_country_interest">
-
-    <option value="">-- Select a Country --</option>
-
-    <?php foreach ($countryResults as $country): ?>
-
-        <option
-            value="<?= htmlspecialchars($country['COUNTRY_ID']) ?>"
-        >
-            <?= htmlspecialchars($country['COUNTRY_NAME']) ?>
-        </option>
-
-    <?php endforeach; ?>
-
-</select>
-    //TODO <!-- Also add the ability to add multiple countries at once. -->
-
-<br><br>
-
 
 <!-- ========================================================
      GROUPS
@@ -455,34 +415,45 @@ $userGroupResults = WFDatabase::getDataFromSQL(
 
 <!-- Add group -->
 
-<h3>Join a Group</h3>
+<h3>Join Groups</h3>
 
-<select name="new_group">
+<div id="new-groups"></div>
+<button type="button" onclick="addRow('new-groups', 'tpl-group')">
+    + Add a group
+</button>
 
-    <option value="">-- Select a Group --</option>
-
-    <?php foreach ($groupResults as $group): ?>
-
-        <option
-            value="<?= htmlspecialchars($group['groupid']) ?>"
-        >
-            <?= htmlspecialchars($group['group_name']) ?>
-        </option>
-
-    <?php endforeach; ?>
-
-</select>
+<template id="tpl-group">
+    <div class="new-row" style="margin-bottom: 10px;">
+        <select name="new_groups[]">
+            <option value="">-- Select a Group --</option>
+            <?= $groupOptions ?>
+        </select>
+        <button type="button" onclick="this.parentElement.remove()">Remove</button>
+    </div>
+</template>
 
 <br><br>
-
-    //TODO <!-- Also add the ability to add multiple groups at once. -->
-
 
 <!-- ========================================================
      SUBMIT
 ========================================================= -->
 
 <button type="submit">Save Profile</button>
+
+<script>
+let rowCounter = 0;
+
+function addRow(containerId, templateId) {
+    const tpl = document.getElementById(templateId).innerHTML;
+    const html = tpl.replaceAll('__INDEX__', rowCounter++);
+    document.getElementById(containerId).insertAdjacentHTML('beforeend', html);
+}
+
+// Start each section with one empty row
+addRow('new-languages', 'tpl-language');
+addRow('new-countries', 'tpl-country');
+addRow('new-groups', 'tpl-group');
+</script>
 
 </form>
 

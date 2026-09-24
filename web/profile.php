@@ -138,6 +138,20 @@ if ($page == "login") {
     */
     $regions = WFDatabase::getUserRegions($userid);
 
+        /*
+    ------------------------------------------------------------
+    Success message (set by processes/save_profile.php)
+    ------------------------------------------------------------
+    */
+    if (!empty($_SESSION["success"])) {
+
+        echo "<div style='color:green; font-weight:bold; margin-bottom:15px;'>"
+            . htmlspecialchars($_SESSION["success"])
+            . "</div>";
+
+        // Clear it so it doesn't show again on refresh
+        $_SESSION["success"] = "";
+    }
 
     /*
     ------------------------------------------------------------

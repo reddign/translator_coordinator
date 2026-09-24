@@ -1,7 +1,7 @@
 <?PHP
 
 $sql = "
-    CREATE TABLE user_country_interests (
+    CREATE TABLE IF NOT EXISTS user_country_interests (
         id INT(11) NOT NULL AUTO_INCREMENT,
         userid INT(11) NOT NULL,
         country_id INT(11) NOT NULL,
