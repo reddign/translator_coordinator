@@ -1,7 +1,8 @@
 <?PHP
 require_once __DIR__ . '/../../includes/config.php';
-include "includes/header.php";
-include "includes/navbar.php";
+// include "includes/header.php";
+// include "includes/navbar.php";
+// include "includes/footer.php";
 
 function url(){
     $baseFilePath="/translator_coordinator/web";
@@ -32,32 +33,18 @@ function getJSONFromURL($url){
     return $response;
 }
 
-$id = $_GET['id'] ?? null;
-
-$countryDataURL  = "{$mainURL}/api/countries/{$id}";
-$currencyDataURL = "{$mainURL}/api/currencies?countryid={$id}";
-$languageDataURL = "{$mainURL}/api/languages?countryid={$id}";
-
-$countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
-$currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
-$languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
-
-$countries  = $countryResponse['data'] ?? [];
-$currencies = $currencyResponse['data'] ?? [];
-$languages  = $languageResponse['data'] ?? [];
-
-$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
-$countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
-
-function searchTranslators($languageName = null, $countryName = null, $regionName = null, $group = null) {
+function searchTranslators($userName = null, $languageName = null, $countryName = null, $regionName = null, $group = null) {
     return [
         [
-            'name'     => 'Placeholder Name',
-            'language' => '$languages',
-            'country'  => 'Placeholder Country'
+            'name'     => $userName ?? 'N/A',
+            'language' => $languageName ?? 'All',
+            'country'  => $countryName ?? 'All'
         ]
     ];
 }
+
+
+?>
 
 
 ?>
