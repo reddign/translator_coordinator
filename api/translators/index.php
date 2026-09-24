@@ -55,6 +55,7 @@ $sql = "
             LEFT OUTER JOIN user_spoken_languages usl ON u.userid = usl.userid
             LEfT OUTER JOIN wf_languages l ON usl.language_id = l.language_id
             LEFT OUTER JOIN wf_countries c ON u.original_country_id = c.country_id
+        WHERE usl.isTranslator = 1
     ";
 // If it has a translatorid, add in the sql to find based off a where statement as well as add param.
 if ($translatorId !== null) {
@@ -69,7 +70,7 @@ if ($translatorId !== null) {
         exit;
     }
 
-    $sql .= "WHERE u.userid = :user_id";
+    $sql .= "AND u.userid = :user_id";
     $params=[":user_id" => $translatorId];
 }
 else{

@@ -8,9 +8,9 @@
 
     #REST API grabs
 
-    // $userDataURL = $mainURL."/api/translators";
-    // $userResponse  = getJSONFromURL($userDataURL);
-    // $users = $userResponse["data"];
+    $translatorDataURL = $mainURL."/api/translators";
+    $translatorResponse  = getJSONFromURL($translatorDataURL);
+    $users = $translatorResponse["data"];
 
     //Grab whats in search bar
     if (isset($_GET['query'])) {
