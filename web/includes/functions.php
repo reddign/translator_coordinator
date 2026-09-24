@@ -34,15 +34,21 @@ function getJSONFromURL($url){
 
 
 
+
 function searchTranslators($userName = null, $languageName = null, $countryName = null, $regionName = null, $group = null) {
     return [
         [
-            'name'     => $userName,
-            'language' => $languageName,
-            'country'  => $countryName
+            'name'     => $userName ?? 'N/A',
+            'language' => $languageName ?? 'All',
+            'country'  => $countryName ?? 'All'
         ]
     ];
 }
+
+
+
+include "includes/footer.php";
+?>
 
 
 ?>
