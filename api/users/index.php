@@ -22,7 +22,7 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $parts = explode('/', trim($path, '/'));
 $usersIndex = array_search('users', $parts, true);
 $routePart = $usersIndex !== false ? ($parts[$usersIndex + 1] ?? null) : null;
-
+$subResource = $usersIndex !== false ? ($parts[$usersIndex + 2] ?? null) : null;
 /*
 ------------------------------------------------------------
 POST /api/users/register
@@ -172,4 +172,81 @@ Admin item: GET, PUT, DELETE /api/users/{userid}
 ------------------------------------------------------------
 */
 
+/*
+------------------------------------------------------------
+GET/POST /api/users/{userid}/languages
+DELETE   /api/users/{userid}/languages/{languageid}
+------------------------------------------------------------
+*/
+
+// Only urls shaped like /api/users/{number}/languages enter this block
+if ($routePart !== null && ctype_digit($routePart) && $subResource === 'languages') {
+    //($userIndex+1 = userId, +2 = "languages", +3 = languageId)
+    $userId = (int)$routePart;
+    $languageId = $parts[$usersIndex + 3] ?? null; // for DELETE /{languageid}
+
+
+    //Gets a list of every langiage that this user speaks, with proficiency
+    if ($method === 'GET') {
+        
+        //Joins the user+spoken_language table on wf_languages by language_id, but displays by language name
+        $sql = "
+            SELECT l.LANGUAGE_ID, l.LANGUAGE_NAME
+            FROM wf_languages l
+            JOIN user_spoken_languages usl ON usl.language_id = l.LANGUAGE_ID
+            WHERE usl.userid = :userid
+            ORDER BY l.LANGUAGE_NAME
+        ";
+        $data = WFDatabase::getDataFromSQL($sql, [':userid' => $userId]);
+        sendJson(200, ['success' => true, 'data' => $data]);
+    }
+
+
+    //Links a new language to a user by inserting a new row into user_spoken_language table
+    if ($method === 'POST') {
+        $body = getJsonBody();
+        $languageIdToAdd = (int)($body['language_id'] ?? 0);
+        $proficiency = (int)($body['proficency_level'] ?? 0);
+
+        $minLevel = 1;
+        $maxLevel = 5;
+
+        //Rejects any invalid language ids before hitting the DB
+        if ($languageIdToAdd <= 0) {
+        sendJson(400, ['success' => false, 'message' => 'A valid language_id is required.']);
+        }
+
+        //Rejects any proficiency level outside of 1-5
+        if ($proficiency < $minLevel || $proficiency > $maxLevel) {
+        sendJson(400, ['success' => false, 'message' => "proficency_level must be between $minLevel and $maxLevel."]);
+        }
+
+        $sql = "INSERT INTO user_spoken_languages (userid, language_id, proficency_level) VALUES (:userid, :language_id, :proficency_level)";
+        try {
+            WFDatabase::executeSQL($sql, [':userid' => $userId, ':language_id' => $languageIdToAdd, ':proficency_level' => $proficiency]);
+            sendJson(201, ['success' => true, 'message' => 'Language added.']);
+        }   catch (PDOException $e) {
+    
+        if ($e->getCode() === '23000') {
+        sendJson(409, ['success' => false, 'message' => 'Invalid language_id or already linked to this user.']);
+        }
+    sendJson(500, ['success' => false, 'message' => 'Database error.']);
+}
+    }
+
+    if ($method === 'DELETE' && $languageId !== null && ctype_digit($languageId)) {
+        $sql = "DELETE FROM user_spoken_languages WHERE userid = :userid AND language_id = :language_id";
+        WFDatabase::executeSQL($sql, [':userid' => $userId, ':language_id' => (int)$languageId]);
+        sendJson(200, ['success' => true, 'message' => 'Language removed.']);
+    }
+
+    sendJson(405, ['success' => false, 'message' => 'Method not allowed.']);
+}
+
 sendJson(404, ['success' => false, 'message' => 'Endpoint not found.']);
+
+
+sendJson(404, ['success' => false, 'message' => 'Endpoint not found.']);
+
+
+
