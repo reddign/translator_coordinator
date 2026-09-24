@@ -58,34 +58,14 @@ $languages = $languageResponse["data"];
 </div>
 
 <?php
-// GET Filters
-$user = $_GET['user']         ?? null;
+//Checks if filter data exists before trying to get it. Also sets default to null incase of failure.
 $language = $_GET['language'] ?? null;
 $country  = $_GET['country'] ?? null;
 $region   = $_GET['region'] ?? null;
 $group    = $_GET['group'] ?? null; 
 
-
-$countries  = [];
-$currencies = [];
-$languages  = [];
-
-// Fetch API data only if ID exists
-if ($id) {
-    $countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
-    $currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
-    $languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
-
-    $countries  = $countryResponse['data']  ?? [];
-    $currencies = $currencyResponse['data'] ?? [];
-    $languages  = $languageResponse['data'] ?? [];
-}
-
-$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
-$countryId   = $countries[0]['COUNTRY_ID']   ?? $id;
-
-// Parameters aligned: ($userName, $languageName, $countryName, $regionName, $group)
-$results = searchTranslators($user, $language, $countryName, $region, $group);
+// Call stub function. Currently a placeholder for demos.
+$results = searchTranslators($language, $country, $region, $group);
 ?>
 
 <h2>Search Results</h2>
