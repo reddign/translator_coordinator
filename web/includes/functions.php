@@ -32,30 +32,14 @@ function getJSONFromURL($url){
     return $response;
 }
 
-$id = $_GET['id'] ?? null;
-
-$countryDataURL  = "{$mainURL}/api/countries/{$id}";
-$currencyDataURL = "{$mainURL}/api/currencies?countryid={$id}";
-$languageDataURL = "{$mainURL}/api/languages?countryid={$id}";
-
-$countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
-$currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
-$languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
-
-$countries  = $countryResponse['data'] ?? [];
-$currencies = $currencyResponse['data'] ?? [];
-$languages  = $languageResponse['data'] ?? [];
 
 
-$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
-$countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
-
-function searchTranslators($languageName = null, $countryName = null, $regionName = null, $group = null) {
+function searchTranslators($userName = null, $languageName = null, $countryName = null, $regionName = null, $group = null) {
     return [
         [
-            'name'     => countryId,
-            'language' => language['LANGUAGE_NAME'],
-            'country'  => languages['LANGUAGE_NAME']
+            'name'     => $userName,
+            'language' => $languageName,
+            'country'  => $countryName
         ]
     ];
 }
