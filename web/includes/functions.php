@@ -32,9 +32,6 @@ function getJSONFromURL($url){
     return $response;
 }
 
-
-
-
 function searchTranslators($userName = null, $languageName = null, $countryName = null, $regionName = null, $group = null) {
     return [
         [
@@ -44,8 +41,6 @@ function searchTranslators($userName = null, $languageName = null, $countryName 
         ]
     ];
 }
-
-
 
 include "includes/footer.php";
 ?>

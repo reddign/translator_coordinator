@@ -81,33 +81,33 @@ include "includes/navbar.php";
 </div>
 
 <?php
-//Checks if filter data exists before trying to get it. Also sets default to null incase of failure.
+// GET Filters
 $language = $_GET['language'] ?? null;
-$country  = $_GET['country'] ?? null;
-$region   = $_GET['region'] ?? null;
-$group    = $_GET['group'] ?? null; 
+$country  = $_GET['country']  ?? null;
+$region   = $_GET['region']   ?? null;
+$group    = $_GET['group']    ?? null;
+$id       = $_GET['id']       ?? null;
 
-$id = $_GET['id'] ?? null;
+$countries  = [];
+$currencies = [];
+$languages  = [];
 
-$countryDataURL  = "{$mainURL}/api/countries/{$id}";
-$currencyDataURL = "{$mainURL}/api/currencies?countryid={$id}";
-$languageDataURL = "{$mainURL}/api/languages?countryid={$id}";
+// Fetch API data only if ID exists
+if ($id) {
+    $countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
+    $currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
+    $languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
 
-$countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
-$currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
-$languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
-
-$countries  = $countryResponse['data'] ?? [];
-$currencies = $currencyResponse['data'] ?? [];
-$languages  = $languageResponse['data'] ?? [];
-
+    $countries  = $countryResponse['data']  ?? [];
+    $currencies = $currencyResponse['data'] ?? [];
+    $languages  = $languageResponse['data'] ?? [];
+}
 
 $countryName = $countries[0]['COUNTRY_NAME'] ?? '';
-$countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
+$countryId   = $countries[0]['COUNTRY_ID']   ?? $id;
 
-
-// Call stub function. Currently a placeholder for demos.
-$results = searchTranslators($language, $country, $region, $group);
+// Parameters aligned: ($userName, $languageName, $countryName, $regionName, $group)
+$results = searchTranslators(null, $language, $countryName, $region, $group);
 ?>
 
 <h2>Search Results</h2>
@@ -117,7 +117,11 @@ $results = searchTranslators($language, $country, $region, $group);
     
     <ul>
         <?php foreach ($results as $translator): ?>
-            <li><?= $translator['name'] ?> - <?= $translator['language'] ?> (<?= $translator['country'] ?>)</li>
+            <li>
+                <?= htmlspecialchars($translator['name'] ?? '') ?> - 
+                <?= htmlspecialchars($translator['language'] ?? '') ?> 
+                (<?= htmlspecialchars($translator['country'] ?? '') ?>)
+            </li>
         <?php endforeach; ?>
     </ul>
 </div>
