@@ -47,7 +47,9 @@ Build the request body expected by the REST API.
 
 $data = [
     "email" => $username,
-    "password" => $userpassword
+    "password" => $userpassword,
+    //"session_id" => session_id(),
+    //"login_time" => date("Y-m-d H:i:s")
 ];
 
 $jsonData = json_encode($data);
@@ -122,12 +124,6 @@ Successful login
 ------------------------------------------------------------
 */
 
-# TODO: Store authenticated user ID in the session.
-# TODO: Record login timestamp.
-# TODO: Regenerate session ID after login.
-# TODO: Associate API token with the current session.
-# TODO: Record session activity for auditing.
-# TODO: Save session information to the database.
 
 if (
     isset($result["success"]) &&
@@ -139,6 +135,7 @@ if (
     an authentication token.
     */
 
+
     $_SESSION["api_token"] = $result["token"];
     $_SESSION["user"] = $result["user"];
     $_SESSION["LoginStatus"] = "YES";
@@ -149,6 +146,13 @@ if (
     login time, and session information will be
     stored for session tracking and security.
     */
+    $_SESSION["session_id"] = session_id();
+    $_SESSION["login_time"] = date("Y-m-d H:i:s");
+
+    if (isset($result["user"]["userid"])) {
+        $_SESSION["user_id"] = $result["user"]["userid"];
+    }
+
 
     $_SESSION["error"] = "";
 
