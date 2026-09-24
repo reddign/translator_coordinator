@@ -131,6 +131,13 @@ if ($page == "login") {
         ]
     );
 
+    /*
+    ------------------------------------------------------------
+    Get Regions of Interest
+    ------------------------------------------------------------
+    */
+    $regions = WFDatabase::getUserRegions($userid);
+
 
     /*
     ------------------------------------------------------------
@@ -312,7 +319,42 @@ if ($page == "login") {
 
     }
 
+    echo "<BR><BR><a href='forms/countriesForm.php'>Add or remove countries</a>";
 
+    echo "<BR><BR><BR>";
+
+
+    /*
+    ------------------------------------------------------------
+    Regions
+    ------------------------------------------------------------
+    */
+
+    echo "<h2>Regions of Interest</h2>";
+
+    if (!empty($regions)) {
+        echo "<table border='1' cellpadding='5'>";
+
+        echo "<tr>";
+        echo "<th>Region</th>";
+        echo "</tr>";
+
+        foreach ($regions as $region) {
+            echo "<tr>";
+
+            echo "<td>"
+                . htmlspecialchars($region["REGION_NAME"])
+                . "</td>";
+
+            echo "</tr>";
+        }
+
+        echo "</table>";
+    } else {
+        echo "No regions of interest added.";
+    }
+
+    echo "<BR><BR><a href='forms/regionsForm.php'>Add or remove regions</a>";
     echo "<BR><BR><BR>";
 
 

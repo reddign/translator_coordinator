@@ -170,6 +170,11 @@ $countries = WFDatabase::getDataFromSQL(
     ]
 );
 
+// ------------------------------------------------------------
+// Get associated regions (US-06)
+// ------------------------------------------------------------
+$regions = WFDatabase::getUserRegions($personid);
+
 
 // ------------------------------------------------------------
 // Get groups
@@ -326,6 +331,28 @@ $groups = WFDatabase::getDataFromSQL(
 
 <?php endif; ?>
 
+<!-- ========================================================
+     REGIONS OF INTEREST
+========================================================= -->
+
+<h2>Regions of Interest</h2>
+
+<?php if (!empty($regions)): ?>
+
+    <ul>
+        <?php foreach ($regions as $region): ?>
+            <li>
+                <?= htmlspecialchars($region["REGION_NAME"]) ?>
+            </li>
+        <?php endforeach; ?>
+        </ul>
+
+<?php else: ?>
+    <p>
+        No regions of interest have been added.
+    </p>
+
+<?php endif; ?>
 
 <!-- ========================================================
      GROUPS
