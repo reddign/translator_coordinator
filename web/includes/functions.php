@@ -53,9 +53,9 @@ $countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
 function searchTranslators($languageName = null, $countryName = null, $regionName = null, $group = null) {
     return [
         [
-            'name'     => $countryId,
-            'language' => $language['LANGUAGE_NAME'],
-            'country'  => $languages['LANGUAGE_NAME']
+            'name'     => countryId,
+            'language' => language['LANGUAGE_NAME'],
+            'country'  => languages['LANGUAGE_NAME']
         ]
     ];
 }
