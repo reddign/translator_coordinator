@@ -1,7 +1,8 @@
 <?PHP
 require_once __DIR__ . '/../../includes/config.php';
-include "includes/header.php";
-include "includes/navbar.php";
+// include "includes/header.php";
+// include "includes/navbar.php";
+// include "includes/footer.php";
 
 function url(){
     $baseFilePath="/translator_coordinator/web";
@@ -42,7 +43,7 @@ function searchTranslators($userName = null, $languageName = null, $countryName 
     ];
 }
 
-include "includes/footer.php";
+
 ?>
 
 
