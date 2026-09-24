@@ -10,10 +10,21 @@ include "includes/functions.php";
 include "includes/header.php";
 include "includes/navbar.php";
 ?>
+
+
+/*
+------------------------------------------------------------
+This section is the group search interface.
+Where you can connect to the api endpoint for searching groups by their GroupID or retrieve all groups.
+- Isaac Widders 9/24/2026
+------------------------------------------------------------
+*/
+
+
 <form  method="get">
 <label for="groupIDinput">Search by groupID (number only):</label>
   <input type="number" id="groupIDinput" name="groupIDinput" value="">
-<button type="submit" >Search</button>
+<button type="submit">Search</button>
 </form>
 
 <script>
