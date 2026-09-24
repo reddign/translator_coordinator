@@ -52,10 +52,9 @@ if ($groupID !== null) {
             "success" => false,
             "message" => "Group ID must be numeric."
         ]);
-
+        
         exit;
     }
-
     $sql = "
         SELECT
             GROUPID,
