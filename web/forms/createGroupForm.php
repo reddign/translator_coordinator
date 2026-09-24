@@ -1,172 +1,159 @@
 <!--
     createGroupForm.php
-    Modal popup for "Create Group" — built with W3.CSS to match the
-    rest of the project (see web/style.css and loginForm.php pattern).
+    Standalone "Create Group" page — built with W3.CSS to match the
+    rest of the project. Follows the same plain-POST pattern as
+    loginForm.php / processes/login.php: no JS fetch, full page
+    reload on submit, errors come back via $_SESSION["error"].
 
     STATUS NOTES:
     - "description" field is included in the UI already, ready for
       when the groups table gets that column added.
-    - "region" tag-picker is commented out below until the db admin
-      confirms whether groups_to_regions gets created or region is
-      dropped (derived from country instead).
-    - Country and language pickers are stubbed with placeholder
-      option data for now — step 3 will replace this with real
-      fetch() calls to api/countries and api/languages.
+    - Region picker dropped (not part of the data model).
+    - Country and language pickers are <select> dropdowns listing
+      every available option, stubbed with placeholder data for
+      now — swap PLACEHOLDER_COUNTRIES / PLACEHOLDER_LANGUAGES for
+      real fetch() calls to api/countries and api/languages once
+      wiring that in.
 -->
 
-<!-- Trigger button — place this wherever the page already has its
-     "Create Group" button, or use this as the button itself -->
-<button class="w3-button w3-blue w3-round" onclick="openCreateGroupModal()">
-    Create Group
-</button>
+<?php
+// If your team's other pages show session-based error messages
+// (login.php does this), match that convention here:
+$groupError = $_SESSION["group_error"] ?? "";
+$_SESSION["group_error"] = "";
+?>
 
-<!-- ============ MODAL ============ -->
-<div id="createGroupModal" class="w3-modal">
-    <div class="w3-modal-content w3-card-4 w3-animate-top w3-round" style="max-width:500px;">
+<div class="w3-container w3-padding-32" style="max-width:600px; margin:auto;">
 
-        <header class="w3-container w3-blue w3-round-top">
-            <span onclick="closeCreateGroupModal()"
-                  class="w3-button w3-display-topright w3-hover-red">&times;</span>
-            <h2>Create a Group</h2>
-        </header>
+    <h2>Create a Group</h2>
 
-        <form id="createGroupForm" class="w3-container w3-padding-16" method="POST">
+    <?php if ($groupError): ?>
+        <div class="w3-panel w3-pale-red w3-border w3-round">
+            <p><?php echo htmlspecialchars($groupError); ?></p>
+        </div>
+    <?php endif; ?>
 
-            <!-- Group Name -->
-            <label class="w3-text-grey"><b>Group Name</b></label>
-            <input class="w3-input w3-border w3-round w3-margin-bottom"
-                   type="text" name="groupName" id="groupName" required>
+    <form id="createGroupForm" action="processes/creategroup.php" method="POST" class="w3-card-4 w3-padding w3-round">
 
-            <!-- Group Description -->
-            <label class="w3-text-grey"><b>Description</b></label>
-            <textarea class="w3-input w3-border w3-round w3-margin-bottom"
-                      name="groupDescription" id="groupDescription"
-                      rows="3" placeholder="What's this group about?"></textarea>
+        <!-- Group Name -->
+        <label class="w3-text-grey"><b>Group Name</b></label>
+        <input class="w3-input w3-border w3-round w3-margin-bottom"
+               type="text" name="groupName" id="groupName" required>
 
-            <!-- Associated Country (tag picker) -->
-            <label class="w3-text-grey"><b>Associated Countries</b></label>
-            <div id="countryTagContainer" class="w3-border w3-round w3-padding-small w3-margin-bottom">
-                <div id="countryChips" class="w3-margin-bottom"></div>
-                <input class="w3-input" type="text" id="countrySearchInput"
-                       placeholder="Search countries..." autocomplete="off">
-                <div id="countrySuggestions" class="w3-bar-block w3-white w3-card" style="display:none;"></div>
-            </div>
+        <!-- Group Description -->
+        <label class="w3-text-grey"><b>Description</b></label>
+        <textarea class="w3-input w3-border w3-round w3-margin-bottom"
+                  name="groupDescription" id="groupDescription"
+                  rows="3" placeholder="What's this group about?"></textarea>
 
-            <!-- Associated Language (tag picker) -->
-            <label class="w3-text-grey"><b>Associated Languages</b></label>
-            <div id="languageTagContainer" class="w3-border w3-round w3-padding-small w3-margin-bottom">
-                <div id="languageChips" class="w3-margin-bottom"></div>
-                <input class="w3-input" type="text" id="languageSearchInput"
-                       placeholder="Search languages..." autocomplete="off">
-                <div id="languageSuggestions" class="w3-bar-block w3-white w3-card" style="display:none;"></div>
-            </div>
+        <!-- Associated Countries (tag picker) -->
+        <label class="w3-text-grey"><b>Associated Countries</b></label>
+        <div id="countryTagContainer" class="w3-border w3-round w3-padding-small w3-margin-bottom">
+            <div id="countryChips" class="w3-margin-bottom"></div>
+            <select class="w3-select w3-border w3-round" id="countrySelect">
+                <option value="" disabled selected>Select a country...</option>
+            </select>
+        </div>
+        <!-- Synced by JS before submit; PHP reads $_POST['countryIds'] as a comma-separated string -->
+        <input type="hidden" name="countryIds" id="countryIdsField">
 
-            <!--
-            ASSOCIATED REGION — on hold pending db admin decision.
-            If groups_to_regions gets created, duplicate the country
-            tag-picker block above with id="regionTagContainer" etc.
-            If region is dropped (derived from country instead), this
-            stays commented out permanently and region display happens
-            read-only elsewhere, based on tagged countries.
-            -->
-            <!--
-            <label class="w3-text-grey"><b>Associated Regions</b></label>
-            <div id="regionTagContainer" class="w3-border w3-round w3-padding-small w3-margin-bottom">
-                ...
-            </div>
-            -->
+        <!-- Associated Languages (tag picker) -->
+        <label class="w3-text-grey"><b>Associated Languages</b></label>
+        <div id="languageTagContainer" class="w3-border w3-round w3-padding-small w3-margin-bottom">
+            <div id="languageChips" class="w3-margin-bottom"></div>
+            <select class="w3-select w3-border w3-round" id="languageSelect">
+                <option value="" disabled selected>Select a language...</option>
+            </select>
+        </div>
+        <!-- Synced by JS before submit; PHP reads $_POST['languageIds'] as a comma-separated string -->
+        <input type="hidden" name="languageIds" id="languageIdsField">
 
-            <button type="submit" class="w3-button w3-blue w3-round w3-block">
-                Create Group
-            </button>
+        <button type="submit" class="w3-button w3-blue w3-round w3-block">
+            Create Group
+        </button>
 
-        </form>
-    </div>
+    </form>
 </div>
 
 <style>
-/* Hidden by default; toggled via JS below */
-#createGroupModal { display: none; }
-#createGroupModal.w3-show { display: block; }
-
 .w3-padding-small { padding: 6px; }
 </style>
 
 <script>
-function openCreateGroupModal() {
-    document.getElementById('createGroupModal').classList.add('w3-show');
-}
-
-function closeCreateGroupModal() {
-    document.getElementById('createGroupModal').classList.remove('w3-show');
-}
-
-// Click outside modal content to close
-document.getElementById('createGroupModal').addEventListener('click', function (e) {
-    if (e.target === this) closeCreateGroupModal();
-});
-
-// Escape key to close
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeCreateGroupModal();
-});
-
 /*
 ------------------------------------------------------------
 TAG PICKER STUB — placeholder data for now.
-Step 3 replaces PLACEHOLDER_COUNTRIES / PLACEHOLDER_LANGUAGES
-with real fetch() calls to api/countries and api/languages,
-and selectedCountryIds / selectedLanguageIds get sent as part
-of the submit payload in step 4.
+Swap PLACEHOLDER_COUNTRIES / PLACEHOLDER_LANGUAGES for real
+fetch() calls to api/countries and api/languages when ready.
 ------------------------------------------------------------
 */
-const PLACEHOLDER_COUNTRIES = [
-    { id: 1, name: "Mexico" },
-    { id: 2, name: "Spain" },
-    { id: 3, name: "Argentina" }
-];
-const PLACEHOLDER_LANGUAGES = [
-    { id: 1, name: "Spanish" },
-    { id: 2, name: "English" },
-    { id: 3, name: "Portuguese" }
-];
+/*
+------------------------------------------------------------
+Fetch real country/language data from the server-side proxy
+files (processes/getCountries.php, processes/getLanguages.php),
+which in turn call GET /api/countries and GET /api/languages.
+------------------------------------------------------------
+Confirmed response shape (from api/languages/index.php):
+  { "success": true, "count": N, "data": [ {LANGUAGE_ID, LANGUAGE_NAME}, ... ] }
 
+api/countries is ASSUMED to follow the same pattern with
+COUNTRY_ID / COUNTRY_NAME — verify against the real
+api/countries/index.php and adjust the idField/nameField
+arguments below if the column names differ.
+*/
 let selectedCountryIds = [];
 let selectedLanguageIds = [];
 
-function setupTagPicker(inputId, suggestionsId, chipsId, dataSource, selectedArray) {
-    const input = document.getElementById(inputId);
-    const suggestions = document.getElementById(suggestionsId);
+async function loadDropdownData(url, selectId, chipsId, hiddenFieldId, selectedArray, idField, nameField) {
+    try {
+        const response = await fetch(url);
+        const result = await response.json();
+
+        if (!result.success) {
+            console.error(`${url} returned an error:`, result.message);
+            return;
+        }
+
+        // Normalize into {id, name} regardless of the source column names
+        const items = result.data.map(item => ({
+            id: item[idField],
+            name: item[nameField]
+        }));
+
+        setupTagDropdown(selectId, chipsId, hiddenFieldId, items, selectedArray);
+    } catch (err) {
+        console.error(`Failed to load data from ${url}:`, err);
+    }
+}
+
+function setupTagDropdown(selectId, chipsId, hiddenFieldId, dataSource, selectedArray) {
+    const select = document.getElementById(selectId);
     const chips = document.getElementById(chipsId);
+    const hiddenField = document.getElementById(hiddenFieldId);
 
-    input.addEventListener('input', function () {
-        const query = input.value.toLowerCase();
-        suggestions.innerHTML = '';
-        if (!query) { suggestions.style.display = 'none'; return; }
+    // Populate the dropdown with every available option
+    dataSource.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.name;
+        select.appendChild(option);
+    });
 
-        const matches = dataSource.filter(item =>
-            item.name.toLowerCase().includes(query) &&
-            !selectedArray.includes(item.id)
-        );
+    select.addEventListener('change', function () {
+        const id = parseInt(select.value, 10);
+        if (!id || selectedArray.includes(id)) return;
 
-        matches.forEach(item => {
-            const option = document.createElement('div');
-            option.className = 'w3-bar-item w3-button';
-            option.textContent = item.name;
-            option.onclick = function () {
-                selectedArray.push(item.id);
-                addChip(item, chips, selectedArray, dataSource, chipsId);
-                input.value = '';
-                suggestions.style.display = 'none';
-            };
-            suggestions.appendChild(option);
-        });
+        const item = dataSource.find(d => d.id === id);
+        selectedArray.push(id);
+        addChip(item, chips, selectedArray, hiddenField, select);
 
-        suggestions.style.display = matches.length ? 'block' : 'none';
+        // Remove the picked option from the dropdown and reset to placeholder
+        select.querySelector(`option[value="${id}"]`).remove();
+        select.value = '';
     });
 }
 
-function addChip(item, chipsContainer, selectedArray) {
+function addChip(item, chipsContainer, selectedArray, hiddenField, select) {
     const chip = document.createElement('span');
     chip.className = 'w3-tag w3-round w3-blue w3-margin-right w3-margin-bottom';
     chip.style.display = 'inline-block';
@@ -175,30 +162,18 @@ function addChip(item, chipsContainer, selectedArray) {
         const idx = selectedArray.indexOf(item.id);
         if (idx > -1) selectedArray.splice(idx, 1);
         chip.remove();
+        hiddenField.value = selectedArray.join(',');
+
+        // Add the option back to the dropdown so it can be picked again
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.name;
+        select.appendChild(option);
     };
     chipsContainer.appendChild(chip);
+    hiddenField.value = selectedArray.join(',');
 }
 
-setupTagPicker('countrySearchInput', 'countrySuggestions', 'countryChips', PLACEHOLDER_COUNTRIES, selectedCountryIds);
-setupTagPicker('languageSearchInput', 'languageSuggestions', 'languageChips', PLACEHOLDER_LANGUAGES, selectedLanguageIds);
-
-/*
-------------------------------------------------------------
-SUBMIT HANDLER — placeholder payload for now (step 4 wires
-this to processes/creategroup.php via fetch()).
-------------------------------------------------------------
-*/
-document.getElementById('createGroupForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const payload = {
-        groupName: document.getElementById('groupName').value,
-        groupDescription: document.getElementById('groupDescription').value,
-        countryIds: selectedCountryIds,
-        languageIds: selectedLanguageIds
-    };
-
-    console.log('Create group payload:', payload);
-    // Next step: fetch('processes/creategroup.php', { method: 'POST', ... })
-});
+loadDropdownData('../processes/groupProcesses/getCountries.php', 'countrySelect', 'countryChips', 'countryIdsField', selectedCountryIds, 'COUNTRY_ID', 'COUNTRY_NAME'); // confirmed against api/countries/index.php
+loadDropdownData('../processes/groupProcesses/getLanguages.php', 'languageSelect', 'languageChips', 'languageIdsField', selectedLanguageIds, 'LANGUAGE_ID', 'LANGUAGE_NAME'); // confirmed against api/languages/index.php
 </script>
