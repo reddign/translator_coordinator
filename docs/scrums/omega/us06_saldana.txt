@@ -1,8 +1,13 @@
 As a user, I want to associate myself with regions of the world so that other users can discover people with regional experience or interests.
 
 - A user can add and remove one or more regions of the world.
+    - TEST: If I go into the Add/Remove section of regions, I am able to add and remove my regions of interest
+    as much as I want. (done)
 - The available regions come from the system's region list.
-- The user's select regions are visible on their public profile.
+    - TEST: The regions that are shown from the dropdown are the same ones from the system's region list. (done)
 - The associated regions are visible on the user's public profile.
+    - TEST: If I go into a user's profile, I can see my associated regions on the regions of interests section on the page. (done)
 - A user can update and change their list of associated regions.
+    - TEST: If I go into the Add/Remove section of regions, the user can change their list of associated regions as needed. (done)
 - The system stops you from adding the same region more than once.
+    - TEST: If I try to add the same region more than once, the system won't let me choose it again since it's not an option. (done)

@@ -1,8 +1,15 @@
 As a user, I want to associate myself with additional countries so that I can indicate countries where I have lived, traveled, studied, or have other connections.
 
 - A user can add and remove one or more additional countries to their profile.
+    - TEST: If I go into the Add/Remove section of countries, I am able to add more countries to my profile. (done)
 - A user can select additional countries from the system's country list.
+    - TEST: If I go into the Add/Remove section of countries, the user can change their list of associated countries as needed. (done)
 - The user's selected countries are saved to their profile.
+    - TEST: If a user selects countries, then the countries are saved to their profile. (done)
 - The associated countries are visible on the user's public profile.
+    - TEST: If I go into a user's public profile, then I am able to see their associated countries in the countries of interest
+    section. (done)
 - A user can update and change their list of associated countries.
+    - TEST: If a user goes into the Add/Remove section, then they are able to change their list of countries. (done)
 - The system stops you from adding the same country more than once.
+    - TEST: If I try to add the same country more than once, the system won't let me choose it again since it's not an option. (done)
