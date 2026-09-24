@@ -1,10 +1,9 @@
 <?php
 require_once __DIR__ . "/../includes/config.php";
 require_once __DIR__ . "/../includes/WFDatabase.php";
-include "includes/functions.php";
-include "includes/header.php";
-include "includes/navbar.php";
-
+require_once "includes/functions.php";
+require_once "includes/header.php";
+require_once "includes/navbar.php";
 
 $languageDataURL = $mainURL."/api/languages/";
 $languageResponse = getJSONFromURL($languageDataURL);
@@ -15,6 +14,13 @@ $languages = $languageResponse["data"];
 <!--Dropdown menus for different filters.-->
 <div class="w3-container w3-margin-bottom w3-section">
     <form action="search.php" method="GET" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+    <input
+        type="text"
+        name="user"
+        class="w3-input"
+        placeholder="Search users..."
+        style="flex: 1; min-width: 150px;"
+    >
         <select name="language" class="w3-select" style="flex: 1; min-width: 50px;">
             <option value="" disabled selected>Language</option>
             <?php
@@ -52,14 +58,34 @@ $languages = $languageResponse["data"];
 </div>
 
 <?php
-//Checks if filter data exists before trying to get it. Also sets default to null incase of failure.
+// GET Filters
+$user = $_GET['user']         ?? null;
 $language = $_GET['language'] ?? null;
 $country  = $_GET['country'] ?? null;
 $region   = $_GET['region'] ?? null;
 $group    = $_GET['group'] ?? null; 
 
-// Call stub function. Currently a placeholder for demos.
-$results = searchTranslators($language, $country, $region, $group);
+
+$countries  = [];
+$currencies = [];
+$languages  = [];
+
+// Fetch API data only if ID exists
+if ($id) {
+    $countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
+    $currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
+    $languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
+
+    $countries  = $countryResponse['data']  ?? [];
+    $currencies = $currencyResponse['data'] ?? [];
+    $languages  = $languageResponse['data'] ?? [];
+}
+
+$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
+$countryId   = $countries[0]['COUNTRY_ID']   ?? $id;
+
+// Parameters aligned: ($userName, $languageName, $countryName, $regionName, $group)
+$results = searchTranslators($user, $language, $countryName, $region, $group);
 ?>
 
 <h2>Search Results</h2>
