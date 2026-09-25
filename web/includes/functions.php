@@ -34,23 +34,41 @@ function getJSONFromURL($url){
 }
 
 function searchTranslators($userName = null, $languageName = null, $countryName = null, $regionName = null, $group = null) {
+
     $sql = "
-        SELECT
-            userid,
-            CONCAT(first_name, '',last_name) AS name
-        FROM users
+        SELECT DISTINCT
+            u.userid,
+            CONCAT(u.first_name, ' ', u.last_name) AS name,
+            l.LANGUAGE_NAME AS language
+        FROM users u
+
+        LEFT JOIN user_spoken_languages usl
+            ON u.userid = usl.userid
+
+        LEFT JOIN wf_languages l
+            ON usl.language_id = l.LANGUAGE_ID
+
         WHERE 1=1
     ";
+
     if (!empty($userName)) {
         $safeUserName = addslashes($userName);
 
         $sql .= "
-        AND CONCAT(first_name, ' ', last_name)
-        LIKE '%$safeUserName%'
+            AND CONCAT(u.first_name, ' ', u.last_name)
+            LIKE '%$safeUserName%'
         ";
     }
-    return WFDatabase::getDataFromSQL($sql);
 
+    if (!empty($languageName)) {
+        $languageId = (int)$languageName;
+    
+        $sql .= "
+            AND l.LANGUAGE_ID = $languageId
+        ";
+    }
+
+    return WFDatabase::getDataFromSQL($sql);
 }
 
 
