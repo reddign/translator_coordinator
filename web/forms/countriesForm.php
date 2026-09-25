@@ -34,6 +34,7 @@ unset($_SESSION["countries_message"]);
 // ------------------------------------------------------------
 // Get all countries (for the dropdown)
 // ------------------------------------------------------------
+/*
 $all_sql = "
     SELECT
         COUNTRY_ID,
@@ -42,6 +43,7 @@ $all_sql = "
     ORDER BY COUNTRY_NAME";
 
 $allResults = WFDatabase::getDataFromSQL($all_sql);
+*/
 
 // ------------------------------------------------------------
 // Get user's current countries
@@ -101,35 +103,59 @@ include __DIR__ . "/../includes/navbar.php";
 <!-- ========================================================
      ADD
 ========================================================= -->
- 
+
 <h2>Add a Country</h2>
- 
+
 <form method="POST" action="../processes/manage_countries.php">
- 
+
     <input type="hidden" name="action" value="add">
- 
-    <select name="country_id" required>
- 
-        <option value="">-- Select a country --</option>
- 
-        <?php foreach ($allResults as $item): ?>
- 
-            <?php if (!in_array($item['COUNTRY_ID'], $selectedIds)): ?>
- 
-                <option value="<?= htmlspecialchars($item['COUNTRY_ID']) ?>">
-                    <?= htmlspecialchars($item['COUNTRY_NAME']) ?>
-                </option>
- 
-            <?php endif; ?>
- 
-        <?php endforeach; ?>
- 
+
+    <!-- filled in by the script below, from api/countries/ -->
+    <select id="picker" name="country_id" required>
+        <option value="">Loading...</option>
     </select>
- 
+
     <button type="submit">Add</button>
- 
+
 </form>
- 
+
+<script>
+
+// dropdown options from rest api
+const API_URL = "../../api/countries/";
+const selectedIds = <?= json_encode(array_map('strval', $selectedIds)) ?>;
+const picker = document.getElementById("picker");
+
+fetch(API_URL)
+    .then(response => response.json())
+    .then(payload => {
+
+        picker.innerHTML = "";
+
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "-- Select a country --";
+        picker.appendChild(placeholder);
+
+        // payload looks like {success, count, data: [ {COUNTRY_ID, COUNTRY_NAME, ...}, ... ]}
+        payload.data.forEach(item => {
+
+            // skip ones the user already has
+            if (selectedIds.includes(String(item.COUNTRY_ID))) {
+                return;
+            }
+
+            const option = document.createElement("option");
+            option.value = item.COUNTRY_ID;
+            option.textContent = item.COUNTRY_NAME;
+            picker.appendChild(option);
+        });
+    })
+    .catch(() => {
+        picker.innerHTML = "<option value=''>Could not load the list</option>";
+    });
+</script>
+
 <br>
  
 <a href="../profile.php">Back to My Profile</a>

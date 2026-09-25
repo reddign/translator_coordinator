@@ -30,7 +30,7 @@ $userid = $_SESSION["user"]["userid"];
 $message = $_SESSION["regions_message"] ?? "";
 unset($_SESSION["regions_message"]);
 
-
+/*
 // ------------------------------------------------------------
 // Get all regions (for the dropdown)
 // ------------------------------------------------------------
@@ -42,6 +42,7 @@ $all_sql = "
     ORDER BY REGION_NAME";
 
 $allResults = WFDatabase::getDataFromSQL($all_sql);
+*/
 
 // ------------------------------------------------------------
 // Get user's current regions
@@ -103,33 +104,57 @@ include __DIR__ . "/../includes/navbar.php";
 ========================================================= -->
  
 <h2>Add a Region</h2>
- 
+
 <form method="POST" action="../processes/manage_regions.php">
- 
+
     <input type="hidden" name="action" value="add">
- 
-    <select name="region_id" required>
- 
-        <option value="">-- Select a region --</option>
- 
-        <?php foreach ($allResults as $item): ?>
- 
-            <?php if (!in_array($item['REGION_ID'], $selectedIds)): ?>
- 
-                <option value="<?= htmlspecialchars($item['REGION_ID']) ?>">
-                    <?= htmlspecialchars($item['REGION_NAME']) ?>
-                </option>
- 
-            <?php endif; ?>
- 
-        <?php endforeach; ?>
- 
+
+    <!-- Options are filled in by the script below, from api/regions/ -->
+    <select id="picker" name="region_id" required>
+        <option value="">Loading...</option>
     </select>
- 
+
     <button type="submit">Add</button>
- 
+
 </form>
+
+<script>
  
+// dropdown options from rest api
+const API_URL = "../../api/regions/";
+const selectedIds = <?= json_encode(array_map('strval', $selectedIds)) ?>;
+const picker = document.getElementById("picker");
+
+fetch(API_URL)
+    .then(response => response.json())
+    .then(payload => {
+
+        picker.innerHTML = "";
+
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "-- Select a region --";
+        picker.appendChild(placeholder);
+
+        // payload looks like {success, count, data: [ {REGION_ID, REGION_NAME, ...}, ... ]}
+        payload.data.forEach(item => {
+
+            // skip ones the user already has
+            if (selectedIds.includes(String(item.REGION_ID))) {
+                return;
+            }
+
+            const option = document.createElement("option");
+            option.value = item.REGION_ID;
+            option.textContent = item.REGION_NAME;
+            picker.appendChild(option);
+        });
+    })
+    .catch(() => {
+        picker.innerHTML = "<option value=''>Could not load the list</option>";
+    });
+</script>
+
 <br>
  
 <a href="../profile.php">Back to My Profile</a>
