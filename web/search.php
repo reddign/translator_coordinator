@@ -89,13 +89,15 @@ include "includes/navbar.php";
 
 <?php
 //Checks if filter data exists before trying to get it. Also sets default to null incase of failure.
+$user = $_GET['user'] ?? null;
 $language = $_GET['language'] ?? null;
 $country  = $_GET['country'] ?? null;
 $region   = $_GET['region'] ?? null;
 $group    = $_GET['group'] ?? null; 
+$id = $_GET['id'] ?? null;
 
 // Call stub function. Currently a placeholder for demos.
-$results = searchTranslators($language, $country, $region, $group);
+$results = searchTranslators($user, $language, $country, $region, $group);
 ?>
 
 <h2>Search Results</h2>

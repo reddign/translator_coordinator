@@ -34,13 +34,23 @@ function getJSONFromURL($url){
 }
 
 function searchTranslators($userName = null, $languageName = null, $countryName = null, $regionName = null, $group = null) {
-    return [
-        [
-            'name'     => $userName ?? 'N/A',
-            'language' => $languageName ?? 'All',
-            'country'  => $countryName ?? 'All'
-        ]
-    ];
+    $sql = "
+        SELECT
+            userid,
+            CONCAT(first_name, '',last_name) AS name
+        FROM users
+        WHERE 1=1
+    ";
+    if (!empty($userName)) {
+        $safeUserName = addslashes($userName);
+
+        $sql .= "
+        AND CONCAT(first_name, ' ', last_name)
+        LIKE '%$safeUserName%'
+        ";
+    }
+    return WFDatabase::getDataFromSQL($sql);
+
 }
 
 
