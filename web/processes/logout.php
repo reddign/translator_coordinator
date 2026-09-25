@@ -25,6 +25,9 @@ $jsonData = json_encode($data);
 
 /*
 API call.
+
+Currently unused due to API - database requesting stuff
+need to configure the info request to join the api_sessions table to the users table 
 */
 $url = rtrim($mainURL, "/") . "/api/users/logout";
 

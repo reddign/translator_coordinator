@@ -121,6 +121,9 @@ if ($result === null) {
 /*
 ------------------------------------------------------------
 Successful login
+
+Currently have unused sections due to API - database requesting stuff
+need to configure the info request to join the api_sessions table to the users table 
 ------------------------------------------------------------
 */
 
@@ -134,8 +137,6 @@ if (
     The login endpoint logs the user in by returning
     an authentication token.
     */
-
-
     $_SESSION["api_token"] = $result["token"];
     $_SESSION["user"] = $result["user"];
     $_SESSION["LoginStatus"] = "YES";
