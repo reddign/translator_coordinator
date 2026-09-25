@@ -51,28 +51,79 @@ if($page=="login"){
     }
 
     //TODO: connect button clicks to API calls
-    //TODO: set up form/dropdown to fill out when user clicks on add language.
-    echo '<button type="button">Add Language</button>';
-    // $data = [
-    //     "userid" => $profile_data['userid'],
-    //     "language_id" => $languageId,
-    //     "proficiency_level" => $proficency
-    // ];
-    // $jsonData = json_encode($data);
-    // $options = [
-    //     "http" => [
-    //         "method" => "POST",
-    //         "header" => 
-    //             "Content-Type: application/json\r\n" .
-    //             "Accept: application/json\r\n",
-    //             "content" => $jsonData,
-    //             "ignore_errors" => true
-    //     ]
-    // ];
+    //TODO: Type in language and it will come up, perhaps autofill but that might be too ambitious right now.
+
+    //using api call to get all languages
+    // $all_languages = $mainURL."/api/languages?search=span";
+    //This line is causing problems
+    // $all_languages_response = getJSONFromURL($all_languages);
+    // $languages = $all_languages_response["data"];
+    echo '<form style="margin-top: 20px;">';
+    echo '<label for="languageSelect">Language to add:</label> ';
+    echo '<input id="allLangs" type="text" list="allLanguages">';
+    // echo '<p> output: <span id="output"></span></p>';
+    // ?>
+    // <script>
+    // document.getElementById('allLangs').addEventListener('input', function(){
+    //     document.getElementById('output').textContent = this.value;
+    // });
+    // </script>
+    // <?php
+    // echo '<datalist id="allLanguages">';
+    //     foreach ($languages as $langs) {
+    //         echo "<option value='{$langs['LANGUAGE_ID']}'>{$langs['LANGUAGE_NAME']}</option>";
+    //     }
+    //     echo '</datalist>';
+    echo '<button type="submit">Add Language</button>';
+    echo '</form>';
 
     
-    echo '<button type="button">Remove Language</button>';
-    echo "<BR><BR><BR>";
+    echo '<form id="deleteLanguageForm" style="margin-top: 20px;" onsubmit="event.preventDefault(); deleteLanguage( ' . (int)$userId . ');">';
+    echo '<label for="languageSelect">Select a Language to Delete:</label> ';
+    echo '<select name="languageId" id="languageSelection">';
+        echo "<option value='0' selected> --Choose a language-- </option>";
+        foreach ($spoken_languages as $langs) {
+            echo "<option value='{$langs['LANGUAGE_ID']}'>{$langs['LANGUAGE_NAME']}</option>";
+        }
+    echo '</select>';
+    echo '<button type="submit">Delete Language</button>';
+    echo '</form>';
+    ?>
+    
+    <script>
+    function deleteLanguage(userId){
+        const languageId = document.getElementById('languageSelection').value;
+
+        if(!languageId || languageId === '0'){
+            alert('Please select a language to delete.');
+            return;
+        }
+
+        if(!confirm('Are you sure you want to delete this language from your profile?')){
+            return;
+        }
+
+        const baseUrl = '<?php echo $mainURL; ?>';
+        const delUrl = `${baseUrl}/api/users/${userId}/languages/${languageId}`;
+
+        fetch(delUrl, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => response.json()).then(data => {
+            if (data.success) {
+                alert(data.message || 'Language successfully deleted.');
+                location.reload();
+            }else{
+                alert('Error: ' + data.message);
+            }
+        }).catch(error => {
+            console.error('Fetch error: ', error);
+        });
+    }
+    </script>
+    <?php
 
     //Countries
     echo "<h2>Countries of Interest</h2>";
@@ -82,37 +133,7 @@ if($page=="login"){
     echo "<h2>Groups</h2>";
     echo "<BR><BR><BR>";
     echo "</div>";
-}
+}   
 
-// //USER PROFILE PAGE
-//     //Written with the assumption that all of this will be converted into php code
-
-//     //TODO: Access the API to get user language information
-        //$userId = $_SESSION[userid]
-//      $USER_LANGUAGES = $mainURL."/api/users/{$userId}/languages";
-//     //TODO: Add user userId and userLanguages to the database
-
-//     function getUserLanguages(userId){
-//         //Takes in a user's id and returns their languages
-//         return userLanguages;
-//     }
-
-//     function selectLanguage(userLanguages){
-//         //Takes all the user languages and selects just one
-//         return selectedLanguage;
-//     }
-
-//     //TODO: update language on profile function
-//     function updateLanguage(selectedLanguage){
-//         //takes in the selected language and updates it
-//         return updatedLanguage;
-//     }
-
-//     //TODO: delete language from profile
-//     function deleteLanguage(selectedLanguage){
-//         //takes in the selected language and removes it from the users languages
-//     }
-    
-
-//include "includes/footer.php";
+include "includes/footer.php";
 ?>
