@@ -37,7 +37,6 @@ function getJSONFromURL($url){
 
 function searchTranslators(array $filters): array
 {
-
     $sql = "
         SELECT 
             u.userid,
@@ -45,14 +44,14 @@ function searchTranslators(array $filters): array
             COALESCE(c.COUNTRY_NAME, 'N/A') AS country_name,
             COALESCE(r.REGION_NAME, 'N/A')  AS region_name,
             COALESCE(GROUP_CONCAT(DISTINCT l.LANGUAGE_NAME SEPARATOR ', '), 'None') AS language_name,
-            COALESCE(GROUP_CONCAT(DISTINCT g.GROUP_NAME SEPARATOR ', '), 'None')    AS group_name
+            COALESCE(GROUP_CONCAT(DISTINCT g.group_name SEPARATOR ', '), 'None')    AS group_name
         FROM users u
-        LEFT JOIN wf_countries c           ON c.COUNTRY_ID = u.original_country_id
-        LEFT JOIN wf_world_regions r       ON r.REGION_ID = c.REGION_ID
+        LEFT JOIN wf_countries c            ON c.COUNTRY_ID = u.original_country_id
+        LEFT JOIN wf_world_regions r        ON r.REGION_ID = c.REGION_ID
         LEFT JOIN user_spoken_languages usl ON usl.userid = u.userid
-        LEFT JOIN wf_languages l           ON l.LANGUAGE_ID = usl.language_id
-        LEFT JOIN group_members gm         ON gm.userid = u.userid
-        LEFT JOIN `groups` g               ON g.GROUP_ID = gm.GROUP_ID
+        LEFT JOIN wf_languages l            ON l.LANGUAGE_ID = usl.language_id
+        LEFT JOIN group_members gm          ON gm.userid = u.userid
+        LEFT JOIN `groups` g                ON g.groupid = gm.groupid
         WHERE 1=1
     ";
 
@@ -70,7 +69,7 @@ function searchTranslators(array $filters): array
     if (!empty($filters['region'])) {$sql .= " AND r.REGION_ID = :region";
         $params[':region'] =$filters['region'];
     }
-    if (!empty($filters['group'])) {$sql .= " AND g.GROUP_ID = :group";
+    if (!empty($filters['group'])) {$sql .= " AND g.groupid = :group";
         $params[':group'] =$filters['group'];
     }
 
