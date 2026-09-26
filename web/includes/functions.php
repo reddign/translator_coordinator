@@ -33,23 +33,26 @@ function getJSONFromURL($url){
     return $response;
 }
 
+
+
 function searchTranslators(array $filters): array
 {
+
     $sql = "
-        SELECT DISTINCT
+        SELECT 
             u.userid,
             CONCAT(u.first_name, ' ', u.last_name) AS full_name,
-            COALESCE(l.LANGUAGE_NAME, 'N/A')       AS language_name,
-            COALESCE(c.COUNTRY_NAME, 'N/A')        AS country_name,
-            COALESCE(r.REGION_NAME, 'N/A')         AS region_name,
-            COALESCE(g.group_name, 'N/A')          AS group_name
+            COALESCE(c.COUNTRY_NAME, 'N/A') AS country_name,
+            COALESCE(r.REGION_NAME, 'N/A')  AS region_name,
+            COALESCE(GROUP_CONCAT(DISTINCT l.LANGUAGE_NAME SEPARATOR ', '), 'None') AS language_name,
+            COALESCE(GROUP_CONCAT(DISTINCT g.GROUP_NAME SEPARATOR ', '), 'None')    AS group_name
         FROM users u
         LEFT JOIN wf_countries c           ON c.COUNTRY_ID = u.original_country_id
         LEFT JOIN wf_world_regions r       ON r.REGION_ID = c.REGION_ID
         LEFT JOIN user_spoken_languages usl ON usl.userid = u.userid
         LEFT JOIN wf_languages l           ON l.LANGUAGE_ID = usl.language_id
         LEFT JOIN group_members gm         ON gm.userid = u.userid
-        LEFT JOIN `groups` g               ON g.group_id = gm.group_id
+        LEFT JOIN `groups` g               ON g.GROUP_ID = gm.GROUP_ID
         WHERE 1=1
     ";
 
@@ -67,18 +70,15 @@ function searchTranslators(array $filters): array
     if (!empty($filters['region'])) {$sql .= " AND r.REGION_ID = :region";
         $params[':region'] =$filters['region'];
     }
-    if (!empty($filters['group'])) {$sql .= " AND g.group_id = :group";
+    if (!empty($filters['group'])) {$sql .= " AND g.GROUP_ID = :group";
         $params[':group'] =$filters['group'];
     }
 
-    $sql .= " ORDER BY full_name ASC";
+    $sql .= " GROUP BY u.userid, u.first_name, u.last_name, c.COUNTRY_NAME, r.REGION_NAME ORDER BY full_name ASC";
 
     $results = WFDatabase::getDataFromSQL($sql,$params);
     return is_array($results) ?$results : [];
 }
-
-
-?>
 
 
 ?>
