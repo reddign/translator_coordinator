@@ -33,46 +33,56 @@ function getJSONFromURL($url){
     return $response;
 }
 
-function searchTranslators($userName = null, $languageName = null, $countryName = null, $regionName = null, $group = null) {
+
+
+function searchTranslators(array $filters): array
+{
 
     $sql = "
-        SELECT DISTINCT
+        SELECT 
             u.userid,
-            CONCAT(u.first_name, ' ', u.last_name) AS name,
-            l.LANGUAGE_NAME AS language
+            CONCAT(u.first_name, ' ', u.last_name) AS full_name,
+            COALESCE(c.COUNTRY_NAME, 'N/A') AS country_name,
+            COALESCE(r.REGION_NAME, 'N/A')  AS region_name,
+            COALESCE(GROUP_CONCAT(DISTINCT l.LANGUAGE_NAME SEPARATOR ', '), 'None') AS language_name,
+            COALESCE(GROUP_CONCAT(DISTINCT g.GROUP_NAME SEPARATOR ', '), 'None')    AS group_name
         FROM users u
-
-        LEFT JOIN user_spoken_languages usl
-            ON u.userid = usl.userid
-
-        LEFT JOIN wf_languages l
-            ON usl.language_id = l.LANGUAGE_ID
-
+        LEFT JOIN wf_countries c           ON c.COUNTRY_ID = u.original_country_id
+        LEFT JOIN wf_world_regions r       ON r.REGION_ID = c.REGION_ID
+        LEFT JOIN user_spoken_languages usl ON usl.userid = u.userid
+        LEFT JOIN wf_languages l           ON l.LANGUAGE_ID = usl.language_id
+        LEFT JOIN group_members gm         ON gm.userid = u.userid
+        LEFT JOIN `groups` g               ON g.GROUP_ID = gm.GROUP_ID
         WHERE 1=1
     ";
 
-    if (!empty($userName)) {
-        $safeUserName = addslashes($userName);
+    $params = [];
 
-        $sql .= "
-            AND CONCAT(u.first_name, ' ', u.last_name)
-            LIKE '%$safeUserName%'
-        ";
+    if (!empty($filters['user'])) {
+        $sql .= " AND (u.first_name LIKE :user OR u.last_name LIKE :user OR CONCAT(u.first_name, ' ', u.last_name) LIKE :user)";
+        $params[':user'] = '%' . trim($filters['user']) . '%';
+    }
+    if (!empty($filters['language'])) {
+        $sql .= " AND l.LANGUAGE_ID = :language";
+        $params[':language'] = $filters['language'];
+    }
+    if (!empty($filters['country'])) {
+        $sql .= " AND c.COUNTRY_ID = :country";
+        $params[':country'] = $filters['country'];
+    }
+    if (!empty($filters['region'])) {
+        $sql .= " AND r.REGION_ID = :region";
+        $params[':region'] = $filters['region'];
+    }
+    if (!empty($filters['group'])) {
+        $sql .= " AND g.GROUP_ID = :group";
+        $params[':group'] = $filters['group'];
     }
 
-    if (!empty($languageName)) {
-        $languageId = (int)$languageName;
-    
-        $sql .= "
-            AND l.LANGUAGE_ID = $languageId
-        ";
-    }
+    $sql .= " GROUP BY u.userid, u.first_name, u.last_name, c.COUNTRY_NAME, r.REGION_NAME ORDER BY full_name ASC";
 
-    return WFDatabase::getDataFromSQL($sql);
+    return WFDatabase::getDataFromSQL($sql, $params);
 }
-
-
-?>
 
 
 ?>
