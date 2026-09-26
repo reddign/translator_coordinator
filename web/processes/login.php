@@ -1,5 +1,7 @@
 <?PHP
 
+#TODO: Explore assigning sessions with user ids to track useage accurately and ensure security
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE);
 session_start();
@@ -29,7 +31,7 @@ Basic validation.
 ------------------------------------------------------------
 */
 if (
-    $username === "" ||
+    $username === ""        ||
     $userpassword === "" 
 ) {
     $_SESSION["error"] = "All fields are required.";
@@ -45,7 +47,9 @@ Build the request body expected by the REST API.
 
 $data = [
     "email" => $username,
-    "password" => $userpassword
+    "password" => $userpassword,
+    //"session_id" => session_id(),
+    //"login_time" => date("Y-m-d H:i:s")
 ];
 
 $jsonData = json_encode($data);
@@ -56,16 +60,21 @@ Call POST /api/users/login
 ------------------------------------------------------------
 */
 
-$url = $mainURL . "/api/users/login";
+$url = rtrim($mainURL, "/") . "/api/users/login";
 
 $options = [
     "http" => [
-    "method" => "POST",
+        "method" => "POST",
         "header" =>
             "Content-Type: application/json\r\n" .
             "Accept: application/json\r\n",
-            "content" => $jsonData,
-            "ignore_errors" => true
+        "content" => $jsonData,
+        "ignore_errors" => true
+    ],
+    "ssl" => [
+        "verify_peer" => false,
+        "verify_peer_name" => false,
+        "allow_self_signed" => true
     ]
 ];
 
@@ -112,8 +121,13 @@ if ($result === null) {
 /*
 ------------------------------------------------------------
 Successful login
+
+Currently have unused sections due to API - database requesting stuff
+need to configure the info request to join the api_sessions table to the users table 
 ------------------------------------------------------------
 */
+
+
 if (
     isset($result["success"]) &&
     $result["success"] === true
@@ -126,10 +140,27 @@ if (
     $_SESSION["api_token"] = $result["token"];
     $_SESSION["user"] = $result["user"];
     $_SESSION["LoginStatus"] = "YES";
+
+    /*
+    Future Feature:
+    This is where the authenticated user's ID,
+    login time, and session information will be
+    stored for session tracking and security.
+    */
+    $_SESSION["session_id"] = session_id();
+    $_SESSION["login_time"] = date("Y-m-d H:i:s");
+
+    if (isset($result["user"]["userid"])) {
+        $_SESSION["user_id"] = $result["user"]["userid"];
+    }
+
+
     $_SESSION["error"] = "";
-    header("location:../login.php?page=profile");
+
+    header("location:../profile.php");
     exit;
 }
+
 
 
 $_SESSION["error"] = $result["message"] ?? "Login failed.";

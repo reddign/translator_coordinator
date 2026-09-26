@@ -19,7 +19,7 @@ require_once __DIR__ . "/../includes/navbar.php";
                     <h2>Sam Vossen</h2>
                 </div>
             
-                <div id="w3-article">Sam Vossen is a junior Information Systems major with a concentration in cybersecurity, a minor in Forensic Studies, and a minor in Criminal Justice. He is expected to graduate in 2028.
+                <div id="w3-article">Sam Vossen is a Junior Information Systems major with a concentration in cybersecurity, a minor in Forensic Studies, and a minor in Criminal Justice. He is expected to graduate in 2028.
                     <BR><BR>
                 </div>
             </div>
