@@ -33,53 +33,70 @@ function getJSONFromURL($url){
     return $response;
 }
 
+$id = $_GET['id'] ?? null;
+
+$countryDataURL  = "{$mainURL}/api/countries/{$id}";
+$currencyDataURL = "{$mainURL}/api/currencies?countryid={$id}";
+$languageDataURL = "{$mainURL}/api/languages?countryid={$id}";
+
+$countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
+$currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
+$languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
+
+$countries  = $countryResponse['data'] ?? [];
+$currencies = $currencyResponse['data'] ?? [];
+$languages  = $languageResponse['data'] ?? [];
+
+$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
+$countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
+$languageId   = $languages[0]['LANGUAGE_ID'] ?? $id;
 
 
-function searchTranslators(array $filters): array
+
+function searchTranslators($user = null, $language = null, $country = null, $region = null, $group = null): array
 {
-
     $sql = "
         SELECT 
             u.userid,
-            CONCAT(u.first_name, ' ', u.last_name) AS full_name,
-            COALESCE(c.COUNTRY_NAME, 'N/A') AS country_name,
+            CONCAT(u.first_name, ' ', u.last_name) AS name,
+            COALESCE(c.COUNTRY_NAME, 'N/A') AS country,
             COALESCE(r.REGION_NAME, 'N/A')  AS region_name,
-            COALESCE(GROUP_CONCAT(DISTINCT l.LANGUAGE_NAME SEPARATOR ', '), 'None') AS language_name,
-            COALESCE(GROUP_CONCAT(DISTINCT g.GROUP_NAME SEPARATOR ', '), 'None')    AS group_name
+            COALESCE(GROUP_CONCAT(DISTINCT l.LANGUAGE_NAME SEPARATOR ', '), 'None') AS language,
+            COALESCE(GROUP_CONCAT(DISTINCT g.group_name SEPARATOR ', '), 'None')    AS group_name
         FROM users u
-        LEFT JOIN wf_countries c           ON c.COUNTRY_ID = u.original_country_id
-        LEFT JOIN wf_world_regions r       ON r.REGION_ID = c.REGION_ID
+        LEFT JOIN wf_countries c            ON c.COUNTRY_ID = u.original_country_id
+        LEFT JOIN wf_world_regions r        ON r.REGION_ID = c.REGION_ID
         LEFT JOIN user_spoken_languages usl ON usl.userid = u.userid
-        LEFT JOIN wf_languages l           ON l.LANGUAGE_ID = usl.language_id
-        LEFT JOIN group_members gm         ON gm.userid = u.userid
-        LEFT JOIN `groups` g               ON g.GROUP_ID = gm.GROUP_ID
+        LEFT JOIN wf_languages l            ON l.LANGUAGE_ID = usl.language_id
+        LEFT JOIN group_members gm          ON gm.userid = u.userid
+        LEFT JOIN `groups` g                ON g.groupid = gm.groupid
         WHERE 1=1
     ";
 
     $params = [];
 
-    if (!empty($filters['user'])) {
+    if (!empty($user)) {
         $sql .= " AND (u.first_name LIKE :user OR u.last_name LIKE :user OR CONCAT(u.first_name, ' ', u.last_name) LIKE :user)";
-        $params[':user'] = '%' . trim($filters['user']) . '%';
+        $params[':user'] = '%' . trim($user) . '%';
     }
-    if (!empty($filters['language'])) {
+    if (!empty($language)) {
         $sql .= " AND l.LANGUAGE_ID = :language";
-        $params[':language'] = $filters['language'];
+        $params[':language'] = $language;
     }
-    if (!empty($filters['country'])) {
+    if (!empty($country)) {
         $sql .= " AND c.COUNTRY_ID = :country";
-        $params[':country'] = $filters['country'];
+        $params[':country'] = $country;
     }
-    if (!empty($filters['region'])) {
+    if (!empty($region)) {
         $sql .= " AND r.REGION_ID = :region";
-        $params[':region'] = $filters['region'];
+        $params[':region'] = $region;
     }
-    if (!empty($filters['group'])) {
-        $sql .= " AND g.GROUP_ID = :group";
-        $params[':group'] = $filters['group'];
+    if (!empty($group)) {
+        $sql .= " AND g.groupid = :group";
+        $params[':group'] = $group;
     }
 
-    $sql .= " GROUP BY u.userid, u.first_name, u.last_name, c.COUNTRY_NAME, r.REGION_NAME ORDER BY full_name ASC";
+    $sql .= " GROUP BY u.userid, u.first_name, u.last_name, c.COUNTRY_NAME, r.REGION_NAME ORDER BY name ASC";
 
     return WFDatabase::getDataFromSQL($sql, $params);
 }

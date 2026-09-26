@@ -1,47 +1,70 @@
 <?php
-require_once __DIR__ . "/../includes/config.php";
-require_once __DIR__ . "/../includes/WFDatabase.php";
-require_once "includes/functions.php";
-require_once "includes/header.php";
-require_once "includes/navbar.php";
-
-$languageDataURL = $mainURL."/api/languages/";
-$languageResponse = getJSONFromURL($languageDataURL);
-$languages = $languageResponse["data"];
+include "../includes/config.php";
+include "../includes/WFDatabase.php";
+include "includes/functions.php";
+include "includes/header.php";
+include "includes/navbar.php";
 ?>
 
 <h2>Translator Coordinator - Search Feature</h2>
 <!--Dropdown menus for different filters.-->
 <div class="w3-container w3-margin-bottom w3-section">
     <form action="search.php" method="GET" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-    <input
-        type="text"
-        name="user"
-        class="w3-input"
-        placeholder="Search users..."
-        style="flex: 1; min-width: 150px;"
-    >
         <select name="language" class="w3-select" style="flex: 1; min-width: 50px;">
-            <option value="" disabled selected>Language</option>
+            <option value="">Language</option>
             <?php
-                if($languages) {
-                    foreach ($languages as $language){
-                        echo "<option value={$language['LANGUAGE_ID']}>{$language['LANGUAGE_NAME']}</option>";
-                    }
-                }
-            ?>
+            $languages = WFDatabase::getDataFromSQL("
+            SELECT LANGUAGE_ID, LANGUAGE_NAME
+        FROM wf_languages
+        ORDER BY LANGUAGE_NAME
+        ");
+        ?>
+
+        <?php foreach ($languages as $language): ?>
+
+            <option value="<?= $language['LANGUAGE_ID'] ?>">
+            <?= $language['LANGUAGE_NAME'] ?>
+        </option>
+
+    <?php endforeach; ?>
         </select>
 
         <select name="country" class="w3-select" style="flex: 1; min-width: 50px;">
-            <option value="" disabled selected>Country</option>
-            <option value="us">United States</option>
-            <option value="mx">Mexico</option>
+            <option value="">Country</option>
+            <?php
+            $countries = WFDatabase::getDataFromSQL("
+            SELECT COUNTRY_ID, COUNTRY_NAME
+        FROM wf_countries
+        ORDER BY COUNTRY_NAME
+        ");
+        ?>
+
+        <?php foreach ($countries as $country): ?>
+
+            <option value="<?= $country['COUNTRY_ID'] ?>">
+            <?= $country['COUNTRY_NAME'] ?>
+        </option>
+
+    <?php endforeach; ?>
         </select>
 
         <select name="region" class="w3-select" style="flex: 1; min-width: 50px;">
-            <option value="" disabled selected>Region</option>
-            <option value="north">North</option>
-            <option value="south">South</option>
+            <option value="">Region</option>
+            <?php
+            $regions = WFDatabase::getDataFromSQL("
+            SELECT REGION_ID, REGION_NAME
+        FROM wf_world_regions
+        ORDER BY REGION_NAME
+        ");
+        ?>
+
+        <?php foreach ($regions as $region): ?>
+
+            <option value="<?= $region['REGION_ID'] ?>">
+            <?= $region['REGION_NAME'] ?>
+        </option>
+
+    <?php endforeach; ?>
         </select>
 
         <select name="group" class="w3-select" style="flex: 1; min-width: 50px;">
@@ -58,16 +81,33 @@ $languages = $languageResponse["data"];
 </div>
 
 <?php
-//Checks if filter data exists before trying to get it. Also sets default to null incase of failure.
-$user = $_GET['user'] ?? null;
+// GET Filters
 $language = $_GET['language'] ?? null;
-$country  = $_GET['country'] ?? null;
-$region   = $_GET['region'] ?? null;
-$group    = $_GET['group'] ?? null; 
-$id = $_GET['id'] ?? null;
+$country  = $_GET['country']  ?? null;
+$region   = $_GET['region']   ?? null;
+$group    = $_GET['group']    ?? null;
+$id       = $_GET['id']       ?? null;
 
-// Call stub function. Currently a placeholder for demos.
-$results = searchTranslators($user, $language, $country, $region, $group);
+$countries  = [];
+$currencies = [];
+$languages  = [];
+
+// Fetch API data only if ID exists
+if ($id) {
+    $countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
+    $currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
+    $languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
+
+    $countries  = $countryResponse['data']  ?? [];
+    $currencies = $currencyResponse['data'] ?? [];
+    $languages  = $languageResponse['data'] ?? [];
+}
+
+$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
+$countryId   = $countries[0]['COUNTRY_ID']   ?? $id;
+
+// Parameters aligned: ($userName, $languageName, $countryName, $regionName, $group)
+$results = searchTranslators(null, $language, $countryName, $region, $group);
 ?>
 
 <h2>Search Results</h2>
@@ -77,7 +117,11 @@ $results = searchTranslators($user, $language, $country, $region, $group);
     
     <ul>
         <?php foreach ($results as $translator): ?>
-            <li><?= $translator['name'] ?> - <?= $translator['language'] ?> (<?= $translator['country'] ?>)</li>
+            <li>
+                <?= htmlspecialchars($translator['name'] ?? '') ?> - 
+                <?= htmlspecialchars($translator['language'] ?? '') ?> 
+                (<?= htmlspecialchars($translator['country'] ?? '') ?>)
+            </li>
         <?php endforeach; ?>
     </ul>
 </div>

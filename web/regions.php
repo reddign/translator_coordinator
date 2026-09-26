@@ -1,5 +1,4 @@
 <?php
-$regionid=$_GET["id"];
 require_once __DIR__ . "/../includes/config.php";
 
 include "includes/functions.php";
