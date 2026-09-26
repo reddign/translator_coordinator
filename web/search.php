@@ -88,28 +88,28 @@ include "includes/navbar.php";
 </div>
 
 <?php
-//Checks if filter data exists before trying to get it. Also sets default to null incase of failure.
-$user = $_GET['user'] ?? null;
-$language = $_GET['language'] ?? null;
-$country  = $_GET['country'] ?? null;
-$region   = $_GET['region'] ?? null;
-$group    = $_GET['group'] ?? null; 
-$id = $_GET['id'] ?? null;
-
-// Call stub function. Currently a placeholder for demos.
-$results = searchTranslators($user, $language, $country, $region, $group);
+// Call the database function
+$results = searchTranslators($_GET);
 ?>
 
 <h2>Search Results</h2>
 
 <div class="w3-container">
-    <p>Showing search results for Language: <strong><?= htmlspecialchars($language ?? 'All') ?></strong></p>
-    
-    <ul>
-        <?php foreach ($results as $translator): ?>
-            <li><?= $translator['name'] ?> - <?= $translator['language'] ?> (<?= $translator['country'] ?>)</li>
-        <?php endforeach; ?>
-    </ul>
+    <?php if (empty($results)): ?>
+        <p>No translators found matching your criteria.</p>
+    <?php else: ?>
+        <ul>
+            <?php foreach ($results as $translator): ?>
+                <li>
+                    <strong><?= htmlspecialchars($translator['full_name']) ?></strong> — 
+                    Language: <?= htmlspecialchars($translator['language_name']) ?> | 
+                    Country: <?= htmlspecialchars($translator['country_name']) ?> | 
+                    Region: <?= htmlspecialchars($translator['region_name']) ?> | 
+                    Group: <?= htmlspecialchars($translator['group_name']) ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
 </div>
 
 
