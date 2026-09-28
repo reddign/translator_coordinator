@@ -50,30 +50,17 @@ if($page=="login"){
         }
     }
 
-    //TODO: connect button clicks to API calls
-    //TODO: Type in language and it will come up, perhaps autofill but that might be too ambitious right now.
-
-    //using api call to get all languages
-    // $all_languages = $mainURL."/api/languages?search=span";
-    //This line is causing problems
-    // $all_languages_response = getJSONFromURL($all_languages);
-    // $languages = $all_languages_response["data"];
-    echo '<form style="margin-top: 20px;">';
-    echo '<label for="languageSelect">Language to add:</label> ';
-    echo '<input id="allLangs" type="text" list="allLanguages">';
-    // echo '<p> output: <span id="output"></span></p>';
-    // ?>
-    // <script>
-    // document.getElementById('allLangs').addEventListener('input', function(){
-    //     document.getElementById('output').textContent = this.value;
-    // });
-    // </script>
-    // <?php
-    // echo '<datalist id="allLanguages">';
-    //     foreach ($languages as $langs) {
-    //         echo "<option value='{$langs['LANGUAGE_ID']}'>{$langs['LANGUAGE_NAME']}</option>";
-    //     }
-    //     echo '</datalist>';
+    echo '<form id="addLanguageForm" style="margin-top: 20px;" onsubmit="event.preventDefault(); addLanguage(' . (int)$userId . ');">';
+    echo '<label for="allLangs">Language to add:</label> ';
+    echo '<input id="allLangs" type="text" list="allLanguages" autocomplete="off">';
+    echo '<datalist id="allLanguages"></datalist>';
+    echo '<label for="proficiency">Proficiency Level: </label>';
+    echo '<select id="proficiency">';
+    echo '<option value="0" selected> -- Select -- </option>';
+        for($i = 1; $i <= 5; $i++){
+            echo "<option value='{$i}'>{$i}</option>";
+        }
+    echo '</select>';
     echo '<button type="submit">Add Language</button>';
     echo '</form>';
 
@@ -91,6 +78,62 @@ if($page=="login"){
     ?>
     
     <script>
+
+    const baseUrl = '<?php echo $mainURL; ?>';
+
+    const langInput = document.getElementById('allLangs');
+    const langList = document.getElementById('allLanguages');
+    let languageList = {};
+    let searchTimer;
+
+    langInput.addEventListener('input', function() {
+        const searchText = this.value.trim();
+        clearTimeout(searchTimer);
+        if (searchText.length < 2) return;
+
+        searchTimer = setTimeout(() => {
+            const langsUrl = `${baseUrl}/api/languages?search=${searchText}`;
+            fetch(langsUrl, {headers: { 'Accept': 'application/json'}}).then(response => response.json()).then(result => {
+                langList.innerHTML = '';
+                languageList = {};
+                (result.data || []).forEach(lang => {
+                    languageList[lang.LANGUAGE_NAME] = lang.LANGUAGE_ID;
+                    const option = document.createElement('option');
+                    option.value = lang.LANGUAGE_NAME;
+                    langList.appendChild(option);
+                });
+            })
+        });
+    });
+
+    function addLanguage(userId){
+        const languageId = languageList[langInput.value.trim()];
+        const prof = parseInt(document.getElementById('proficiency').value, 10);
+        if(!languageId){
+            alert('Please pick a language from the suggestion list');
+            return;
+        }
+        if(!prof < 1 && !prof > 5){
+            alert('Please select a proficiency level between 1 and 5');
+            return;
+        }
+
+        fetch(`${baseUrl}/api/users/${userId}/languages`, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                language_id: languageId,
+                proficency_level: prof
+            })
+        }).then(response => response.json()).then(data => {
+            if(data.success){
+                location.reload();
+            }else{
+                alert('Error: ' + data.message);
+            }
+        }).catch(error => console.error('Fetch error: ', error));
+    }
+
     function deleteLanguage(userId){
         const languageId = document.getElementById('languageSelection').value;
 
@@ -103,7 +146,6 @@ if($page=="login"){
             return;
         }
 
-        const baseUrl = '<?php echo $mainURL; ?>';
         const delUrl = `${baseUrl}/api/users/${userId}/languages/${languageId}`;
 
         fetch(delUrl, {
