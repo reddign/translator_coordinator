@@ -12,18 +12,19 @@ $translatorId = $_GET["id"] ?? null;
 //Access the API to get data
 $usersDataURL = $mainURL."/api/translators/{$translatorId}";
 
-// echo $usersDataURL;
-
 $usersResponse  = getJSONFromURL($usersDataURL);
 $users = $usersResponse["data"];
-/* checking the data that comes back from the API call
-echo "<pre>";
-var_dump($users); 
-echo "</pre>";
-*/
 
-// Hopefully at some point this will get the users' data and put it on the page.
+// Display the translators's data
 $user = $users[0];
+
+    // Getting the origin country
+    $countryId = $user["original_country_id"];
+    $countryDataURL = $mainURL."/api/countries/{$countryId}";
+    $countryResponse  = getJSONFromURL($countryDataURL);
+    $countries = $countryResponse["data"];
+    $country = $countries[0];
+    $country_name = $country["COUNTRY_NAME"];
 
     $first_name = $user["first_name"];
     $last_name = $user["last_name"];
@@ -32,9 +33,10 @@ $user = $users[0];
 
     echo "<h1>{$first_name} {$last_name}</h1>";
     echo "<img src='images/flags/{$flag}' width='50px'> ";
-    echo "<h3>Registered since: {$date_registered}</h3>";
+    echo "<h3>Origin Country: {$country_name}</h3>";
+    echo "Registered since: {$date_registered}";
 
-echo "<h3>Spoken Languages</h3>";
+echo "<h3>Translating Languages</h3>";
 foreach($users as $user){
 
     $languge_name = $user["language_name"];
@@ -48,5 +50,7 @@ foreach($users as $user){
     }
     echo "<br>";
 }
+
+// TODO: needs link to the translatorEditor page if user looking at their own profile
 
 ?>

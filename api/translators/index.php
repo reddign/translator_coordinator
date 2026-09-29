@@ -50,7 +50,8 @@ $sql = "
             DATE_FORMAT(u.date_registered, '%Y-%m-%d') date_registered,
             l.language_name,
             usl.proficency_level,
-            c.flag
+            c.flag,
+            u.original_country_id
         FROM users u 
             LEFT OUTER JOIN user_spoken_languages usl ON u.userid = usl.userid
             LEfT OUTER JOIN wf_languages l ON usl.language_id = l.language_id
