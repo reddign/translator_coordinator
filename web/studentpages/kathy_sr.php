@@ -22,6 +22,13 @@ require_once __DIR__ . "/../includes/navbar.php";
                 <div id="w3-article"> 
                     Kathy is a junior Computer Science major. She has a concentration in AI & Data Science, as well as a minor in Data Analytics.
                     She intends to graduate in May 2028.
+
+                    commit 1
+                    commit 2
+                    commit 3
+                    commit 4
+                    commit 5
+                    commit 6
                     <BR><BR>
                 </div>
             </div>
