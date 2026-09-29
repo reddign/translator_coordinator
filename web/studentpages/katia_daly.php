@@ -20,7 +20,7 @@ require_once __DIR__ . "/../includes/navbar.php";
                 </div>
             
                 <div id="w3-article"> Katia Daly is a junior majoring in Computer Science, with a concentration in Web and Application 
-                    Design. She intends to graduate in May 2028. 
+                    Design. She intends to graduate in May 2028.
                     <BR><BR>
                 </div>
             </div>
