@@ -20,7 +20,7 @@ require_once __DIR__ . "/../includes/navbar.php";
                 </div>
             
                 <div id="w3-article"> Scott is an Information Systems major who is learing how to develop software in CS341!
-                                        He will be graduating in the spring of 2028
+                                        He will be graduating in the spring of 2028.
                     <BR><BR>
                 </div>
             </div>

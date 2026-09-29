@@ -14,7 +14,12 @@
           <div class="w3-right w3-hide-small">
             <a href="<?PHP echo $url; ?>/about.php" class="w3-bar-item w3-button">About</a>
             <a href="<?PHP echo $url; ?>/search.php" class="w3-bar-item w3-button">Search</a>
-            <a href="<?PHP echo $url; ?>/login.php?page=<?PHP echo strtolower($linkName); ?>" class="w3-bar-item w3-button"><?PHP echo $linkName; ?></a>
+            <a href="<?PHP echo $url; ?>/profile.php" class="w3-bar-item w3-button">Profile</a>
+            <?php if (!isset($_SESSION["user"])): ?>
+                <a href="<?php echo $url; ?>/login.php?page=login" class="w3-bar-item w3-button">
+                    Login
+                </a>
+            <?php endif; ?>
           </div>
         </div>
       </div>
