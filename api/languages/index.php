@@ -54,6 +54,10 @@ if (
 ------------------------------------------------------------
 GET /api/languages/users_by_language/?language[]
 language: array of language names
+
+Examples:
+/api/languages/users_by_language
+/api/languages/users_by_language?language[]=English&language[]=Spanish
 ------------------------------------------------------------
 */
 

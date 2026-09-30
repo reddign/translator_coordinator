@@ -359,6 +359,96 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+
+  /languages/users_by_language:
+    get:
+      tags:
+        - Languages
+      summary: Get users by spoken language
+      description: |
+        Returns users along with the languages they speak and their proficiency level.
+        Results can optionally be filtered to one or more language names by repeating
+        the `language[]` query parameter. If no language is supplied, every user/language
+        pairing is returned. A user who speaks several matching languages appears once per language.
+
+        Examples:
+        - `/api/languages/users_by_language`
+        - `/api/languages/users_by_language?language[]=English&language[]=Spanish`
+      operationId: getUsersByLanguage
+      parameters:
+        - name: language[]
+          in: query
+          required: false
+          description: Exact LANGUAGE_NAME values to filter by. Repeat the parameter for multiple languages.
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+          example:
+            - English
+            - Spanish
+
+      responses:
+        '200':
+          description: Users returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - data
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userid:
+                          type: integer
+                          example: 7
+                        first_name:
+                          type: string
+                          example: Maria
+                        last_name:
+                          type: string
+                          example: Lopez
+                        language_name:
+                          type: string
+                          example: Spanish
+                        proficency_level:
+                          type: integer
+                          nullable: true
+                          example: 4
+        '400':
+          description: The `language` query parameter was supplied but is not an array (e.g. `?language=English` instead of `?language[]=English`).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            example:
+              success: false
+              message: Language ID must be numeric.
+        '404':
+          description: No users speak any of the supplied languages.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            example:
+              success: false
+              message: Language not found.
+        '405':
+          description: The HTTP method is not allowed for this read-only resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /currencies:
     get:
       tags:
