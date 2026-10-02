@@ -1,14 +1,9 @@
 <!--
-    createGroupForm.php
-    Standalone "Create Group" page — built with W3.CSS to match the
-    rest of the project. Follows the same plain-POST pattern as
-    loginForm.php / processes/login.php: no JS fetch, full page
-    reload on submit, errors come back via $_SESSION["error"].
+ 
 
     STATUS NOTES:
     - "description" field is included in the UI already, ready for
       when the groups table gets that column added.
-    - Region picker dropped (not part of the data model).
     - Country and language pickers are <select> dropdowns listing
       every available option, stubbed with placeholder data for
       now — swap PLACEHOLDER_COUNTRIES / PLACEHOLDER_LANGUAGES for
@@ -18,7 +13,6 @@
 
 <?php
 // If your team's other pages show session-based error messages
-// (login.php does this), match that convention here:
 $groupError = $_SESSION["group_error"] ?? "";
 $_SESSION["group_error"] = "";
 ?>
@@ -33,7 +27,13 @@ $_SESSION["group_error"] = "";
         </div>
     <?php endif; ?>
 
-    <form id="createGroupForm" action="processes/creategroup.php" method="POST" class="w3-card-4 w3-padding w3-round">
+    <?php if (isset($_GET["created"])): ?>
+        <div class="w3-panel w3-pale-green w3-border w3-round">
+            <p>Group created successfully!</p>
+        </div>
+    <?php endif; ?>
+
+    <form id="createGroupForm" action="../processes/groupProcesses/creategroup.php" method="POST" class="w3-card-4 w3-padding w3-round">
 
         <!-- Group Name -->
         <label class="w3-text-grey"><b>Group Name</b></label>
