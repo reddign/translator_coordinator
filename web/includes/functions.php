@@ -98,7 +98,5 @@ function searchTranslators($user = null, $language = null, $country = null, $reg
 }
 
 
-?>
-
 
 ?>
