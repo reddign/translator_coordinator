@@ -1,62 +1,63 @@
-<?PHP
+<?php
 require_once __DIR__ . '/../../includes/config.php';
 include "includes/header.php";
 include "includes/navbar.php";
-// include "includes/footer.php";
 
 function url(){
-    $baseFilePath="/translator_coordinator/web";
+    $baseFilePath = "/translator_coordinator/web";
     if(isset($_SERVER['HTTPS'])){
         $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
     }
     else{
         $protocol = 'http';
     }
-    return $protocol . "://" . $_SERVER['HTTP_HOST'] .  $baseFilePath;
+    return $protocol . "://" . $_SERVER['HTTP_HOST'] . $baseFilePath;
 }
-function getJSONFromURL($url){
-    // Fetch the JSON string from the URL
-    $json_data = file_get_contents($url);
 
-    // Check if the request was successful
+function getJSONFromURL($url){
+    $json_data = @file_get_contents($url);
+
     if ($json_data === FALSE) {
-        die("Error: Unable to fetch country data from the API.");
+        return ['data' => []];
     }
 
-    // Decode the JSON string into an associative PHP array
     $response = json_decode($json_data, true);
 
-    // Verify JSON decoding was successful
     if (json_last_error() !== JSON_ERROR_NONE) {
-        die("Error decoding JSON: " . json_last_error_msg());
+        return ['data' => []];
     }
+
     return $response;
 }
 
+
 $id = $_GET['id'] ?? null;
+if (!empty($id)) {
+    $countryDataURL  = "{$mainURL}/api/countries/{$id}";
+    $currencyDataURL = "{$mainURL}/api/currencies?countryid={$id}";
+    $languageDataURL = "{$mainURL}/api/languages?countryid={$id}";
 
-$countryDataURL  = "{$mainURL}/api/countries/{$id}";
-$currencyDataURL = "{$mainURL}/api/currencies?countryid={$id}";
-$languageDataURL = "{$mainURL}/api/languages?countryid={$id}";
+    $countryResponse  = getJSONFromURL($countryDataURL);
+    $currencyResponse = getJSONFromURL($currencyDataURL);
+    $languageResponse = getJSONFromURL($languageDataURL);
 
-$countryResponse  = getJSONFromURL("{$mainURL}/api/countries/{$id}");
-$currencyResponse = getJSONFromURL("{$mainURL}/api/currencies?countryid={$id}");
-$languageResponse = getJSONFromURL("{$mainURL}/api/languages?countryid={$id}");
+    $countries  = $countryResponse['data'] ?? [];
+    $currencies = $currencyResponse['data'] ?? [];
+    $languages  = $languageResponse['data'] ?? [];
 
-$countries  = $countryResponse['data'] ?? [];
-$currencies = $currencyResponse['data'] ?? [];
-$languages  = $languageResponse['data'] ?? [];
+    $countryName = $countries[0]['COUNTRY_NAME'] ?? '';
+    $countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
+    $languageId  = $languages[0]['LANGUAGE_ID'] ?? null;
+}
 
-$countryName = $countries[0]['COUNTRY_NAME'] ?? '';
-$countryId   = $countries[0]['COUNTRY_ID'] ?? $id;
-$languageId   = $languages[0]['LANGUAGE_ID'] ?? null;
-
-
-function searchTranslators(array $filters = []): array
+function searchTranslators($filters = []): array
 {
-    global $mainURL;
+    $baseURL = $GLOBALS['mainURL'] ?? '';
 
-    // Remove null or empty filter values
+    if (!is_array($filters)) {
+        $filters = ['user' => $filters];
+    }
+
     $params = array_filter([
         'user'     => $filters['user'] ?? null,
         'language' => $filters['language'] ?? null,
@@ -66,11 +67,10 @@ function searchTranslators(array $filters = []): array
     ], fn($v) => $v !== null && $v !== '');
 
     $queryString = !empty($params) ? '?' . http_build_query($params) : '';
-    $response = getJSONFromURL("{$mainURL}/api/translators{$queryString}");
+    $userDataURL = "{$baseURL}/api/users{$queryString}";
+
+    $response = getJSONFromURL($userDataURL);
 
     return $response['data'] ?? [];
 }
-
-
-
 ?>

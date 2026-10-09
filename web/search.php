@@ -1,16 +1,22 @@
 <?php
 require_once __DIR__ . "/../includes/config.php";
+
 include "includes/functions.php";
 include "includes/header.php";
 include "includes/navbar.php";
 
-$languagesResponse = getJSONFromURL("{$mainURL}/api/languages");
-$countriesResponse = getJSONFromURL("{$mainURL}/api/countries");
-$regionsResponse   = getJSONFromURL("{$mainURL}/api/regions");
 
-$languages = $languagesResponse['data'] ?? [];
-$countries = $countriesResponse['data'] ?? [];
-$regions   = $regionsResponse['data']   ?? [];
+$languageDataURL = $mainURL . "/api/languages";
+$countryDataURL  = $mainURL . "/api/countries";
+$regionDataURL   = $mainURL . "/api/regions";
+
+$languageResponse = getJSONFromURL($languageDataURL);
+$countryResponse  = getJSONFromURL($countryDataURL);
+$regionResponse   = getJSONFromURL($regionDataURL);
+
+$languages = $languageResponse["data"] ?? [];
+$countries = $countryResponse["data"] ?? [];
+$regions   = $regionResponse["data"] ?? [];
 ?>
 
 <h2>Translator Coordinator - Search Feature</h2>
@@ -76,9 +82,9 @@ $results = searchTranslators($_GET);
         <ul>
             <?php foreach ($results as $translator): ?>
                 <li>
-                    <strong><?= htmlspecialchars($translator['full_name'] ?? '') ?></strong> — 
+                    <strong><?= htmlspecialchars($translator['full_name'] ?? ($translator['first_name'] . ' ' . $translator['last_name'])) ?></strong> — 
                     Language: <?= htmlspecialchars($translator['language_name'] ?? 'N/A') ?> | 
-                    Country: <?= htmlspecialchars($translator['country_name'] ?? 'N/A') ?> | 
+                    Country: <?= htmlspecialchars($translator['country_name'] ?? $translator['original_country_name'] ?? 'N/A') ?> | 
                     Region: <?= htmlspecialchars($translator['region_name'] ?? 'N/A') ?> | 
                     Group: <?= htmlspecialchars($translator['group_name'] ?? 'N/A') ?>
                 </li>
