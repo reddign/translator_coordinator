@@ -1,48 +1,21 @@
 <?php
-include "includes/functions.php";
-include "includes/header.php";
-include "includes/navbar.php";
-?>
-<h2>Translator Coordinator - Software Engineering Class Project 2026</h2>
-       <div class="w3-section" id="team-names">
-            <span class="name"><b>Engineers:</b> <a href="studentpages/mo_abouelnagah.php">Mo Abouelnagah</a>, <a href="studentpages/anandb.php">Anand Bum-Erdene</a>, <a href="studentpages/frank_conte.php">Frank Conte<a>, <a href="studentpages/katia_daly.php">Katia Daly</a>, <a href="studentpages/sdomboski.php">Scott Domboski<a>, <a href="studentpages/chase_dornblaser.php">Chase Dornblaser</a>, 
-            <a href='studentpages/aaron_frist.php'>Aaron Frist</a>, <a href="studentpages/declan_keller.php">Declan Keller</a>, <a href="studentpages/olha_kuptsova.php">Olha Kuptsova</a>, <a href='studentpages/chris_mensah.php'>Chris Mensah</a>, <a href='studentpages/kaiden.php'>Kaiden Miller</a>, <a href='studentpages/connor_price.php'>Connor Price</a>, <a href='studentpages/noah_peiffer.php'>Noah Peiffer</a>, <a href='studentpages/kathy_sr.php'>Kathy Saldana-Renteria</a>, <a href='studentpages/brandon_short.php'>Brandon Short</a>,  
-            Dominic Traina, <a href='studentpages/sam_vossen.php'>Sam Vossen</a>, <a href='studentpages/isaac_widders.php'>Isaac Widders</a>,
-                <a href='studentpages/teddy.php'>Teddy Bazyar (TA)</a>, and <a href='studentpages/Prof_reddig.php'>Prof Reddig</a>
-            </span>
-        </div>
-        <div class="w3-section" id="team-pic">
-            <img id="Team2026Pic" src="images/SEteam2026.png" alt="2026 Team to Come picture." width=1000 usemap="#classmap">
-            <map id="classmap">
-                <area shape="circle" coords="250,97,20" href="studentpages/student_template.php">
-                <area shape="circle" coords="480,150,20" href="studentpages/kaiden.php">
-                <area shape="circle" coords="203,150,22" href="studentpages/sam_vossen.php">
-                <area shape="circle" coords="905, 130, 26" href="studentpages/chase_dornblaser.php">
-                <area shape="circle" coords="668,150,28" href="studentpages/declan_keller.php">
-                <area shape="circle" coords="125,175,19" href="studentpages/olha_kuptsova.php">
-                <area shape="circle" coords="280,140,19" href="studentpages/connor_price.php">
-                <area shape="circle" coords="422,164,21" href="studentpages/sdomboski.php">
-                <area shape="circle" coords="382,144,21" href="studentpages/isaac_widders.php">
-                <area shape="circle" coords="65,190,22" href="studentpages/katia_daly.php">
-                <area shape="circle" coords="520,160,24" href="studentpages/noah_peiffer.php">
-                <area shape="circle" coords="566,140,24" href="studentpages/dominic_traina.php">
-                <area shape="circle" coords="785,140,24" href="studentpages/frank_conte.php">
-                <area shape="circle" coords="718,145,24" href="studentpages/mo_abouelnagah.php">
-                <area shape="circle" coords="320,160,21" href="studentpages/chris_mensah.php">
-                <area shape="circle" coords="245,185,21" href="studentpages/anandb.php">
-                <area shape="circle" coords="163,190,19" href="studentpages/kathy_sr.php">
-                <area shape="circle" coords="620,150,22" href="studentpages/aaron_frist.php">
-            </map>    
-        </div>
 
- 
-        
-        <BR><BR><BR><BR>
+require_once 'classes/Page.php';
+require_once 'classes/Footer.php';
+require_once 'classes/NavBar.php';
+require_once 'classes/PageFactory.php';
+require_once 'classes/PageContent.php';
 
-<?php
+$navLinks = [
+    "Home" => ["url" => "/index.php", "icon" => "fas fa-home"],
+    "About" => ["url" => "/about.php", "icon" => "fas fa-info-circle"],
+    "Login" => ["url" => "/login.php", "icon" => "fas fa-key"]
+];
+
+$title = "Translator Coordinator - Software Engineering Class Project 2026";
+$content = PageContent::render("about");
+$footerText = "&copy; Powered by Etown CS 341";
 
 
-
-include "includes/footer.php";
-
-?>
+$page = PageFactory::createPage($title, $content, $footerText, $navLinks,[]);
+echo $page->render();
