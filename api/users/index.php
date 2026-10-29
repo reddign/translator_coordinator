@@ -110,13 +110,14 @@ if ($routePart === 'login') {
 
     //TODO: Manage sessions in database
     //$token 
+    $token = createSessionToken((int)$record['userid']);
     
     $user_data = getUserById((int)$record['userid']);
     
     sendJson(200, [
         'success' => true,
         'message' => 'Login successful.',
-        #'token' => $token,
+        'token' => $token,
         'user' => $user_data,
     ]);
 }
@@ -131,7 +132,11 @@ if ($routePart === 'logout') {
         sendJson(405, ['success' => false, 'message' => 'Method not allowed.']);
     }
     //TODO: Manage revoking sessions in db
-    session_destroy();
+    $token = getBearerToken();
+    if ($token !== null) {
+    revokeSessionToken($token);
+}
+
     sendJson(200, ['success' => true, 'message' => 'Logout successful.']);
 }
 
@@ -145,6 +150,7 @@ if ($routePart === 'profile') {
     //TODO: Need to validate session and userid from DB
     //$authenticated 
     //$userId = (int)$authenticated['userid'];
+    $userId = requireAuth();
 
     if ($method === 'GET') {
         sendJson(200, ['success' => true, 'data' => getUserById($userId)]);
