@@ -57,9 +57,9 @@ if ($routePart === 'register') {
     $countryId = $data['original_country_id']; 
 
     $insert_user_sql = "INSERT INTO users
-    (email, first_name, last_name, date_registered, original_country_id, password, role)
+    (email, first_name, last_name, date_registered, original_country_id, password)
     VALUES
-    (:email, :first_name, :last_name, :date_registered, :original_country_id, :password, 'user')";
+    (:email, :first_name, :last_name, :date_registered, :original_country_id, :password)";
     
     $insert_params = [
         ':email' => $email,
@@ -70,7 +70,7 @@ if ($routePart === 'register') {
         ':password' => password_hash($userpassword, PASSWORD_DEFAULT),
     ];
     
-    $userId = WFDatabase::executeSQL($insert_user_sql,$insert_params);
+    $userId = WFDatabase::executeSQL($insert_user_sql,$insert_params, true);
     #TODO: Manage session tokens in the DB eventually
 
     $user_data = getUserById($userId);
@@ -147,11 +147,11 @@ if ($routePart === 'profile') {
     //$userId = (int)$authenticated['userid'];
 
     if ($method === 'GET') {
-        sendJson(200, ['success' => true, 'data' => getUserById($pdo, $userId)]);
+        sendJson(200, ['success' => true, 'data' => getUserById($userId)]);
     }
 
     if ($method === 'PUT') {
-        $user = updateUserProfile($pdo, $userId, getJsonBody(), false);
+        $user = updateUserProfile($userId, getJsonBody(), false);
         sendJson(200, [
             'success' => true,
             'message' => 'Profile updated.',

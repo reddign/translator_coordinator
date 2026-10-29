@@ -140,7 +140,7 @@ if (
     The registration endpoint logs the user in by returning
     an authentication token.
     */
-    $_SESSION["api_token"] = $result["token"];
+    $_SESSION["api_token"] = $result["token"] ?? "";
     $_SESSION["user"] = $result["user"];
     $_SESSION["error"] = "";
     header("Location: ../login.php?page=login");

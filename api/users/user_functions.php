@@ -10,8 +10,7 @@ function publicUserSelect(): string
             u.last_name,
             u.date_registered,
             u.original_country_id,
-            c.COUNTRY_NAME AS original_country_name,
-            u.role
+            c.COUNTRY_NAME AS original_country_name
         FROM users u
         LEFT JOIN wf_countries c
             ON c.COUNTRY_ID = u.original_country_id
@@ -23,10 +22,10 @@ function getUserById( int $userId): ?array
     $sql = publicUserSelect() . ' WHERE u.userid = :userid';
     $params = [':userid' => $userId];
     $users = WFDatabase::getDataFromSQL($sql,$params);
-    if(is_array($users)){
-        $user = $users[0];
+    if(is_array($users) && count($users) > 0){
+        return $users[0];
     }
-    return $user ?: null;
+    return null;
 }
 
 function validateCountryId(mixed $countryId): ?int
@@ -95,7 +94,7 @@ function updateUserProfile(int $userId, array $data, bool $adminMode = false): a
         }
 
         if ($field === 'original_country_id') {
-            $countryId = validateCountryId($pdo, $data[$field]);
+            $countryId = validateCountryId($data[$field]);
             $updates[] = 'original_country_id = :original_country_id';
             $params[':original_country_id'] = $countryId;
             continue;

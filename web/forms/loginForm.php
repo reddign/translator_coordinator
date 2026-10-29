@@ -2,7 +2,7 @@
     <div class="w3-section" id="login-form">
         <form action="processes/login.php" method="POST">
             <!-- name stays 'user' so processes/login.php still works; it's the email -->
-            <label>Etown email:
+            <label>Etown Email:
                 <input type="email" name="user" placeholder="you@etown.edu" autocomplete="username" required>
             </label><BR><BR>
             <label>Password:
