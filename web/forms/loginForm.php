@@ -27,8 +27,6 @@
             </label>
             <BR><BR>
 
-            <p>Password must be at least 8 characters long.</p>
-
             <input type="submit" value="Reset Password">
 
         </form>
