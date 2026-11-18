@@ -1,5 +1,5 @@
 <?php
-if(!isset($url)) $url = url();
+$url = "/native_tweet/web";
 session_start();
 ?>
 <html lang="en">

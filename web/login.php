@@ -56,7 +56,7 @@ if($page=="login" || $page=="forgot-password"){
         echo "No languages listed.";
     } else {
         foreach ($spoken_languages as $lang) {
-            switch (e($lang['proficency_level'])) { # show proficiency level as a description instead of a number
+            switch ($lang['proficency_level']) { # show proficiency level as a description instead of a number
                 case 1:
                     $proficiencyDescription = "Beginner";
                     break;
@@ -68,15 +68,37 @@ if($page=="login" || $page=="forgot-password"){
                     break;
                 case 4:
                     $proficiencyDescription = "Upper Intermediate";
+                    break;
                 case 5:
                     $proficiencyDescription = "Native/Fluent";
+                    break;
+                default:
+                    $proficiencyDescription = "Unknown";
             }
-            echo e($lang['LANGUAGE_NAME'])." - ".$proficiencyDescription."<br>";
+
+            $languageName = e($lang['LANGUAGE_NAME']);
+            $languageId = (int)$lang['LANGUAGE_ID'];
+
+            echo "<div style='margin-bottom:10px;'>";
+            echo e($lang['LANGUAGE_NAME'])." - ".$proficiencyDescription . " ";
+
+            echo "
+                    <form action='processes/removeLanguage.php' method='POST' style='display:inline'>
+                    <input type='hidden' name='language_id' value='{$languageId}'>
+                    <button type='submit'
+                            onclick='return confirm(\"Are you sure you want to delete this language?\");'>
+                        Remove
+                    </button>
+                </form>
+            ";
+
+            echo "</div>";
         }
     }
+        
     # form to add a new language to the user's profile
     echo "
-    <form action = '/api/users/$userId/languages' method='POST'>
+    <form action='processes/addlanguage.php' method='POST'>
         <button type='button' id='toggleSelectBtn' aria-expanded='false' aria-controls='countryWrapper'>+</button>
 
         <div id='countryWrapper' class='form-group' hidden>
@@ -108,14 +130,7 @@ if($page=="login" || $page=="forgot-password"){
         <button type='submit'>Submit</button>
     </form>";
     echo "<BR><BR><BR>";
-
-    //Countries
-    echo "<h2>Countries of Interest</h2>";
-    echo "<BR><BR><BR>";
     
-    //Countries
-    echo "<h2>Groups</h2>";
-    echo "<BR><BR><BR>";
     echo "</div>";
 }
 
