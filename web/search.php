@@ -1,7 +1,5 @@
 
 <?php
-require_once "../includes/config.php";
-require_once "../includes/WFDatabase.php";
 include "includes/functions.php";
 
 // Search for Native Tweet users
@@ -267,17 +265,14 @@ include "includes/navbar.php";
                     ?>
 
                 </option>
-
             <?php endforeach; ?>
-
         </select>
-
         <br><br>
 
         <!-- Region filter -->
         <select id="region-select" class="w3-select">
 
-            <option value=""><?php echo t('select_region'); ?></option>
+            <option value="">Select a region</option>
 
             <?php foreach ($regions as $region): ?>
 
@@ -288,17 +283,14 @@ include "includes/navbar.php";
                     ?>
 
                 </option>
-
             <?php endforeach; ?>
-
         </select>
-
         <br><br>
 
         <!-- Country filter -->
         <select id="country-select" class="w3-select">
 
-            <option value=""><?php echo t('select_country'); ?></option>
+            <option value="">Select a country</option>
 
             <?php foreach ($countries as $country): ?>
 
@@ -309,17 +301,47 @@ include "includes/navbar.php";
                     ?>
 
                 </option>
-
             <?php endforeach; ?>
-
         </select>
+        <br><br>
 
-    </aside>
-
+        <input type="submit" value="Search">
+        <a href="search.php">Clear</a>
+    </form>
 </div>
 
-<script src="search.js" defer></script>
+<?php if ($error !== ""): ?>
+    <div class="gerror"><?php echo e($error); ?></div>
+<?php elseif ($searched && count($users) === 0): ?>
+    <p>No students found. Try a different filter.</p>
+<?php elseif (count($users) > 0): ?>
+    <div class="w3-section" id="search-results">
+        <h3><?php echo count($users); ?> student(s) found</h3>
+        <table class="w3-table w3-bordered">
+            <tr>
+                <th>Name</th>
+                <th>Country</th>
+                <th>Region</th>
+                <th>Languages</th>
+            </tr>
+            <?php foreach ($users as $u): ?>
+                <tr>
+                    <td><?php echo e($u['first_name'] . ' ' . $u['last_name']); ?></td>
+                    <td><?php echo e($u['COUNTRY_NAME']); ?></td>
+                    <td><?php echo e($u['REGION_NAME']); ?></td>
+                    <td><?php echo e($u['languages']); ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+<?php endif; ?>
+
+<BR><BR><BR><BR>
 
 <?php
+
+
+
 include "includes/footer.php";
+
 ?>
