@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/../includes/config.php";
 //redirect to login page
-$page = $_GET["page"] ?? "login";
+$page = strtolower($_GET["page"] ?? "login");
 if ($page !== "login" && $page !== "register" && $page !== "forgot-password") {
     require_once __DIR__ . "/processes/authenticate.php";
 }
@@ -36,27 +36,27 @@ if($page=="login" || $page=="forgot-password"){
     $language = $spoken_languages[0]['LANGUAGE_NAME'] ?? null;
     //Main column data
     echo "<div style='float:left'>";
-    echo "<h1>User Profile</h1>";
-    echo "<b>Name:</b> " . e($profile_data["first_name"]) . " " . e($profile_data["last_name"]) . "<BR>";
-    echo "<b>Country of Origin:</b> " . e($profile_data["original_country_name"]) . "<BR>";
-    echo "<b>Email:</b> <a href='mailto:" . e($profile_data["email"]) . "'>" . e($profile_data["email"]) . "</a><BR>";
-    echo "<b>Role:</b> " . e($profile_data["role"]) . "<BR>";
-    echo "<b>Member Since:</b> " . e($profile_data["date_registered"]) . "<BR>";
+    echo "<h1>" . t('user_profile') . "</h1>";
+    echo "<b>" . t('name') . ":</b> " . e($profile_data["first_name"]) . " " . e($profile_data["last_name"]) . "<BR>";
+    echo "<b>" . t('country_origin') . ":</b> " . e($profile_data["original_country_name"]) . "<BR>";
+    echo "<b>" . t('email') . ":</b> <a href='mailto:" . e($profile_data["email"]) . "'>" . e($profile_data["email"]) . "</a><BR>";
+    echo "<b>" . t('role') . ":</b> " . e($profile_data["role"]) . "<BR>";
+    echo "<b>" . t('member_since') . ":</b> " . e($profile_data["date_registered"]) . "<BR>";
     echo "</div>";
 
     echo "<form action='processes/logout.php' method='POST' style='display:inline'>
-        <button type='submit'>Log out</button>
+        <button type='submit'>" . t('logout') . "</button>
       </form>";
 
     //Side Column Data
     echo "<div style='float:right;margin-right:50px;'>";
     //Languages
-    echo "<h2>Spoken Languages</h2>";
+    echo "<h2>" . t('spoken_languages') . "</h2>";
         if (empty($spoken_languages)) {
         echo "No languages listed.";
     } else {
-        foreach ($spoken_languages as $lang) {
-            switch ($lang['proficency_level']) { # show proficiency level as a description instead of a number
+        foreach ($spoken_languages as $spokenLanguage) {
+            switch ($spokenLanguage['proficency_level']) { # show proficiency level as a description instead of a number
                 case 1:
                     $proficiencyDescription = "Beginner";
                     break;
@@ -76,11 +76,11 @@ if($page=="login" || $page=="forgot-password"){
                     $proficiencyDescription = "Unknown";
             }
 
-            $languageName = e($lang['LANGUAGE_NAME']);
-            $languageId = (int)$lang['LANGUAGE_ID'];
+            $languageName = e($spokenLanguage['LANGUAGE_NAME']);
+            $languageId = (int)$spokenLanguage['LANGUAGE_ID'];
 
             echo "<div style='margin-bottom:10px;'>";
-            echo e($lang['LANGUAGE_NAME'])." - ".$proficiencyDescription . " ";
+            echo e($spokenLanguage['LANGUAGE_NAME'])." - ".$proficiencyDescription . " ";
 
             echo "
                     <form action='processes/removeLanguage.php' method='POST' style='display:inline'>

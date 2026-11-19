@@ -37,7 +37,7 @@
 
 <?php } else { ?>
 
-    <h2>Login</h2>
+    <h2><?php echo t('login'); ?></h2>
 
     <div class="w3-section" id="login-form">
 
@@ -48,7 +48,7 @@
             </label>
             <BR><BR>
 
-            <label>Password:
+            <label><?php echo t('password'); ?>:
                 <input type="password" name="pass" autocomplete="current-password" required>
             </label>
             <BR><BR>

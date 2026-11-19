@@ -8,4 +8,4 @@ REQ-5:      As an authorized user, I want to be able to switch the language of t
 REQ-6:      As an authorized user, I want to be able to search for other users based on their language and country of origin.   5 points
 REQ-7:      As a guest user, I want to be able to see the world map and learn more about different countries.                   3 points 
 REQ-8:      As an authorized user, I want to be able to reset my password if I forget it.                                       7 points
-REQ-9:      As an admin I can suspend or ban people who misbehave or say bad stuff.
+REQ-9:      As an authorized user, I want to be able to chat with other users in the website                                    7 points

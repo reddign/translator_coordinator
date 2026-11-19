@@ -5,6 +5,7 @@ require_once "../includes/WFDatabase.php";
 include "includes/functions.php";
 
 // Search for Native Tweet users
+require_once __DIR__ . "/includes/language_switch.php";
 if (isset($_GET['ajax'])) {
 
     $search = trim($_GET['query'] ?? '');
@@ -68,7 +69,7 @@ if (isset($_GET['ajax'])) {
 
     // Display search results
     if (count($users) == 0) {
-        echo "<p>no user found</p>";
+        echo "<p>" . t('no_users') . "</p>";
     } else {
 
         foreach ($users as $user) {
@@ -164,13 +165,13 @@ include "includes/navbar.php";
 
     <main>
 
-        <h2>Search for your NATIVE friend</h2>
+        <h2><?php echo t('search_title'); ?></h2>
 
         <div class="w3-section">
-            Search for students by name, language, region, or country.
+            <?php echo t('search_description'); ?>
         </div>
 
-        <h3>Find and connect with other Native Tweet students!</h3>
+        <h3><?php echo t('search_invitation'); ?></h3>
 
         <br>
 
@@ -180,7 +181,7 @@ include "includes/navbar.php";
             <input
                 type="text"
                 id="search-bar"
-                placeholder="Search for a student..."
+                placeholder="<?php echo t('search_placeholder'); ?>"
                 autocomplete="off"
             >
 
@@ -250,12 +251,12 @@ include "includes/navbar.php";
     <!-- Filters on the right side -->
     <aside class="sidebar">
 
-        <h3>Filters</h3>
+        <h3><?php echo t('filters'); ?></h3>
 
         <!-- Language filter -->
         <select id="language-select" class="w3-select">
 
-            <option value="">Select a language</option>
+            <option value=""><?php echo t('select_language'); ?></option>
 
             <?php foreach ($languages as $language): ?>
 
@@ -276,7 +277,7 @@ include "includes/navbar.php";
         <!-- Region filter -->
         <select id="region-select" class="w3-select">
 
-            <option value="">Select a region</option>
+            <option value=""><?php echo t('select_region'); ?></option>
 
             <?php foreach ($regions as $region): ?>
 
@@ -297,7 +298,7 @@ include "includes/navbar.php";
         <!-- Country filter -->
         <select id="country-select" class="w3-select">
 
-            <option value="">Select a country</option>
+            <option value=""><?php echo t('select_country'); ?></option>
 
             <?php foreach ($countries as $country): ?>
 
