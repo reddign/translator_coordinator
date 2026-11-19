@@ -1,9 +1,10 @@
-
 <?php
-include "includes/functions.php";
+require_once dirname(__DIR__, 1) . "/includes/config.php";
+require_once dirname(__DIR__, 1) . "/includes/WFDatabase.php";
 
-// Search for Native Tweet users
+require_once __DIR__ . "/includes/functions.php";
 require_once __DIR__ . "/includes/language_switch.php";
+
 if (isset($_GET['ajax'])) {
 
     $search = trim($_GET['query'] ?? '');
@@ -272,7 +273,7 @@ include "includes/navbar.php";
         <!-- Region filter -->
         <select id="region-select" class="w3-select">
 
-            <option value="">Select a region</option>
+            <option value=""><?php echo t('select_region'); ?></option>
 
             <?php foreach ($regions as $region): ?>
 
@@ -290,7 +291,7 @@ include "includes/navbar.php";
         <!-- Country filter -->
         <select id="country-select" class="w3-select">
 
-            <option value="">Select a country</option>
+            <option value=""><?php echo t('select_country'); ?></option>
 
             <?php foreach ($countries as $country): ?>
 
@@ -305,36 +306,9 @@ include "includes/navbar.php";
         </select>
         <br><br>
 
-        <input type="submit" value="Search">
-        <a href="search.php">Clear</a>
-    </form>
-</div>
-
-<?php if ($error !== ""): ?>
-    <div class="gerror"><?php echo e($error); ?></div>
-<?php elseif ($searched && count($users) === 0): ?>
-    <p>No students found. Try a different filter.</p>
-<?php elseif (count($users) > 0): ?>
-    <div class="w3-section" id="search-results">
-        <h3><?php echo count($users); ?> student(s) found</h3>
-        <table class="w3-table w3-bordered">
-            <tr>
-                <th>Name</th>
-                <th>Country</th>
-                <th>Region</th>
-                <th>Languages</th>
-            </tr>
-            <?php foreach ($users as $u): ?>
-                <tr>
-                    <td><?php echo e($u['first_name'] . ' ' . $u['last_name']); ?></td>
-                    <td><?php echo e($u['COUNTRY_NAME']); ?></td>
-                    <td><?php echo e($u['REGION_NAME']); ?></td>
-                    <td><?php echo e($u['languages']); ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
+    </aside>
     </div>
-<?php endif; ?>
+    
 
 <BR><BR><BR><BR>
 
