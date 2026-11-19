@@ -16,8 +16,6 @@ if ($method === 'OPTIONS') {
     exit;
 }
 
-
-
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $parts = explode('/', trim($path, '/'));
 $usersIndex = array_search('users', $parts, true);
@@ -85,12 +83,13 @@ if ($routePart === 'register') {
     $email = trim((string)($data['email'] ?? ''));
     $userpassword = (string)($data['password'] ?? '');
 
-    if (substr(strtolower($email), -10) !== '@etown.edu') {
-        sendJson(400, ['success' => false, 'message' => 'Only @etown.edu emails can register.']);
-    }
-
+    // Real email address first, then Etown only
     if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         sendJson(400, ['success' => false, 'message' => 'A valid email address is required.']);
+    }
+
+    if (substr(strtolower($email), -10) !== '@etown.edu') {
+        sendJson(400, ['success' => false, 'message' => 'Only @etown.edu emails can register.']);
     }
 
     if (strlen($userpassword) < 8) {
@@ -99,19 +98,20 @@ if ($routePart === 'register') {
 
     $check_sql = 'SELECT userid FROM users WHERE email = :email';
     $check_params = [':email' => $email];
-      
-    $user_already_exist_results = WFDatabase::getDataFromSQL($check_sql,$check_params);
 
-    if (count($user_already_exist_results)>0) {
+    $user_already_exist_results = WFDatabase::getDataFromSQL($check_sql, $check_params);
+
+    if (count($user_already_exist_results) > 0) {
         sendJson(409, ['success' => false, 'message' => 'That email address is already registered.']);
     }
     #TODO: Should validate the country id
-    $countryId = $data['original_country_id']; 
+    $countryId = $data['original_country_id'];
 
     $insert_user_sql = "INSERT INTO users
     (email, first_name, last_name, date_registered, original_country_id, password)
     VALUES
     (:email, :first_name, :last_name, :date_registered, :original_country_id, :password)";
+
 
     $insert_params = [
         ':email' => $email,
@@ -121,20 +121,20 @@ if ($routePart === 'register') {
         ':original_country_id' => $countryId,
         ':password' => password_hash($userpassword, PASSWORD_DEFAULT),
     ];
-    
-    $userId = WFDatabase::executeSQL($insert_user_sql,$insert_params, true);
+
+    $userId = WFDatabase::executeSQL($insert_user_sql, $insert_params, true);
+
+    // Save the language they picked during registration
     $languageId = (int)($data['language_id'] ?? 0);
     if ($languageId > 0) {
         WFDatabase::executeSQL(
             "INSERT INTO user_spoken_languages (userid, language_id, proficency_level)
-            VALUES (:userid, :lang, 5)",
+             VALUES (:userid, :lang, 5)",
             [':userid' => $userId, ':lang' => $languageId]
         );
-}
-    #TODO: Manage session tokens in the DB eventually
+    }
 
     $user_data = getUserById($userId);
-
 
     sendJson(201, [
         'success' => true,
@@ -159,7 +159,7 @@ if ($routePart === 'login') {
 
     $user_login_sql = 'SELECT userid, password FROM users WHERE email = :email LIMIT 1';
     $login_params = [':email' => $email];
-    $records = WFDatabase::getDatafromSQL($user_login_sql,$login_params);
+    $records = WFDatabase::getDataFromSQL($user_login_sql, $login_params);
     $record = $records[0] ?? null;
     if (!$record || !password_verify($userpassword, $record['password'])) {
         sendJson(401, [
@@ -168,12 +168,10 @@ if ($routePart === 'login') {
         ]);
     }
 
-    //TODO: Manage sessions in database
-    //$token 
     $token = createSessionToken((int)$record['userid']);
-    
+
     $user_data = getUserById((int)$record['userid']);
-    
+
     sendJson(200, [
         'success' => true,
         'message' => 'Login successful.',
@@ -191,11 +189,11 @@ if ($routePart === 'logout') {
     if ($method !== 'POST') {
         sendJson(405, ['success' => false, 'message' => 'Method not allowed.']);
     }
-    //TODO: Manage revoking sessions in db
+
     $token = getBearerToken();
     if ($token !== null) {
-    revokeSessionToken($token);
-}
+        revokeSessionToken($token);
+    }
 
     sendJson(200, ['success' => true, 'message' => 'Logout successful.']);
 }
@@ -207,9 +205,6 @@ PUT /api/users/profile
 ------------------------------------------------------------
 */
 if ($routePart === 'profile') {
-    //TODO: Need to validate session and userid from DB
-    //$authenticated 
-    //$userId = (int)$authenticated['userid'];
     $userId = requireAuth();
 
     if ($method === 'GET') {
@@ -226,6 +221,82 @@ if ($routePart === 'profile') {
     }
 
     sendJson(405, ['success' => false, 'message' => 'Method not allowed.']);
+}
+
+/*
+------------------------------------------------------------
+GET /api/users/search-options
+Lists for the search dropdowns
+------------------------------------------------------------
+*/
+if ($routePart === 'search-options') {
+    if ($method !== 'GET') {
+        sendJson(405, ['success' => false, 'message' => 'Method not allowed.']);
+    }
+    requireAuth();
+
+    sendJson(200, [
+        'success'   => true,
+        'countries' => WFDatabase::getDataFromSQL(
+            "SELECT COUNTRY_ID, COUNTRY_NAME FROM wf_countries ORDER BY COUNTRY_NAME", []),
+        'regions'   => WFDatabase::getDataFromSQL(
+            "SELECT REGION_ID, REGION_NAME FROM wf_world_regions ORDER BY REGION_NAME", []),
+        'languages' => WFDatabase::getDataFromSQL(
+            "SELECT LANGUAGE_ID, LANGUAGE_NAME FROM wf_languages ORDER BY LANGUAGE_NAME", []),
+    ]);
+}
+
+/*
+------------------------------------------------------------
+GET /api/users/search?country=ID&region=ID&language=ID
+Any combination of filters, at least one required
+------------------------------------------------------------
+*/
+if ($routePart === 'search') {
+    if ($method !== 'GET') {
+        sendJson(405, ['success' => false, 'message' => 'Method not allowed.']);
+    }
+    requireAuth();
+
+    $countryId  = (int)($_GET['country'] ?? 0);
+    $regionId   = (int)($_GET['region'] ?? 0);
+    $languageId = (int)($_GET['language'] ?? 0);
+
+    if ($countryId <= 0 && $regionId <= 0 && $languageId <= 0) {
+        sendJson(400, ['success' => false, 'message' => 'Pick at least one filter.']);
+    }
+
+    // Only public info: no emails or password hashes
+    $sql = "
+        SELECT u.userid, u.first_name, u.last_name,
+               c.COUNTRY_NAME, r.REGION_NAME,
+               (SELECT GROUP_CONCAT(l.LANGUAGE_NAME ORDER BY l.LANGUAGE_NAME SEPARATOR ', ')
+                  FROM user_spoken_languages usl2
+                  JOIN wf_languages l ON l.LANGUAGE_ID = usl2.language_id
+                 WHERE usl2.userid = u.userid) AS languages
+        FROM users u
+        LEFT JOIN wf_countries c ON c.COUNTRY_ID = u.original_country_id
+        LEFT JOIN wf_world_regions r ON r.REGION_ID = c.REGION_ID
+        WHERE 1 = 1";
+    $params = [];
+
+    if ($countryId > 0) {
+        $sql .= " AND u.original_country_id = :country";
+        $params[':country'] = $countryId;
+    }
+    if ($regionId > 0) {
+        $sql .= " AND c.REGION_ID = :region";
+        $params[':region'] = $regionId;
+    }
+    if ($languageId > 0) {
+        $sql .= " AND EXISTS (SELECT 1 FROM user_spoken_languages usl
+                              WHERE usl.userid = u.userid AND usl.language_id = :language)";
+        $params[':language'] = $languageId;
+    }
+
+    $sql .= " ORDER BY u.last_name, u.first_name LIMIT 100";
+
+    sendJson(200, ['success' => true, 'data' => WFDatabase::getDataFromSQL($sql, $params)]);
 }
 
 /*
@@ -250,6 +321,8 @@ if ($routePart !== null && ctype_digit($routePart) && $subResource === 'language
     //($userIndex+1 = userId, +2 = "languages", +3 = languageId)
     $userId = (int)$routePart;
     $languageId = $parts[$usersIndex + 3] ?? null; // for DELETE /{languageid}
+
+    // Only the logged-in owner can add or remove their own languages
     if ($method !== 'GET') {
         $authUserId = requireAuth();
         if ($authUserId !== $userId) {
@@ -257,11 +330,8 @@ if ($routePart !== null && ctype_digit($routePart) && $subResource === 'language
         }
     }
 
-
-    //Gets a list of every langiage that this user speaks, with proficiency
+    // Gets a list of every language that this user speaks
     if ($method === 'GET') {
-        
-        //Joins the user+spoken_language table on wf_languages by language_id, but displays by language name
         $sql = "
             SELECT l.LANGUAGE_ID, l.LANGUAGE_NAME, usl.proficency_level
             FROM wf_languages l
@@ -273,8 +343,7 @@ if ($routePart !== null && ctype_digit($routePart) && $subResource === 'language
         sendJson(200, ['success' => true, 'data' => $data]);
     }
 
-
-    //Links a new language to a user by inserting a new row into user_spoken_language table
+    // Links a new language to a user
     if ($method === 'POST') {
         $body = getJsonBody();
         $languageIdToAdd = (int)($body['language_id'] ?? 0);
@@ -283,27 +352,24 @@ if ($routePart !== null && ctype_digit($routePart) && $subResource === 'language
         $minLevel = 1;
         $maxLevel = 5;
 
-        //Rejects any invalid language ids before hitting the DB
         if ($languageIdToAdd <= 0) {
-        sendJson(400, ['success' => false, 'message' => 'A valid language_id is required.']);
+            sendJson(400, ['success' => false, 'message' => 'A valid language_id is required.']);
         }
 
-        //Rejects any proficiency level outside of 1-5
         if ($proficiency < $minLevel || $proficiency > $maxLevel) {
-        sendJson(400, ['success' => false, 'message' => "proficency_level must be between $minLevel and $maxLevel."]);
+            sendJson(400, ['success' => false, 'message' => "proficency_level must be between $minLevel and $maxLevel."]);
         }
 
         $sql = "INSERT INTO user_spoken_languages (userid, language_id, proficency_level) VALUES (:userid, :language_id, :proficency_level)";
         try {
             WFDatabase::executeSQL($sql, [':userid' => $userId, ':language_id' => $languageIdToAdd, ':proficency_level' => $proficiency]);
             sendJson(201, ['success' => true, 'message' => 'Language added.']);
-        }   catch (PDOException $e) {
-    
-        if ($e->getCode() === '23000') {
-        sendJson(409, ['success' => false, 'message' => 'Invalid language_id or already linked to this user.']);
+        } catch (PDOException $e) {
+            if ($e->getCode() === '23000') {
+                sendJson(409, ['success' => false, 'message' => 'Invalid language_id or already linked to this user.']);
+            }
+            sendJson(500, ['success' => false, 'message' => 'Database error.']);
         }
-    sendJson(500, ['success' => false, 'message' => 'Database error.']);
-}
     }
 
     if ($method === 'DELETE' && $languageId !== null && ctype_digit($languageId)) {
@@ -316,9 +382,3 @@ if ($routePart !== null && ctype_digit($routePart) && $subResource === 'language
 }
 
 sendJson(404, ['success' => false, 'message' => 'Endpoint not found.']);
-
-
-sendJson(404, ['success' => false, 'message' => 'Endpoint not found.']);
-
-
-

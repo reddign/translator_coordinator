@@ -1,7 +1,5 @@
 
 <?php
-require_once "../includes/config.php";
-require_once "../includes/WFDatabase.php";
 include "includes/functions.php";
 
 // Search for Native Tweet users
@@ -156,169 +154,123 @@ if (isset($_GET['userid']) && ctype_digit($_GET['userid'])) {
 
 include "includes/header.php";
 include "includes/navbar.php";
+
+if (!function_exists('e')) {
+    function e($value) {
+        return htmlspecialchars((string)($value ?? ""), ENT_QUOTES, "UTF-8");
+    }
+}
+
+// Selected filters (0 = any)
+$country  = (int)($_GET['country'] ?? 0);
+$region   = (int)($_GET['region'] ?? 0);
+$language = (int)($_GET['language'] ?? 0);
+$searched = $country > 0 || $region > 0 || $language > 0;
+
+// Load dropdown lists
+$options = apiRequest("GET", $mainURL . "/api/users/search-options");
+$countries = $options['countries'] ?? [];
+$regions   = $options['regions'] ?? [];
+$languages = $options['languages'] ?? [];
+
+// Run the search
+$users = [];
+$error = "";
+if ($searched) {
+    $query = http_build_query(array_filter([
+        'country'  => $country,
+        'region'   => $region,
+        'language' => $language,
+    ]));
+    $result = apiRequest("GET", $mainURL . "/api/users/search?" . $query);
+
+    if ($result === null || empty($result['success'])) {
+        $error = $result['message'] ?? "Search isn't working right now. Try again.";
+    } else {
+        $users = $result['data'] ?? [];
+    }
+}
 ?>
 
-<link rel="stylesheet" href="search.css">
+<h2>Native Tweet - Find Students</h2>
 
-<div class="search-container">
+<div class="w3-section" id="search">
+    <p>Search by country, region, language, or any combination.</p>
 
-    <main>
-
-        <h2>Search for your NATIVE friend</h2>
-
-        <div class="w3-section">
-            Search for students by name, language, region, or country.
-        </div>
-
-        <h3>Find and connect with other Native Tweet students!</h3>
-
-        <br>
-
-        <!-- Search bar -->
-        <div class="topnav">
-
-            <input
-                type="text"
-                id="search-bar"
-                placeholder="Search for a student..."
-                autocomplete="off"
-            >
-
-        </div>
-
-        <!-- Search results -->
-        <div id="results"></div>
-
-        <!-- Selected student's profile -->
-        <?php if ($selectedUser != null): ?>
-
-            <div class="public-profile">
-
-                <h3>
-                    <?php
-                    echo htmlspecialchars(
-                        $selectedUser['first_name'] . " " .
-                        $selectedUser['last_name'],
-                        ENT_QUOTES,
-                        'UTF-8'
-                    );
-                    ?>
-                </h3>
-
-                <p>
-                    <b>Country of Origin:</b>
-
-                    <?php
-                    echo htmlspecialchars(
-                        $selectedUser['COUNTRY_NAME'] ?? 'Not listed',
-                        ENT_QUOTES,
-                        'UTF-8'
-                    );
-                    ?>
-                </p>
-
-                <p>
-                    <b>Spoken Languages:</b>
-
-                    <?php
-                    if (count($selectedLanguages) > 0) {
-
-                        $names = array();
-
-                        foreach ($selectedLanguages as $language) {
-                            $names[] = $language['LANGUAGE_NAME'];
-                        }
-
-                        echo htmlspecialchars(
-                            implode(", ", $names),
-                            ENT_QUOTES,
-                            'UTF-8'
-                        );
-
-                    } else {
-                        echo "No languages listed";
-                    }
-                    ?>
-                </p>
-
-            </div>
-
-        <?php endif; ?>
-
-    </main>
-
-    <!-- Filters on the right side -->
-    <aside class="sidebar">
-
-        <h3>Filters</h3>
-
-        <!-- Language filter -->
-        <select id="language-select" class="w3-select">
-
-            <option value="">Select a language</option>
-
-            <?php foreach ($languages as $language): ?>
-
-                <option value="<?php echo $language['LANGUAGE_ID']; ?>">
-
-                    <?php
-                    echo htmlspecialchars($language['LANGUAGE_NAME']);
-                    ?>
-
+    <form action="search.php" method="get">
+        Country:
+        <select name="country">
+            <option value="0">Any country</option>
+            <?php foreach ($countries as $c): ?>
+                <option value="<?php echo (int)$c['COUNTRY_ID']; ?>"
+                    <?php if ($country === (int)$c['COUNTRY_ID']) echo 'selected'; ?>>
+                    <?php echo e($c['COUNTRY_NAME']); ?>
                 </option>
-
             <?php endforeach; ?>
-
         </select>
-
         <br><br>
 
-        <!-- Region filter -->
-        <select id="region-select" class="w3-select">
-
-            <option value="">Select a region</option>
-
-            <?php foreach ($regions as $region): ?>
-
-                <option value="<?php echo $region['REGION_ID']; ?>">
-
-                    <?php
-                    echo htmlspecialchars($region['REGION_NAME']);
-                    ?>
-
+        Region:
+        <select name="region">
+            <option value="0">Any region</option>
+            <?php foreach ($regions as $r): ?>
+                <option value="<?php echo (int)$r['REGION_ID']; ?>"
+                    <?php if ($region === (int)$r['REGION_ID']) echo 'selected'; ?>>
+                    <?php echo e($r['REGION_NAME']); ?>
                 </option>
-
             <?php endforeach; ?>
-
         </select>
-
         <br><br>
 
-        <!-- Country filter -->
-        <select id="country-select" class="w3-select">
-
-            <option value="">Select a country</option>
-
-            <?php foreach ($countries as $country): ?>
-
-                <option value="<?php echo $country['COUNTRY_ID']; ?>">
-
-                    <?php
-                    echo htmlspecialchars($country['COUNTRY_NAME']);
-                    ?>
-
+        Language:
+        <select name="language">
+            <option value="0">Any language</option>
+            <?php foreach ($languages as $l): ?>
+                <option value="<?php echo (int)$l['LANGUAGE_ID']; ?>"
+                    <?php if ($language === (int)$l['LANGUAGE_ID']) echo 'selected'; ?>>
+                    <?php echo e($l['LANGUAGE_NAME']); ?>
                 </option>
-
             <?php endforeach; ?>
-
         </select>
+        <br><br>
 
-    </aside>
-
+        <input type="submit" value="Search">
+        <a href="search.php">Clear</a>
+    </form>
 </div>
 
-<script src="search.js" defer></script>
+<?php if ($error !== ""): ?>
+    <div class="gerror"><?php echo e($error); ?></div>
+<?php elseif ($searched && count($users) === 0): ?>
+    <p>No students found. Try a different filter.</p>
+<?php elseif (count($users) > 0): ?>
+    <div class="w3-section" id="search-results">
+        <h3><?php echo count($users); ?> student(s) found</h3>
+        <table class="w3-table w3-bordered">
+            <tr>
+                <th>Name</th>
+                <th>Country</th>
+                <th>Region</th>
+                <th>Languages</th>
+            </tr>
+            <?php foreach ($users as $u): ?>
+                <tr>
+                    <td><?php echo e($u['first_name'] . ' ' . $u['last_name']); ?></td>
+                    <td><?php echo e($u['COUNTRY_NAME']); ?></td>
+                    <td><?php echo e($u['REGION_NAME']); ?></td>
+                    <td><?php echo e($u['languages']); ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+<?php endif; ?>
+
+<BR><BR><BR><BR>
 
 <?php
+
+
+
 include "includes/footer.php";
+
 ?>
