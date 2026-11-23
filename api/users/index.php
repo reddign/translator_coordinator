@@ -134,11 +134,13 @@ if ($routePart === 'register') {
         );
     }
 
+    createEmailVerification((int)$userId, $email);
+
     $user_data = getUserById($userId);
 
     sendJson(201, [
         'success' => true,
-        'message' => 'Registration successful.',
+        'message' => 'Account created! Check your Etown email for a verification link.',
         'user' => $user_data,
     ]);
 }
@@ -157,10 +159,16 @@ if ($routePart === 'login') {
     $email = trim((string)($data['email'] ?? ''));
     $userpassword = (string)($data['password'] ?? '');
 
-    $user_login_sql = 'SELECT userid, password FROM users WHERE email = :email LIMIT 1';
+    $user_login_sql = 'SELECT userid, password, email_verified FROM users WHERE email = :email LIMIT 1';
     $login_params = [':email' => $email];
     $records = WFDatabase::getDataFromSQL($user_login_sql, $login_params);
     $record = $records[0] ?? null;
+    if ((int)$record['email_verified'] !== 1) {
+        sendJson(403, [
+            'success' => false,
+            'message' => 'Please verify your email first. Check your Etown inbox for the link.'
+        ]);
+    }
     if (!$record || !password_verify($userpassword, $record['password'])) {
         sendJson(401, [
             'success' => false,
@@ -196,6 +204,26 @@ if ($routePart === 'logout') {
     }
 
     sendJson(200, ['success' => true, 'message' => 'Logout successful.']);
+}
+//verify
+if ($routePart === 'verify') {
+    if ($method !== 'POST') {
+        sendJson(405, ['success' => false, 'message' => 'Method not allowed.']);
+    }
+
+    $data = getJsonBody();
+    $token = trim((string)($data['token'] ?? ''));
+
+    // Real tokens are exactly 64 hex characters
+    if (!preg_match('/^[a-f0-9]{64}$/', $token)) {
+        sendJson(400, ['success' => false, 'message' => 'Invalid verification link.']);
+    }
+
+    if (verifyEmailToken($token)) {
+        sendJson(200, ['success' => true, 'message' => 'Your email is verified! You can log in now.']);
+    }
+
+    sendJson(400, ['success' => false, 'message' => 'This link is invalid or has expired.']);
 }
 
 /*

@@ -198,4 +198,57 @@ function revokeSessionToken(string $token): void {
         ':hash' => hash('sha256', $token),
     ]);
 }
+
+function createEmailVerification(int $userid, string $email): bool {
+    global $mainURL;
+
+    $token = bin2hex(random_bytes(32));
+
+    // Only one active link per user
+    WFDatabase::executeSQL("DELETE FROM email_verifications WHERE userid = :userid",
+        [':userid' => $userId]);
+
+    WFDatabase::executeSQL(
+        "INSERT INTO email_verifications (userid, token_hash, expires_at)
+         VALUES (:userid, :hash, :expires)",
+        [
+            ':userid'  => $userId,
+            ':hash'    => hash('sha256', $token),
+            ':expires' => date('Y-m-d H:i:s', time() + 60 * 60 * 24), // 24 hours
+        ]
+    );
+
+    $link = $mainURL . "/web/verify.php?token=" . urlencode($token);
+
+    $subject = "Verify your Native Tweet account";
+    $body = "Hi!\r\n\r\n"
+          . "Click this link to verify your Native Tweet account:\r\n"
+          . $link . "\r\n\r\n"
+          . "This link expires in 24 hours. If you didn't sign up, ignore this email.";
+    $headers = "From: Native Tweet <no-reply@etowndb.com>\r\n"
+             . "Content-Type: text/plain; charset=UTF-8\r\n";
+
+    return mail($email, $subject, $body, $headers);
+}
+function verifyEmailToken(string $token): bool {
+    $rows = WFDatabase::getDataFromSQL(
+        "SELECT userid FROM email_verifications
+         WHERE token_hash = :hash AND expires_at > :now
+         LIMIT 1",
+        [':hash' => hash('sha256', $token), ':now' => date('Y-m-d H:i:s')]
+    );
+
+    if (count($rows) === 0) {
+        return false;
+    }
+
+    $userId = (int)$rows[0]['userid'];
+
+    WFDatabase::executeSQL("UPDATE users SET email_verified = 1 WHERE userid = :userid",
+        [':userid' => $userId]);
+    WFDatabase::executeSQL("DELETE FROM email_verifications WHERE userid = :userid",
+        [':userid' => $userId]);
+
+    return true;
+}
 ?>
