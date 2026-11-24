@@ -1,0 +1,11 @@
+Identifier              User Story                                                                                              Size
+
+REQ-1:      As an unauthorized user from outside of E-town, I should not be able to register without an E-town email.           7 points
+REQ-2:      As an authorized user, I want to be in charge of what information is being displayed on my profile page.            4 points
+REQ-3:      As an authorized user, I want my password to be stored securly.                                                     5 points
+REQ-4:      As an authorized user, I want the website to log me out when I am inactive for a specific period of time.           3 points
+REQ-5:      As an authorized user, I want to be able to switch the language of the page to the one that I understand better.    6 points
+REQ-6:      As an authorized user, I want to be able to search for other users based on their language and country of origin.   5 points
+REQ-7:      As a guest user, I want to be able to see the world map and learn more about different countries.                   3 points 
+REQ-8:      As an authorized user, I want to be able to reset my password if I forget it.                                       7 points
+REQ-9:      As an authorized user, I want to be able to chat with other users in the website                                    7 points

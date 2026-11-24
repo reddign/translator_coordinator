@@ -1,10 +1,10 @@
 openapi: 3.0.3
 
 info:
-  title: World Connections API
+  title: Native Tweet API
   version: 1.0.0
   description: |
-    REST API for the World Connections application. The initial reference-data resources are read-only.
+    REST API for the Native Tweet application. The initial reference-data resources are read-only.
 
     This initial API supports country and world-region reference data.
 
@@ -16,7 +16,7 @@ info:
 
 servers:
   - url: ../../api
-    description: Current World Connections installation
+    description: Current Native Tweet installation
 
 tags:
   - name: Countries

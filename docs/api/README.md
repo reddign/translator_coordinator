@@ -11,7 +11,7 @@ This folder contains the OpenAPI specification and Swagger UI page for the World
 ## Expected repository location
 
 ```text
-translator_coordinator/
+native_tweet/
 ├── api/
 │   ├── countries/
 │   │   ├── index.php
@@ -33,10 +33,10 @@ translator_coordinator/
 With Apache/XAMPP running and the repository located under `htdocs`, browse to:
 
 ```text
-http://localhost/translator_coordinator/docs/api/
+http://localhost/native_tweet/docs/api/
 ```
 
-Swagger UI loads the API specification from `openapi.yaml` and uses a relative API server URL of `../../api`. This allows the same documentation to work when the entire `translator_coordinator` project is moved to another Apache host or base path.
+Swagger UI loads the API specification from `openapi.yaml` and uses a relative API server URL of `../../api`. This allows the same documentation to work when the entire `native_tweet` project is moved to another Apache host or base path.
 
 ## Documented requests
 

@@ -55,11 +55,13 @@ $country = $countries[0];
 echo "<BR><BR><BR>";
    
 
-echo "<h3>Currency Code</h3>";
+
+echo "<h3>" . t('currency_code') . "</h3>";
 foreach($currencies as $currency){
     echo $currency["CURRENCY_NAME"];
 }
-echo "<h3>Spoken Languages</h3>";
+
+echo "<h3>" . t('spoken_languages') . "</h3>";
 foreach($languages as $language){
     echo $language["LANGUAGE_NAME"];
     echo "<br>";

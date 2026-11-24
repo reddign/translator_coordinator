@@ -10,8 +10,7 @@ function publicUserSelect(): string
             u.last_name,
             u.date_registered,
             u.original_country_id,
-            c.COUNTRY_NAME AS original_country_name,
-            u.role
+            c.COUNTRY_NAME AS original_country_name
         FROM users u
         LEFT JOIN wf_countries c
             ON c.COUNTRY_ID = u.original_country_id
@@ -23,10 +22,10 @@ function getUserById( int $userId): ?array
     $sql = publicUserSelect() . ' WHERE u.userid = :userid';
     $params = [':userid' => $userId];
     $users = WFDatabase::getDataFromSQL($sql,$params);
-    if(is_array($users)){
-        $user = $users[0];
+    if(is_array($users) && count($users) > 0){
+        return $users[0];
     }
-    return $user ?: null;
+    return null;
 }
 
 function validateCountryId(mixed $countryId): ?int
@@ -78,8 +77,8 @@ function updateUserProfile(int $userId, array $data, bool $adminMode = false): a
 
         if ($field === 'email') {
             $email = trim((string)$data[$field]);
-            if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                sendJson(400, ['success' => false, 'message' => 'A valid email address is required.']);
+            if (substr(strtolower($email), -10) !== '@etown.edu') {
+                sendJson(400, ['success' => false, 'message' => 'Only @etown.edu emails can register.']);
             }
 
             $check_sql = 'SELECT userid FROM users WHERE email = :email AND userid <> :userid';
@@ -95,7 +94,7 @@ function updateUserProfile(int $userId, array $data, bool $adminMode = false): a
         }
 
         if ($field === 'original_country_id') {
-            $countryId = validateCountryId($pdo, $data[$field]);
+            $countryId = validateCountryId($data[$field]);
             $updates[] = 'original_country_id = :original_country_id';
             $params[':original_country_id'] = $countryId;
             continue;
@@ -147,5 +146,120 @@ function updateUserProfile(int $userId, array $data, bool $adminMode = false): a
     }
 
     return $user;
+}
+// Makes a new token for a user, stores its hash, returns the raw token
+function createSessionToken(int $userId): string {
+    $token = bin2hex(random_bytes(32));   // 64 random hex characters
+    $sql = "INSERT INTO user_sessions (userid, token_hash, created_at, expires_at)
+            VALUES (:userid, :hash, :created, :expires)";
+    WFDatabase::executeSQL($sql, [
+        ':userid'  => $userId,
+        ':hash'    => hash('sha256', $token),
+        ':created' => date('Y-m-d H:i:s'),
+        ':expires' => date('Y-m-d H:i:s', time() + 60 * 60 * 24), // 24 hours
+    ]);
+    return $token;
+}
+
+// Pulls the token out of the "Authorization: Bearer xxx" header
+function getBearerToken(): ?string {
+    $header = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
+    if (preg_match('/^Bearer\s+(\S+)$/i', $header, $m)) {
+        return $m[1];
+    }
+    return null;
+}
+
+// Use at the top of any endpoint that needs a logged-in user. Returns their userid.
+function requireAuth(): int {
+    $token = getBearerToken();
+    if ($token === null) {
+        sendJson(401, ['success' => false, 'message' => 'Not logged in.']);
+    }
+    $sql = "SELECT userid FROM user_sessions
+            WHERE token_hash = :hash AND revoked_at IS NULL AND expires_at > :now
+            LIMIT 1";
+    $rows = WFDatabase::getDataFromSQL($sql, [
+        ':hash' => hash('sha256', $token),
+        ':now'  => date('Y-m-d H:i:s'),
+    ]);
+    if (count($rows) === 0) {
+        sendJson(401, ['success' => false, 'message' => 'Session expired or invalid.']);
+    }
+    return (int)$rows[0]['userid'];
+}
+
+// Kills a token so it can't be used again
+function revokeSessionToken(string $token): void {
+    $sql = "UPDATE user_sessions SET revoked_at = :now
+            WHERE token_hash = :hash AND revoked_at IS NULL";
+    WFDatabase::executeSQL($sql, [
+        ':now'  => date('Y-m-d H:i:s'),
+        ':hash' => hash('sha256', $token),
+    ]);
+}
+
+// Returns true only for a real email address ending in @etown.edu
+function isValidEtownEmail(string $email): bool {
+    $email = trim($email);
+
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+
+    return substr(strtolower($email), -10) === '@etown.edu';
+}
+
+function createEmailVerification(int $userid, string $email): bool {
+    global $mainURL;
+
+    $token = bin2hex(random_bytes(32));
+
+    // Only one active link per user
+    WFDatabase::executeSQL("DELETE FROM email_verifications WHERE userid = :userid",
+        [':userid' => $userId]);
+
+    WFDatabase::executeSQL(
+        "INSERT INTO email_verifications (userid, token_hash, expires_at)
+         VALUES (:userid, :hash, :expires)",
+        [
+            ':userid'  => $userId,
+            ':hash'    => hash('sha256', $token),
+            ':expires' => date('Y-m-d H:i:s', time() + 60 * 60 * 24), // 24 hours
+        ]
+    );
+
+    $link = $mainURL . "/web/verify.php?token=" . urlencode($token);
+
+    $subject = "Verify your Native Tweet account";
+    $body = "Hi!\r\n\r\n"
+          . "Click this link to verify your Native Tweet account:\r\n"
+          . $link . "\r\n\r\n"
+          . "This link expires in 24 hours. If you didn't sign up, ignore this email.";
+    $headers = "From: Native Tweet <no-reply@etowndb.com>\r\n"
+             . "Content-Type: text/plain; charset=UTF-8\r\n";
+
+    return mail($email, $subject, $body, $headers);
+}
+function verifyEmailToken(string $token): bool {
+    $rows = WFDatabase::getDataFromSQL(
+        "SELECT userid FROM email_verifications
+         WHERE token_hash = :hash AND expires_at > :now
+         LIMIT 1",
+        [':hash' => hash('sha256', $token), ':now' => date('Y-m-d H:i:s')]
+    );
+
+    if (count($rows) === 0) {
+        return false;
+    }
+
+    $userId = (int)$rows[0]['userid'];
+
+    WFDatabase::executeSQL("UPDATE users SET email_verified = 1 WHERE userid = :userid",
+        [':userid' => $userId]);
+    WFDatabase::executeSQL("DELETE FROM email_verifications WHERE userid = :userid",
+        [':userid' => $userId]);
+
+    return true;
 }
 ?>

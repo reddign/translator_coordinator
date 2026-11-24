@@ -1,1 +1,0 @@
-//In this file we will allow a user to join a group in a popup window.

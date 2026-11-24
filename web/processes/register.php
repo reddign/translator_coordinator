@@ -1,6 +1,6 @@
 <?PHP
 
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 error_reporting(E_ALL & ~E_NOTICE);
 session_start();
 require_once __DIR__ . "/../../includes/config.php";
@@ -24,6 +24,7 @@ $lastName = trim($_POST["last"] ?? "");
 $email = trim($_POST["email"] ?? "");
 $userpassword = $_POST["pass"] ?? "";
 $countryId = $_POST["country_origin"] ?? "";
+$languageId = $_POST["language_origin"] ?? "";
 
 /*
 ------------------------------------------------------------
@@ -35,7 +36,8 @@ if (
     $lastName === "" ||
     $email === "" ||
     $userpassword === "" ||
-    $countryId === ""
+    $countryId === "" ||
+    $languageId === ""
 ) {
     $_SESSION["error"] = "All registration fields are required.";
     header("Location: ../login.php?page=register");
@@ -53,6 +55,11 @@ if (!ctype_digit($countryId)) {
     header("Location: ../login.php?page=register");
     exit;
 }
+if (!ctype_digit($languageId)) {
+    $_SESSION["error"] = "Please select a valid language.";
+    header("Location: ../login.php?page=register");
+    exit;
+}
 
 /*
 ------------------------------------------------------------
@@ -65,7 +72,8 @@ $data = [
     "password" => $userpassword,
     "first_name" => $firstName,
     "last_name" => $lastName,
-    "original_country_id" => (int)$countryId
+    "original_country_id" => (int)$countryId,
+    "language_id" => (int)$languageId
 ];
 
 $jsonData = json_encode($data);
@@ -140,9 +148,8 @@ if (
     The registration endpoint logs the user in by returning
     an authentication token.
     */
-    $_SESSION["api_token"] = $result["token"];
-    $_SESSION["user"] = $result["user"];
-    $_SESSION["error"] = "";
+
+    $_SESSION["error"] = $result["message"] ?? "Check your Etown email to verify your account.";
     header("Location: ../login.php?page=login");
     exit;
 }

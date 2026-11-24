@@ -19,7 +19,7 @@ $regionName = $regionResponse["data"][0]["REGION_NAME"];
 ?>
 
 <div class="w3-padding">
-<h1>Regions - <?PHP echo $regionName; ?> </h1>
+<h1><?php echo t('regions') . ' - ' . htmlspecialchars($regionName, ENT_QUOTES, 'UTF-8'); ?></h1>
 
 <?php
 foreach($countries as $country){

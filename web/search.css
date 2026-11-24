@@ -1,0 +1,49 @@
+
+.search-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 20px;
+    min-height: 70vh;
+}
+
+.sidebar {
+    padding: 10px;
+}
+
+.search-container main {
+    min-width: 0;
+}
+
+#search-bar {
+    padding: 5px;
+    width: 250px;
+    max-width: 100%;
+}
+
+#results {
+    margin-top: 65px;
+}
+
+.search-item {
+    margin: 12px 20px;
+}
+
+.search-country {
+    color: #666;
+}
+
+.public-profile {
+    margin-top: 35px;
+    padding: 15px;
+    border: 1px solid #ddd;
+}
+
+@media (max-width: 650px) {
+    .search-container {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        grid-row: 1;
+    }
+}
