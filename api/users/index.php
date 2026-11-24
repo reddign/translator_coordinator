@@ -88,7 +88,7 @@ if ($routePart === 'register') {
         sendJson(400, ['success' => false, 'message' => 'A valid email address is required.']);
     }
 
-    if (substr(strtolower($email), -10) !== '@etown.edu') {
+    if (!isValidEtownEmail($email)) {
         sendJson(400, ['success' => false, 'message' => 'Only @etown.edu emails can register.']);
     }
 

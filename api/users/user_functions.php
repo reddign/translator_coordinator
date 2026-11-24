@@ -199,6 +199,17 @@ function revokeSessionToken(string $token): void {
     ]);
 }
 
+// Returns true only for a real email address ending in @etown.edu
+function isValidEtownEmail(string $email): bool {
+    $email = trim($email);
+
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+
+    return substr(strtolower($email), -10) === '@etown.edu';
+}
+
 function createEmailVerification(int $userid, string $email): bool {
     global $mainURL;
 
